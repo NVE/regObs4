@@ -42,8 +42,25 @@ text {
     fill: var(--layer-color);
   }
 
-  polyline:hover {
-    opacity: 0.7;
+  polyline.critical-layer-full {
+    fill: red;
+  }
+
+  polyline.critical-layer {
+    stroke: red;
+    stroke-width: 3;
+    fill: none;
+  }
+
+  polyline.no-hardness {
+    fill: white;
+    stroke: none;
+  }
+
+  @media (hover: hover) {
+    polyline:hover {
+      opacity: 0.7;
+    }
   }
 }
 

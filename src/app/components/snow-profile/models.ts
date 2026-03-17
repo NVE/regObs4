@@ -1,3 +1,5 @@
+import { StratProfileLayerEditModel } from 'src/app/modules/common-regobs-api';
+
 export interface PlotPoint {
   x: number;
   y: number;
@@ -6,20 +8,15 @@ export interface TempPoint extends PlotPoint {
   temp: number;
 }
 
-export interface LayerPolygon {
-  points: PlotPoint[];
-  /**
-   * SVG <title> tooltip text
-   */
-  tooltip: string;
+export interface CriticalLayerPoints {
+  type: 'full' | 'top' | 'bottom';
+  points?: string;
 }
 
-export interface PolylineAttributes {
-  points: string;
-  /**
-   * SVG <title> tooltip text
-   */
-  tooltip: string;
+export interface ExpandedPolygon {
+  topEdge: PlotPoint[];
+  bottomEdge: PlotPoint[];
+  layer: StratProfileLayerEditModel;
 }
 
 export interface PlotFrame {
@@ -41,22 +38,12 @@ export type HardnessProjectorConfig = {
  * Coordinates are absolute SVG coordinates (includes x0/y0 offsets).
  */
 
-export interface LayerPolygonData {
-  /** Left x-coordinate at the top edge (determined by top hardness) */
-  leftTopX: number;
-  /** Left x-coordinate at the bottom edge (determined by bottom hardness) */
-  leftBottomX: number;
-  /** Right edge x-coordinate (always frame.x0 + frame.width) */
-  rightEdgeX: number;
-  /** Y-coordinate of the top edge */
-  topY: number;
-  /** Y-coordinate of the bottom edge */
-  bottomY: number;
-  /** Original height in pixels (bottomY - topY) */
-  originalHeight: number;
-
-  tooltip: string;
-  criticalLayer?: CriticalLayer;
+export interface SimplePolygon {
+  topLeft: PlotPoint;
+  topRight: PlotPoint;
+  bottomLeft: PlotPoint;
+  bottomRight: PlotPoint;
+  layer: StratProfileLayerEditModel;
 }
 
 export interface LayerExpansionConfig {

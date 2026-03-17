@@ -267,9 +267,9 @@
                 (attachmentClicked)="openImageCarousel($event, attachments)"
               ></app-attachment-grid>
             }
-            @if (snowProfileUrl()) {
+            <!-- @if (snowProfileUrl()) {
               <img [src]="snowProfileUrl()" alt="Snow Profile" />
-            }
+            } -->
             @let layers = reg.SnowProfile2?.StratProfile?.Layers || [];
             @if (reg.SnowProfile2 && layers.length > 0) {
               <app-snow-profile [data]="reg.SnowProfile2" [tests]="reg.CompressionTest"></app-snow-profile>

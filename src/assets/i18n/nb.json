@@ -1104,5 +1104,13 @@
     "TITLE_SNOW": "Snøskredvarsel",
     "TITLE_WATER": "Flom- og jordskredvarsel",
     "VALID_FROM": "Gyldig fra"
+  },
+  "SNOW_PROFILE": {
+    "LABEL_THICKNESS": "Tykkelse: {{value}}cm",
+    "LABEL_GRAIN_FORM_PRIMARY_AND_SECONDARY": "Korntype: {{primary}} ({{secondary}})",
+    "LABEL_GRAIN_FORM_PRIMARY_ONLY": "Korntype: {{primary}}",
+    "LABEL_GRAIN_SIZE": "Kornstørrelse: {{value}}mm",
+    "LABEL_HARDNESS": "Hardhet: {{value}}",
+    "LABEL_WETNESS": "Snøfuktighet (LWC): {{value}}"
   }
 }

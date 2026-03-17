@@ -19,11 +19,20 @@
     <!-- Layers -->
     <g class="layers">
       @for (layer of layerPolylines(); track $index) {
-        <polyline [attr.points]="layer.points" (click)="layerClick.emit($index)">
-          @if (showTitles) {
-            <title>{{ layer.tooltip }}</title>
+        <polyline
+          [attr.points]="layer.points"
+          [class.critical-layer-full]="layer.isCl"
+          [class.no-hardness]="layer.missingHardness"
+          (click)="layerClick.emit($index)"
+        >
+          @if (showTooltips) {
+            <title>{{ layerTooltips()[$index] }}</title>
           }
         </polyline>
+      }
+
+      @for (points of criticalLayerPolylines(); track $index) {
+        <polyline [attr.points]="points" class="critical-layer"></polyline>
       }
     </g>
 
@@ -60,7 +69,7 @@
           @for (label of labels; track $index) {
             @if (hardnessAxis().get("4F"); as h) {
               <text [attr.x]="h.x1" [attr.y]="label.y">
-                @if (showTitles) {
+                @if (showTooltips) {
                   <title>Kornstørrelse {{ label.value }}mm</title>
                 }
                 {{ label.value }}
@@ -75,7 +84,7 @@
           @for (label of labels; track $index) {
             @if (hardnessAxis().get("1F"); as h) {
               <text [attr.x]="h.x1" [attr.y]="label.y">
-                @if (showTitles) {
+                @if (showTooltips) {
                   <title>Liquid Water Content (LWC): {{ label.value }}{{ label.desc ? " - " + label.desc : "" }}</title>
                 }
                 {{ label.value }}
@@ -93,7 +102,7 @@
         @if (showLabels()) {
           @for (tempPoint of tempPoints(); track $index) {
             <circle [attr.cx]="tempPoint.x" [attr.cy]="tempPoint.y" r="2">
-              @if (showTitles) {
+              @if (showTooltips) {
                 <title>{{ tempPoint.temp }}&deg;</title>
               }
             </circle>
@@ -180,7 +189,7 @@
       <g class="tests">
         @for (test of tests; track $index) {
           <text [attr.y]="test.y - 2" [attr.x]="x">
-            @if (showTitles) {
+            @if (showTooltips) {
               <title>{{ test.tooltip }}</title>
             }
             {{ test.label }}

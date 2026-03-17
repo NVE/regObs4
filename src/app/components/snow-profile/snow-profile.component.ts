@@ -4,9 +4,9 @@ import {
   Component,
   computed,
   DestroyRef,
-  effect,
   ElementRef,
   inject,
+  Injector,
   input,
   output,
   signal,
@@ -16,7 +16,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { CompressionTestEditModel, SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
-import { HardnessScaleMode, LayerPolygon, PlotFrame } from './models';
+import { CriticalLayer, Hardness, PlotFrame } from './models';
 import {
   createTempProjector,
   createTempPoints,
@@ -24,7 +24,6 @@ import {
   createTempAxis,
   createLayerPolygons,
   computeExpandedHeights,
-  layerPolygonDataToPoints,
   expandLayerPolygons,
   createLayerLabels,
   pointsToPolyline,
@@ -33,9 +32,12 @@ import {
   createDepthProjector,
   createDepthAxis,
   createCompressionTestPlots,
+  createCriticalLayers,
 } from './plot';
 import { formatCompressionTest } from './compression-test';
 import { Platform } from '@ionic/angular';
+import { createSnowProfileLayerFormatter } from './formatters';
+import { TranslateService } from '@ngx-translate/core';
 
 const PLOT_MAX_WIDTH = 700;
 
@@ -50,49 +52,29 @@ export class SnowProfileComponent {
   private elementRef = inject(ElementRef);
   private destroyRef = inject(DestroyRef);
   private platform = inject(Platform);
+  private injector = inject(Injector);
+  private translate = inject(TranslateService);
 
-  grainForm = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_GrainFormKDV'), { initialValue: [] });
-  hardness = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_HardnessKDV'), { initialValue: [] });
-  lwc = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_WetnessKDV'), { initialValue: [] });
-  propagationKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_PropagationKDV'), { initialValue: [] });
-  fractureKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_ComprTestFractureKDV'), { initialValue: [] });
+  // grainForm = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_GrainFormKDV'), { initialValue: [] });
+  // hardness = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_HardnessKDV'), { initialValue: [] });
+  private lwcKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_WetnessKDV'), { initialValue: [] });
+  private propagationKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_PropagationKDV'), {
+    initialValue: [],
+  });
+  private fractureKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_ComprTestFractureKDV'), {
+    initialValue: [],
+  });
 
   data = input.required<SnowProfileEditModel>();
   tests = input<CompressionTestEditModel[]>();
-  // inputWidth = input(0, { alias: 'width' });
-  // inputHeight = input(0, { alias: 'height' });
-  hardnessScaleMode = input<HardnessScaleMode>('linear');
-  hardnessScaleExponent = input(2);
-  minHardnessWidthPx = input(24);
   useRamResistance = input(false);
   showLabelAxis = input(false);
   showPopovers = input(false);
 
   layerClick = output<number>();
 
-  showTitles = !this.platform.is('mobile');
+  showTooltips = !this.platform.is('mobile');
 
-  // width = computed(() => {
-  //   let width = this.inputWidth();
-  //   if (!width) {
-  //     width = (this.inputHeight() * 7) / 10;
-  //   }
-  //   return Math.min(width, PLOT_MAX_WIDTH);
-  // });
-
-  // height = computed(() => {
-  //   if (this.inputHeight() > 0) {
-  //     return this.inputHeight();
-  //   }
-  //   if (this.inputWidth()) {
-  //     const height = (this.inputWidth() * 10) / 7;
-  //     if (height > window.innerHeight) {
-  //       return window.innerHeight;
-  //     }
-  //     return height;
-  //   }
-  //   return 0;
-  // });
   width = signal(0);
   height = signal(0);
 
@@ -183,34 +165,41 @@ export class SnowProfileComponent {
 
   layers = computed(() => this.data()?.StratProfile?.Layers || []);
   layerDepth = computed(() => this.layers().reduce((depth, x) => depth + (x.Thickness || 0), 0));
-  rawLayerPolygons = computed(() =>
-    createLayerPolygons(this.frame(), this.layers(), this.maxDepth(), this.hardnessProjector(), this.depthProjector())
+  simplePolygons = computed(() =>
+    createLayerPolygons(this.frame(), this.layers(), this.hardnessProjector(), this.depthProjector())
   );
-  layerHeights = computed(() => this.rawLayerPolygons().map((l) => l.originalHeight));
+  layerTooltips = computed(() => {
+    const formatter = this.layerFormatter();
+    return this.layers().map((l) => formatter.tooltip(l));
+  });
+  layerHeights = computed(() => this.simplePolygons().map((l) => l.bottomRight.y - l.topRight.y));
   layerHeightsExpanded = computed(() => computeExpandedHeights(this.layerHeights(), this.minLayerHeight));
-  layerPolylinePoints: Signal<LayerPolygon[]> = computed(() => {
-    const raw = this.rawLayerPolygons();
-    const minH = this.minLayerHeight;
-    if (minH <= 0 || !this.showLabels()) {
-      return raw.map((x) => ({
-        points: layerPolygonDataToPoints(x),
-        tooltip: x.tooltip,
-      }));
-    }
-    return expandLayerPolygons(raw, this.layerHeightsExpanded(), {
-      minHeight: minH,
+  expandedPolygons = computed(() =>
+    expandLayerPolygons(this.simplePolygons(), this.layerHeightsExpanded(), {
+      minHeight: this.minLayerHeight,
       transitionEndOffsetFromRight: this.transitionEndOffset,
       transitionWidth: this.transitionWidth,
-    });
-  });
+    })
+  );
+
+  criticalLayers = computed(() => createCriticalLayers(this.layers(), this.expandedPolygons()));
+  criticalLayerPolylines = computed(() =>
+    this.criticalLayers()
+      .map((x) => x?.points)
+      .filter((x) => x != null)
+  );
+
+  expandedPolygonPoints = computed(() =>
+    this.expandedPolygons().map((x) => ({ points: [...x.topEdge, ...x.bottomEdge], layer: x.layer }))
+  );
 
   // Labels
-  layerLabels = computed(() => createLayerLabels(this.frame(), this.layers(), this.layerPolylinePoints()));
+  layerLabels = computed(() => createLayerLabels(this.expandedPolygonPoints()));
   grainFormLabels = computed(() => this.layerLabels().gf);
   grainSizeLabels = computed(() => this.layerLabels().gs);
   lwcLabels = computed(() => {
     return this.layerLabels().lwc.map(({ value, y }) => {
-      const kdv = this.lwc().find((x) => x.Id === value);
+      const kdv = this.lwcKdv().find((x) => x.Id === value);
       return {
         value: kdv?.Name ?? value.toString(),
         desc: kdv?.Description,
@@ -218,24 +207,23 @@ export class SnowProfileComponent {
       };
     });
   });
+
   commentLabels = computed(() => this.layerLabels().c);
 
-  layerPolylines = computed(() =>
-    this.layerPolylinePoints().map((l) => ({ points: pointsToPolyline(l.points), tooltip: l.tooltip }))
-  );
+  layerPolylines = computed(() => {
+    return this.expandedPolygonPoints().map((x) => ({
+      points: pointsToPolyline(x.points),
+      isCl: x.layer.CriticalLayerTID === CriticalLayer.ENTIRE_LAYER,
+      missingHardness: x.layer.HardnessTID == null || x.layer.HardnessTID == Hardness[' - '],
+    }));
+  });
 
   toGround = computed(() => !!this.data()?.IsProfileToGround);
   groundSymbolY = computed(() => {
-    return this.rawLayerPolygons().at(-1)?.bottomY as number;
+    return this.simplePolygons().at(-1)?.bottomRight.y as number;
   });
 
-  hardnessProjector = computed(() =>
-    createHardnessWidthProjector(this.frame(), {
-      mode: this.hardnessScaleMode(),
-      minWidthPx: this.minHardnessWidthPx(),
-      exponent: this.hardnessScaleExponent(),
-    })
-  );
+  hardnessProjector = computed(() => createHardnessWidthProjector(this.frame()));
   hardnessAxis = computed(() => createHardnessAxis(this.frame(), this.hardnessProjector()));
 
   maxDepth = computed(() => Math.max(this.tempDepth(), this.layerDepth()));
@@ -249,6 +237,8 @@ export class SnowProfileComponent {
       return formatCompressionTest(test, propagationKdv, fractureKdv, opts);
     };
   });
+  layerFormatter = computed(() => createSnowProfileLayerFormatter(this.translate, { wetness: this.lwcKdv() }));
+
   testPlots = computed(() => {
     const tests = this.tests();
     if (tests) {
@@ -259,14 +249,14 @@ export class SnowProfileComponent {
 
   commentRefs = viewChildren<ElementRef<HTMLDivElement>>('comment');
   commentHeights = signal<number[]>([]);
-  commentYPositions = signal<number[]>([]);
+  // commentYPositions = signal<number[]>([]);
 
   commentTargetYPositions = computed(() => {
     const rows = this.comments();
-    const raw = this.rawLayerPolygons();
+    const raw = this.simplePolygons();
     return rows.map((row) => {
       const layer = raw[row.i];
-      return (layer.topY + layer.bottomY) / 2;
+      return (layer.topRight.y + layer.bottomRight.y) / 2;
     });
   });
 
@@ -274,6 +264,7 @@ export class SnowProfileComponent {
     const positions = this.commentYPositions();
     const heights = this.commentHeights();
     if (positions.length === 0) return [];
+    if (heights.length === 0) return [];
 
     const targetYs = this.commentTargetYPositions();
     const frame = this.frame();
@@ -323,30 +314,44 @@ export class SnowProfileComponent {
 
   constructor() {
     afterNextRender(() => {
+      this.width.set(this.elementRef.nativeElement.offsetWidth);
+      this.height.set(this.elementRef.nativeElement.offsetHeight);
+
       const observer = new ResizeObserver(([entry]) => {
         const { width, height } = entry.contentRect;
         this.width.set(width);
         this.height.set(height);
 
         // Update comment heights
-        const heights = this.commentRefs().map((ref) => ref.nativeElement.offsetHeight);
-        this.commentHeights.set(heights);
-        this.setCommentPositions(heights);
+        this.updateCommentHeights();
       });
 
       observer.observe(this.elementRef.nativeElement);
       this.destroyRef.onDestroy(() => observer.disconnect());
+
+      // Nå vet komponenten hva bredden og høyden sin skal være, og kan evt vise kommentarer.
+      // Etter de er skrevet til domen, flytt de til riktig sted - ved korresponderende lag i snøprofil
+      afterNextRender(
+        () => {
+          this.updateCommentHeights();
+        },
+        { injector: this.injector }
+      );
     });
   }
 
-  private setCommentPositions(heights: number[]) {
+  readSize() {
+    this.elementRef.nativeElement.contentRect;
+  }
+
+  commentYPositions = computed(() => {
     const targetYsSvg = this.commentTargetYPositions();
     const scaleFactor = this.scaleFactor();
     const targetYsDisplay = targetYsSvg.map((y) => y / scaleFactor);
     const availableHeight = this.height();
+    const heights = this.commentHeights();
     const gap = 4;
     const n = heights.length;
-    if (n === 0) return;
 
     // Ideal top position: center each comment on its target y
     const positions = targetYsDisplay.map((target, i) => target - heights[i] / 2);
@@ -384,6 +389,15 @@ export class SnowProfileComponent {
       }
     }
 
-    this.commentYPositions.set(positions);
+    return positions;
+  });
+
+  private updateCommentHeights() {
+    if (!this.showComments()) {
+      return;
+    }
+
+    const heights = this.commentRefs().map((ref) => ref.nativeElement.offsetHeight);
+    this.commentHeights.set(heights);
   }
 }

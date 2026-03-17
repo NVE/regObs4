@@ -1,22 +1,21 @@
 import {
   CompressionTestEditModel,
-  KdvElement,
   SnowTempObsModel,
   StratProfileLayerEditModel,
 } from 'src/app/modules/common-regobs-api';
 import {
   Hardness,
-  HardnessProjectorConfig,
   Label,
   LayerExpansionConfig,
-  LayerPolygonData,
+  SimplePolygon,
   PlotFrame,
   PlotPoint,
-  LayerPolygon,
+  ExpandedPolygon,
   TempPoint,
+  CriticalLayer,
+  CriticalLayerPoints,
 } from './models';
 import { GrainForm, grainFormTidToSnowSymbolKey } from './grainforms';
-import { formatCompressionTest } from './compression-test';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -65,6 +64,10 @@ export function pointsToPolyline(points: readonly PlotPoint[]): string {
   return [...points, points[0]].map((point) => `${point.x},${point.y}`).join(' ');
 }
 
+export function pointsToOpenPolyline(points: readonly PlotPoint[]): string {
+  return points.map((point) => `${point.x},${point.y}`).join(' ');
+}
+
 export function createDepthProjector(frame: PlotFrame, maxDepth: number): (depth: number) => number {
   return (depth: number): number => {
     if (!Number.isFinite(depth) || depth < 0) {
@@ -77,17 +80,17 @@ export function createDepthProjector(frame: PlotFrame, maxDepth: number): (depth
 }
 
 export function createHardnessWidthProjector(
-  frame: PlotFrame,
-  config: HardnessProjectorConfig
+  frame: PlotFrame
+  // config: HardnessProjectorConfig
 ): (hardnessTid: number) => number {
   return (hardnessTid: number): number => {
     const linearFraction = getLinearHardnessFraction(hardnessTid);
 
-    if (config.mode === 'linear') {
-      return fmt(frame.width * linearFraction);
-    }
-
-    return fmt(config.minWidthPx + (frame.width - config.minWidthPx) * Math.pow(linearFraction, config.exponent));
+    // if (config.mode === 'linear') {
+    //   return fmt(frame.width * linearFraction);
+    // }
+    // return fmt(config.minWidthPx + (frame.width - config.minWidthPx) * Math.pow(linearFraction, config.exponent));
+    return fmt(frame.width * linearFraction);
   };
 }
 
@@ -115,7 +118,7 @@ export function createHardnessWidthProjector(
 
 function getLinearHardnessFraction(hardnessTid: number): number {
   const anchors = [
-    { tid: Hardness[' - '], fraction: 0 },
+    { tid: Hardness[' - '], fraction: 1 },
     { tid: Hardness.F, fraction: 1 / 6 },
     { tid: Hardness['4F'], fraction: 2 / 6 },
     { tid: Hardness['1F'], fraction: 3 / 6 },
@@ -152,10 +155,9 @@ function getLinearHardnessFraction(hardnessTid: number): number {
 export function createLayerPolygons(
   frame: PlotFrame,
   layers: readonly StratProfileLayerEditModel[],
-  maxDepth: number,
   hardnessProjector: (hardness: Hardness) => number,
   depthProjector: (depth: number) => number
-): LayerPolygonData[] {
+): SimplePolygon[] {
   if (layers.length === 0) {
     return [];
   }
@@ -183,69 +185,49 @@ export function createLayerPolygons(
     currentDepth = bottomDepth;
 
     return {
-      leftTopX,
-      leftBottomX,
-      rightEdgeX,
-      topY,
-      bottomY,
-      originalHeight: fmt(bottomY - topY),
-      tooltip: createLayerTooltip(layer),
-      // criticalLayer: layer.CriticalLayerTID,
+      topLeft: { x: leftTopX, y: topY },
+      topRight: { x: rightEdgeX, y: topY },
+      bottomRight: { x: rightEdgeX, y: bottomY },
+      bottomLeft: { x: leftBottomX, y: bottomY },
+      layer,
     };
   });
 }
 
-export function createLayerTooltip(layer: StratProfileLayerEditModel): string {
-  const items = [] as string[];
-  const thickness = fmt((layer.Thickness || 0) * 100, 1);
-  items.push(`Tykkelse: ${thickness}cm`);
-  if (layer.GrainFormPrimaryTID) {
-    if (layer.GrainFormSecondaryTID) {
-      items.push(`Korntype: ${GrainForm[layer.GrainFormPrimaryTID]} (${GrainForm[layer.GrainFormSecondaryTID]})`);
-    } else {
-      items.push(`Korntype: ${GrainForm[layer.GrainFormPrimaryTID]}`);
-    }
-  }
-  if (layer.GrainSizeAvg) {
-    let grainSize = fmt(layer.GrainSizeAvg * 100, 1).toString();
-    if (layer.GrainSizeAvgMax) {
-      grainSize += `-${fmt(layer.GrainSizeAvgMax * 100, 1)}`;
-    }
-    items.push(`Kornstørrelse: ${grainSize}mm`);
-  }
-  if (layer.HardnessTID) {
-    let hardness = Hardness[layer.HardnessTID];
+const CRITICAL_LAYER_OFFSET = 2;
 
-    if (layer.HardnessBottomTID) {
-      hardness += `-${Hardness[layer.HardnessBottomTID]}`;
-    }
-    items.push(`Hardhet: ${hardness}`);
-  }
-  // if (layer.WetnessTID) {
-  //   items.push(`LWC: ${LWC layer.WetnessTID}`)
-  // }
-  if (layer.Comment) {
-    items.push('"' + layer.Comment + '"');
-  }
-
-  return items.join('\n');
+export function offsetCriticalLayerPointsTop(points: PlotPoint[]): PlotPoint[] {
+  return points.map(({ x, y }) => ({ x, y: y + CRITICAL_LAYER_OFFSET }));
 }
 
-export function layerPolygonDataToPoints(l: LayerPolygonData): PlotPoint[] {
-  return [
-    { x: l.leftTopX, y: l.topY },
-    { x: l.rightEdgeX, y: l.topY },
-    { x: l.rightEdgeX, y: l.bottomY },
-    { x: l.leftBottomX, y: l.bottomY },
-  ];
+export function offsetCriticalLayerPointsBottom(points: PlotPoint[]): PlotPoint[] {
+  return points.map(({ x, y }) => ({ x, y: y - CRITICAL_LAYER_OFFSET }));
 }
 
-/**
- * Convert an array of LayerPolygonData (4-point rectangles) to polyline strings.
- * Used when no expansion is needed.
- */
-export function layerPolygonsToPolylines(layers: readonly LayerPolygonData[]): string[] {
-  return layers.map((l) => pointsToPolyline(layerPolygonDataToPoints(l)));
+export function createCriticalLayer(
+  layer: StratProfileLayerEditModel,
+  polygon: ExpandedPolygon
+): CriticalLayerPoints | undefined {
+  if (layer.CriticalLayerTID === CriticalLayer.ENTIRE_LAYER) {
+    return { type: 'full' };
+  }
+  if (layer.CriticalLayerTID === CriticalLayer.UPPER_PART) {
+    return { type: 'top', points: pointsToOpenPolyline(offsetCriticalLayerPointsTop(polygon.topEdge)) };
+  }
+  if (layer.CriticalLayerTID === CriticalLayer.LOWER_PART) {
+    return { type: 'bottom', points: pointsToOpenPolyline(offsetCriticalLayerPointsBottom(polygon.bottomEdge)) };
+  }
+  return undefined;
+}
+
+export function createCriticalLayers(layers: StratProfileLayerEditModel[], polygons: ExpandedPolygon[]) {
+  const result = [];
+  for (let i = 0; i < layers.length; i++) {
+    const layer = layers[i];
+    const polygon = polygons[i];
+    result.push(createCriticalLayer(layer, polygon));
+  }
+  return result;
 }
 
 /**
@@ -306,7 +288,6 @@ export function computeExpandedHeights(originalHeights: readonly number[], minHe
 
 /**
  * Stacks expanded heights from an anchor Y to compute expanded top/bottom Y-coordinates.
- * Shared by expandLayerPolygons and createTable.
  */
 export function computeExpandedYCoordinates(
   anchorTop: number,
@@ -340,84 +321,83 @@ export function computeExpandedYCoordinates(
  * Returns polygon points ready for SVG rendering.
  */
 export function expandLayerPolygons(
-  layers: readonly LayerPolygonData[],
+  layers: readonly SimplePolygon[],
   expandedHeights: readonly number[],
   config: LayerExpansionConfig
-): LayerPolygon[] {
+): ExpandedPolygon[] {
   if (layers.length === 0) {
     return [];
   }
 
   const { transitionEndOffsetFromRight, transitionWidth } = config;
-  const rightEdge = layers[0].rightEdgeX;
+  const rightEdge = layers[0].topRight.x;
   const transitionEndX = fmt(rightEdge - transitionEndOffsetFromRight);
   const transitionStartX = fmt(transitionEndX - transitionWidth);
 
-  const { tops: expandedTops, bottoms: expandedBottoms } = computeExpandedYCoordinates(layers[0].topY, expandedHeights);
+  const { tops: expandedTops, bottoms: expandedBottoms } = computeExpandedYCoordinates(
+    layers[0].topRight.y,
+    expandedHeights
+  );
 
   // Build polygon points for each layer
-  return layers.map((layer, i) => {
-    const topDiff = Math.abs(expandedTops[i] - layer.topY);
-    const bottomDiff = Math.abs(expandedBottoms[i] - layer.bottomY);
+  return layers.map(({ topLeft, topRight, bottomLeft, bottomRight, layer }, i) => {
+    const topDiff = Math.abs(expandedTops[i] - topRight.y);
+    const bottomDiff = Math.abs(expandedBottoms[i] - bottomRight.y);
     const expandsTop = topDiff > 0.5;
     const expandsBottom = bottomDiff > 0.5;
 
     if (!expandsTop && !expandsBottom) {
       // No expansion needed: 4-point polygon
       return {
-        points: [
-          { x: layer.leftTopX, y: layer.topY },
-          { x: layer.rightEdgeX, y: layer.topY },
-          { x: layer.rightEdgeX, y: layer.bottomY },
-          { x: layer.leftBottomX, y: layer.bottomY },
-        ],
-        tooltip: layer.tooltip,
+        topEdge: [topLeft, topRight],
+        bottomEdge: [bottomRight, bottomLeft],
+        layer,
       };
     }
 
     if (expandsTop && !expandsBottom) {
       // Expansion upward only: 6-point polygon
+      const p0 = { x: topLeft.x, y: expandedTops[i] };
+      const p1 = { x: transitionStartX, y: expandedTops[i] };
+      const p2 = { x: transitionEndX, y: topRight.y };
+      const p3 = { x: bottomRight.x, y: topRight.y };
+      const p4 = { x: bottomRight.x, y: bottomRight.y };
+      const p5 = { x: bottomLeft.x, y: bottomRight.y };
       return {
-        points: [
-          { x: layer.leftTopX, y: expandedTops[i] },
-          { x: transitionStartX, y: expandedTops[i] },
-          { x: transitionEndX, y: layer.topY },
-          { x: layer.rightEdgeX, y: layer.topY },
-          { x: layer.rightEdgeX, y: layer.bottomY },
-          { x: layer.leftBottomX, y: layer.bottomY },
-        ],
-        tooltip: layer.tooltip,
+        topEdge: [p0, p1, p2, p3],
+        bottomEdge: [p4, p5],
+        layer,
       };
     }
 
     if (!expandsTop && expandsBottom) {
       // Expansion downward only: 6-point polygon
+      const p0 = { x: topLeft.x, y: topRight.y };
+      const p1 = { x: bottomRight.x, y: topRight.y };
+      const p2 = { x: bottomRight.x, y: bottomRight.y };
+      const p3 = { x: transitionEndX, y: bottomRight.y };
+      const p4 = { x: transitionStartX, y: expandedBottoms[i] };
+      const p5 = { x: bottomLeft.x, y: expandedBottoms[i] };
       return {
-        points: [
-          { x: layer.leftTopX, y: layer.topY },
-          { x: layer.rightEdgeX, y: layer.topY },
-          { x: layer.rightEdgeX, y: layer.bottomY },
-          { x: transitionEndX, y: layer.bottomY },
-          { x: transitionStartX, y: expandedBottoms[i] },
-          { x: layer.leftBottomX, y: expandedBottoms[i] },
-        ],
-        tooltip: layer.tooltip,
+        topEdge: [p0, p1],
+        bottomEdge: [p2, p3, p4, p5],
+        layer,
       };
     }
 
     // Expansion both directions: 8-point polygon
+    const p0 = { x: topLeft.x, y: expandedTops[i] };
+    const p1 = { x: transitionStartX, y: expandedTops[i] };
+    const p2 = { x: transitionEndX, y: topRight.y };
+    const p3 = { x: bottomRight.x, y: topRight.y };
+    const p4 = { x: bottomRight.x, y: bottomRight.y };
+    const p5 = { x: transitionEndX, y: bottomRight.y };
+    const p6 = { x: transitionStartX, y: expandedBottoms[i] };
+    const p7 = { x: bottomLeft.x, y: expandedBottoms[i] };
     return {
-      points: [
-        { x: layer.leftTopX, y: expandedTops[i] },
-        { x: transitionStartX, y: expandedTops[i] },
-        { x: transitionEndX, y: layer.topY },
-        { x: layer.rightEdgeX, y: layer.topY },
-        { x: layer.rightEdgeX, y: layer.bottomY },
-        { x: transitionEndX, y: layer.bottomY },
-        { x: transitionStartX, y: expandedBottoms[i] },
-        { x: layer.leftBottomX, y: expandedBottoms[i] },
-      ],
-      tooltip: layer.tooltip,
+      topEdge: [p0, p1, p2, p3],
+      bottomEdge: [p4, p5, p6, p7],
+      layer,
     };
   });
 }
@@ -464,7 +444,9 @@ export function createTempAxis(
 ) {
   const y1 = frame.y0;
   const y2 = frame.y0 - frame.axisSize;
-  const temps = generateStepList(minTemp, 0, 2);
+  const nTicks = frame.width < 500 ? 5 : 8;
+  const step = niceStep(minTemp, nTicks, [2, 4, 5, 10]);
+  const temps = generateStepList(minTemp, 0, step);
   return temps.map((temp) => {
     const point = tempProjector({ SnowTemp: temp, Depth: 0 });
     return {
@@ -478,7 +460,9 @@ export function createTempAxis(
 }
 
 export function createDepthAxis(frame: PlotFrame, maxDepth: number, depthProjector: (depth: number) => number) {
-  const steps = generateStepList(0, maxDepth, 0.1);
+  const nTicks = frame.height < 1000 ? 8 : 15;
+  const step = niceStep(maxDepth, nTicks, [0.1, 0.2, 0.5, 1, 2]);
+  const steps = generateStepList(0, maxDepth, step);
   const x1 = frame.x0 + frame.width;
   const x2 = x1 + frame.axisSize;
   return steps.map((depth) => {
@@ -491,6 +475,11 @@ export function createDepthAxis(frame: PlotFrame, maxDepth: number, depthProject
       depth: (depth * 100).toFixed(0),
     };
   });
+}
+
+function niceStep(range: number, maxTicks: number, steps: number[]): number {
+  const minStep = Math.abs(range) / maxTicks;
+  return steps.find((s) => s >= minStep) ?? minStep;
 }
 
 export function generateStepList(min: number, max: number, step: number): number[] {
@@ -514,7 +503,7 @@ export function generateStepList(min: number, max: number, step: number): number
   return result;
 }
 
-export function getLabelPositionY(polygon: PlotPoint[]): number {
+export function getLabelPositionY(polygon: readonly PlotPoint[]): number {
   // TODO! Hvis laget ikke har hardhet / HardnessTID, så kan polygonet være en strek. Da feiler denne.
   // Se http://localhost:8100/registration/454886
   const sortedY = [...polygon].sort((a, b) => a.x - b.x || a.y - b.y).map(({ y }) => y);
@@ -523,11 +512,7 @@ export function getLabelPositionY(polygon: PlotPoint[]): number {
   return yMin + diff / 2;
 }
 
-export function createLayerLabels(
-  frame: PlotFrame,
-  layers: readonly StratProfileLayerEditModel[],
-  polygons: readonly LayerPolygon[]
-) {
+export function createLayerLabels(layers: { points: readonly PlotPoint[]; layer: StratProfileLayerEditModel }[]) {
   const labels = {
     gf: [] as Label<string>[],
     gs: [] as Label<string>[],
@@ -537,7 +522,7 @@ export function createLayerLabels(
 
   // Grain form, grain size, wetness, density?
   for (let i = 0; i < layers.length; i++) {
-    const layer = layers[i];
+    const { layer, points } = layers[i];
     const { GrainFormPrimaryTID, GrainFormSecondaryTID, WetnessTID, GrainSizeAvg, GrainSizeAvgMax } = layer;
 
     const shouldHaveLabel = !!(
@@ -550,8 +535,7 @@ export function createLayerLabels(
 
     if (!shouldHaveLabel) continue;
 
-    const polygon = polygons[i];
-    const y = getLabelPositionY(polygon.points);
+    const y = getLabelPositionY(points);
 
     if (layer.Comment) {
       labels.c.push({ y, value: layer.Comment });
