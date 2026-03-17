@@ -15,7 +15,11 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
-import { CompressionTestEditModel, SnowProfileEditModel } from 'src/app/modules/common-regobs-api';
+import {
+  CompressionTestEditModel,
+  SnowProfileEditModel,
+  StratProfileLayerEditModel,
+} from 'src/app/modules/common-regobs-api';
 import { CriticalLayer, Hardness, PlotFrame } from './models';
 import {
   createTempProjector,
@@ -71,7 +75,7 @@ export class SnowProfileComponent {
   showLabelAxis = input(false);
   showPopovers = input(false);
 
-  layerClick = output<number>();
+  layerClick = output<{ i: number; layer: StratProfileLayerEditModel }>();
 
   showTooltips = !this.platform.is('mobile');
 
@@ -208,10 +212,9 @@ export class SnowProfileComponent {
     });
   });
 
-  commentLabels = computed(() => this.layerLabels().c);
-
   layerPolylines = computed(() => {
     return this.expandedPolygonPoints().map((x) => ({
+      layer: x.layer,
       points: pointsToPolyline(x.points),
       isCl: x.layer.CriticalLayerTID === CriticalLayer.ENTIRE_LAYER,
       missingHardness: x.layer.HardnessTID == null || x.layer.HardnessTID == Hardness[' - '],
@@ -249,16 +252,6 @@ export class SnowProfileComponent {
 
   commentRefs = viewChildren<ElementRef<HTMLDivElement>>('comment');
   commentHeights = signal<number[]>([]);
-  // commentYPositions = signal<number[]>([]);
-
-  commentTargetYPositions = computed(() => {
-    const rows = this.comments();
-    const raw = this.simplePolygons();
-    return rows.map((row) => {
-      const layer = raw[row.i];
-      return (layer.topRight.y + layer.bottomRight.y) / 2;
-    });
-  });
 
   annotationLines = computed(() => {
     const positions = this.commentYPositions();
@@ -266,7 +259,7 @@ export class SnowProfileComponent {
     if (positions.length === 0) return [];
     if (heights.length === 0) return [];
 
-    const targetYs = this.commentTargetYPositions();
+    const targetYs = this.comments().map((x) => x.y);
     const frame = this.frame();
     const svgW = this.svgWidth();
     const scaleFactor = this.scaleFactor();
@@ -286,25 +279,22 @@ export class SnowProfileComponent {
   });
 
   comments = computed(() => {
-    // const heights = this.layerHeightsExpanded();
     const layers = this.layers();
-    // const points = this.layerPolylinePoints();
+    const layerPolygons = this.simplePolygons();
 
     const rows = [];
+    let counter = 0;
     for (let i = 0; i < layers.length; i++) {
       const layer = layers[i];
-      // const height = heights[i];
-      // let gf;
-      // if (layer.GrainFormPrimaryTID) {
-      //   gf = GrainForm[layer.GrainFormPrimaryTID];
-      // }
+      const polygon = layerPolygons[i];
 
       if (layer.Comment) {
+        counter++;
         rows.push({
+          y: (polygon.topRight.y + polygon.bottomRight.y) / 2,
+          key: '*' + counter,
           i,
-          // height,
           comment: layer.Comment,
-          // gf,
         });
       }
     }
@@ -345,7 +335,7 @@ export class SnowProfileComponent {
   }
 
   commentYPositions = computed(() => {
-    const targetYsSvg = this.commentTargetYPositions();
+    const targetYsSvg = this.comments().map((c) => c.y);
     const scaleFactor = this.scaleFactor();
     const targetYsDisplay = targetYsSvg.map((y) => y / scaleFactor);
     const availableHeight = this.height();

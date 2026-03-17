@@ -517,7 +517,6 @@ export function createLayerLabels(layers: { points: readonly PlotPoint[]; layer:
     gf: [] as Label<string>[],
     gs: [] as Label<string>[],
     lwc: [] as Label<number>[],
-    c: [] as Label<string>[],
   };
 
   // Grain form, grain size, wetness, density?
@@ -536,10 +535,6 @@ export function createLayerLabels(layers: { points: readonly PlotPoint[]; layer:
     if (!shouldHaveLabel) continue;
 
     const y = getLabelPositionY(points);
-
-    if (layer.Comment) {
-      labels.c.push({ y, value: layer.Comment });
-    }
 
     if (GrainFormPrimaryTID != null) {
       // TODO: GrainformSecondary

@@ -11,11 +11,7 @@
     @if (item.type === "SnowProfile") {
       @let reg = registration();
       <swiper-slide>
-        <app-snow-profile
-          [data]="reg.SnowProfile2!"
-          [tests]="reg.CompressionTest"
-          (layerClick)="setLayerInfo($event)"
-        ></app-snow-profile>
+        <app-snow-profile [data]="reg.SnowProfile2!" [tests]="reg.CompressionTest"></app-snow-profile>
       </swiper-slide>
     } @else {
       @let attachment = item.data;
@@ -45,14 +41,8 @@
     <!-- kommentar -->
     @if (isSnowProfile) {
       @if (!showsComments()) {
-        @if (snowProfileLayer()?.Comment; as comment) {
-          <app-key-value [key]="'Lagkommentar'" [value]="comment"></app-key-value>
-        } @else {
-          @if (nComments() > 0) {
-            <app-key-value
-              >{{ nComments() }} lag har kommentarer. Klikk på et lag med 💬 for å se kommentar.</app-key-value
-            >
-          }
+        @for (layer of layerComments(); track layer.i) {
+          <app-key-value [key]="layer.key" [value]="layer.comment"></app-key-value>
         }
       }
       @if (registration().SnowProfile2?.Comment; as comment) {

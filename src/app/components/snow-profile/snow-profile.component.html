@@ -23,7 +23,7 @@
           [attr.points]="layer.points"
           [class.critical-layer-full]="layer.isCl"
           [class.no-hardness]="layer.missingHardness"
-          (click)="layerClick.emit($index)"
+          (click)="layerClick.emit({ i: $index, layer: layer.layer })"
         >
           @if (showTooltips) {
             <title>{{ layerTooltips()[$index] }}</title>
@@ -38,14 +38,15 @@
 
     @if (showLabels()) {
       @if (!showComments()) {
-        @let comments = commentLabels();
-        @if (comments.length > 0) {
+        @let cmts = comments();
+        @if (cmts.length > 0) {
           <g class="c-labels">
             @let x = x0() + availableWidth() + 10;
-            @for (comment of comments; track $index) {
+            @for (comment of cmts; track comment.i) {
               <text [attr.x]="x" [attr.y]="comment.y">
-                <title>{{ comment.value }}</title>
-                💬
+                <title>{{ comment.comment }}</title>
+                <!-- 💬 -->
+                {{ comment.key }}
               </text>
             }
           </g>

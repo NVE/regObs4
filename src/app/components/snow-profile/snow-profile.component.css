@@ -88,6 +88,12 @@ text {
   text-anchor: end;
 }
 
+.c-labels {
+  dominant-baseline: middle;
+  font-style: italic;
+  text-anchor: middle;
+}
+
 .gs-labels text,
 .gs-axis {
   fill: var(--gs-color, black);
