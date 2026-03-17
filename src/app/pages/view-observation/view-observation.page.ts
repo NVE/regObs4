@@ -231,7 +231,11 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   openImageCarousel($event: { index: number }, attachments: AttachmentViewModel[]) {
     if (this.registration.hasValue()) {
-      this.imageCarousel.open($event.index, [], this.registration.value()); // TODO!
+      this.imageCarousel.open(
+        $event.index,
+        attachments.map((data) => ({ type: 'Attachment', data })),
+        this.registration.value()
+      );
     }
   }
 
