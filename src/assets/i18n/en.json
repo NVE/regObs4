@@ -1105,5 +1105,19 @@
     "TITLE_SNOW": "Avalanche Forecasts",
     "TITLE_WATER": "Flood and Landslide Forecasts",
     "VALID_FROM": "Valid from"
+  },
+  "SNOW_PROFILE": {
+    "LABEL_THICKNESS": "Thickness: {{value}}cm",
+    "LABEL_GRAIN_FORM_PRIMARY_AND_SECONDARY": "Grain form: {{primary}} ({{secondary}})",
+    "LABEL_GRAIN_FORM_PRIMARY_ONLY": "Grain form: {{primary}}",
+    "LABEL_GRAIN_SIZE": "Grain size: {{value}}mm",
+    "LABEL_HARDNESS": "Hardness: {{value}}",
+    "LABEL_WETNESS": "Liquid water content (LWC): {{value}}",
+    "LABEL_HARDNESS_MISSING": "Hardness: MISSING VALUE",
+    "GRAIN_FORM_AXIS_LABEL": "Grain form",
+    "GRAIN_SIZE_AXIS_LABEL": "Grain size",
+    "TESTS_AXIS_LABEL": "Tests",
+    "DEPTH_AXIS_LABEL": "Depth",
+    "TEMP_AXIS_LABEL": "Temperature"
   }
 }

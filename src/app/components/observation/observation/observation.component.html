@@ -21,18 +21,17 @@
       @if (hasSnowProfile()) {
         <swiper-slide>
           <app-snow-profile
-            [data]="reg.SnowProfile2!"
+            [profile]="reg.SnowProfile2!"
             [tests]="reg.CompressionTest"
             [style.width.px]="250"
-            [showLabelAxis]="false"
-            (click)="$event.preventDefault(); openImageCarousel(0)"
+            (click)="openImageCarousel(0)"
           ></app-snow-profile>
         </swiper-slide>
       }
 
       <!-- lazy-preload-prev-next="2" -->
-      @for (attachment of attachments(); track attachment.AttachmentId; let index = $index) {
-        <swiper-slide (click)="openImageCarousel(index + 1)">
+      @for (attachment of attachments(); track attachment.AttachmentId) {
+        <swiper-slide (click)="openImageCarousel($index + 1)">
           <img [src]="attachment.UrlFormats?.Large" [alt]="attachment.Comment" (error)="setFallbackImage(attachment)" />
         </swiper-slide>
       }

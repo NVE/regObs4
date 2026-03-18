@@ -1110,6 +1110,12 @@
     "LABEL_GRAIN_FORM_PRIMARY_ONLY": "Korntype: {{primary}}",
     "LABEL_GRAIN_SIZE": "Kornstørrelse: {{value}}mm",
     "LABEL_HARDNESS": "Hardhet: {{value}}",
-    "LABEL_WETNESS": "Snøfuktighet (LWC): {{value}}"
+    "LABEL_WETNESS": "Snøfuktighet (LWC): {{value}}",
+    "LABEL_HARDNESS_MISSING": "Hardhet: MANGLER VERDI",
+    "GRAIN_FORM_AXIS_LABEL": "Kornform",
+    "GRAIN_SIZE_AXIS_LABEL": "Kornstørrelse",
+    "TESTS_AXIS_LABEL": "Tester",
+    "DEPTH_AXIS_LABEL": "Dybde",
+    "TEMP_AXIS_LABEL": "Temperatur"
   }
 }

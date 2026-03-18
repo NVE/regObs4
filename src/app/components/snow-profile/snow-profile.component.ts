@@ -13,8 +13,6 @@ import {
   Signal,
   viewChildren,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import {
   CompressionTestEditModel,
   SnowProfileEditModel,
@@ -38,51 +36,80 @@ import {
   createCompressionTestPlots,
   createCriticalLayers,
 } from './plot';
-import { formatCompressionTest } from './compression-test';
 import { Platform } from '@ionic/angular';
 import { createSnowProfileLayerFormatter } from './formatters';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { injectSnowProfileKdvs } from './kdvs';
 
 const PLOT_MAX_WIDTH = 700;
+
+/**
+ * Lag i snøprofilen ekspanderes for å få plass til labels.
+ * Denne verdien angir minimumsverdien for hvor langt fra høyre siden av plottet ekspanderingen skal starte.
+ */
+const EXPAND_LAYER_POLYGON_MIN_OFFSET_X = 20;
+
+/**
+ * Lag i snøprofilen ekspanderes for å få plass til labels.
+ * Denne verdien angir hvor bred ekspanderingen skal være.
+ */
+const EXPAND_LAYER_POLYGON_TRANSITION_WIDTH = 20;
+
+const AXIS_LABEL_OFFSET = 15;
 
 @Component({
   selector: 'app-snow-profile',
   templateUrl: './snow-profile.component.html',
   styleUrls: ['./snow-profile.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TranslatePipe],
 })
+/**
+ * Rendrer en snøprofil som SVG-plott med lag, hardhet, temperatur, kompresjonstester og kommentarer.
+ */
 export class SnowProfileComponent {
-  private kdv = inject(KdvService);
   private elementRef = inject(ElementRef);
   private destroyRef = inject(DestroyRef);
   private platform = inject(Platform);
   private injector = inject(Injector);
   private translate = inject(TranslateService);
+  private kdvs = injectSnowProfileKdvs();
 
-  // grainForm = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_GrainFormKDV'), { initialValue: [] });
-  // hardness = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_HardnessKDV'), { initialValue: [] });
-  private lwcKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_WetnessKDV'), { initialValue: [] });
-  private propagationKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_PropagationKDV'), {
-    initialValue: [],
-  });
-  private fractureKdv = toSignal(this.kdv.getKdvRepositoryByKeyObservable('Snow_ComprTestFractureKDV'), {
-    initialValue: [],
-  });
-
-  data = input.required<SnowProfileEditModel>();
+  profile = input.required<SnowProfileEditModel>();
   tests = input<CompressionTestEditModel[]>();
-  useRamResistance = input(false);
-  showLabelAxis = input(false);
-  showPopovers = input(false);
+  // useRamResistance = input(false);
 
+  /**
+   * Om akse for labels skal vises (LWC, kornstørrelse, korntype osv).
+   * NB: Denne aksen fungerer ikke optimalt (labels kan overskrive hverandre) og er derfor default satt til false
+   * for nå.
+   */
+  showLabelAxis = input(false);
+
+  /**
+   * Event for å lytte på klikk på lag i snøprofil. Kan brukes for å vise relevant info om lag utenfor profilen.
+   */
   layerClick = output<{ i: number; layer: StratProfileLayerEditModel }>();
 
+  /**
+   * Vi trenger ikke rendre tooltips på mobiler, de kan ikke vises der uansett.
+   */
   showTooltips = !this.platform.is('mobile');
 
+  /**
+   * Bredde - leses fra DOM etter første render
+   */
   width = signal(0);
+
+  /**
+   * Høyde - leses fra DOM etter første render
+   */
   height = signal(0);
 
-  scaleFactor = computed(() => {
+  /**
+   * Små profiler skaleres for å få plass til alt
+   */
+  private scaleFactor = computed(() => {
     const width = this.width();
     let scaleFactor = 1;
     if (width < 400) {
@@ -101,33 +128,95 @@ export class SnowProfileComponent {
     return scaleFactor;
   });
 
+  /**
+   * Om kommentarer skal vises til høyre for plottet
+   */
   showComments = computed(() => this.width() > 700);
-  svgWidth = computed(() => {
+
+  /**
+   * SVG bredde - settes ikke nødvendigvis til det samme som komponentens bredde.
+   * Ved små profiler (feks i obskort-karusell), må profilen skaleres litt mindre for å få plass til alt.
+   */
+  private svgWidth = computed(() => {
     let width = this.width();
     if (this.showComments()) {
       width = Math.min(width * 0.7, PLOT_MAX_WIDTH);
     }
     return width * this.scaleFactor();
   });
-  svgHeight = computed(() => this.height() * this.scaleFactor());
+
+  /**
+   * SVG høyde
+   */
+  private svgHeight = computed(() => this.height() * this.scaleFactor());
+
+  /**
+   * SVG Viewbox attributt
+   */
   viewBox = computed(() => `0 0 ${this.svgWidth()} ${this.svgHeight()}`);
 
+  /**
+   * For svært små profiler skjules aksene
+   */
   showAxis = computed(() => this.width() > 100 && this.height() > 200);
+
+  /**
+   * For svært små profiler skjules labels
+   */
   showLabels = computed(() => this.width() > 200);
 
-  minLayerHeight = 20;
+  /**
+   * Minimum lagtykkelse i profilen. Må passe med fontstørrelse for labels.
+   * Lag i snøprofilen ekspanderes til denne verdien for å få plass til labels.
+   */
+  private minLayerHeight = 20;
 
-  transitionEndOffset = 20;
-  transitionWidth = 20;
-  axisLabelOffset = 15;
+  /**
+   * Beregner hvor ekspanderingen av lag skal starte.
+   * Lag ekspanderes for å få plass til labels.
+   */
+  private expandLayerPolygonOffsetX = computed(() => {
+    // Hvis mulig, bruk hardhets-skalaen til å vurdere hvor ekspanderingen skal starte.
+    // Første label vises ved hardhet F. Ved å bruke F- med en liten offset (5 px), bør ekspanderingen havne et
+    // egnet sted.
+    // Det er viktig at det alltid vises hvor tynt laget egentlig er helt til høyre i plottet.
+    // Derfor brukes en minimumsverdi (EXPAND_LAYER_POLYGON_MIN_OFFSET_X) dersom plottet er veldig smalt.
+    const hardnessF = this.hardnessProjector()(Hardness['F-']) - 5;
+    return Math.max(hardnessF, EXPAND_LAYER_POLYGON_MIN_OFFSET_X);
+  });
+
+  /**
+   * Offset for labels på aksene (hardhet, temperatur)
+   */
+  axisLabelOffset = AXIS_LABEL_OFFSET;
+
+  /**
+   * x-koordinat for venstre-siden av plottet
+   */
   x0 = computed(() => (this.showAxis() ? 20 : 0));
+
+  /**
+   * y-koordinat for øvre del av plottet
+   */
   y0 = computed(() => (this.showTemp() ? 60 : 16));
-  xMargin = computed(() => (this.showAxis() ? 70 : 0));
+
+  /**
+   * Marg på høyre siden av plottet
+   */
+  private xMargin = computed(() => (this.showAxis() ? 70 : 0));
+
+  /**
+   * Tilgjengelig bredde for plottet
+   */
   availableWidth = computed(() => {
     const width = this.svgWidth();
     return width - this.x0() - this.xMargin();
   });
-  yMargin = computed(() => {
+
+  /**
+   * Marg for undersiden av plottet
+   */
+  private yMargin = computed(() => {
     if (this.showAxis()) {
       if (this.showLabelAxis()) {
         return 60;
@@ -136,8 +225,16 @@ export class SnowProfileComponent {
     }
     return 0;
   });
+
+  /**
+   * Tilgjengelig høyde i plottet
+   */
   availableHeight = computed(() => this.svgHeight() - this.y0() - this.yMargin());
-  frame: Signal<PlotFrame> = computed(() => ({
+
+  /**
+   * Samle/hjelpeobjekt for størrelsen / koordinater til plottet
+   */
+  private frame: Signal<PlotFrame> = computed(() => ({
     width: this.availableWidth(),
     height: this.availableHeight(),
     x0: this.x0(),
@@ -145,9 +242,22 @@ export class SnowProfileComponent {
     axisSize: 10,
   }));
 
-  temperatures = computed(() => this.data()?.SnowTemp?.Layers || []);
+  /**
+   * Liste med temperaturverdier
+   */
+  private temperatures = computed(() => this.profile()?.SnowTemp?.Layers || []);
+
+  /**
+   * Om temperaturer skal vises i plottet.
+   * Er false om profilen ikke har noen observerte temperaturer.
+   */
   showTemp = computed(() => this.showAxis() && this.temperatures().length > 1);
-  tempMin = computed(() => {
+
+  /**
+   * Minimumstemperatur som skal vises i plottet.
+   * Settes til -10, -20, osv avhengig av hva min temp er.
+   */
+  private tempMin = computed(() => {
     const minTemp = this.temperatures().reduce((min, x) => Math.min(min, x.SnowTemp || 0), 0);
     if (minTemp > -10) {
       return -10;
@@ -160,50 +270,122 @@ export class SnowProfileComponent {
     }
     return -40;
   });
-  tempMax = 0;
-  tempDepth = computed(() => this.temperatures().reduce((max, x) => Math.max(max, x.Depth || 0), 0));
-  tempProjector = computed(() => createTempProjector(this.frame(), this.tempMin(), this.maxDepth()));
+
+  /**
+   * Maks dybde for temperaturene.
+   */
+  private tempDepth = computed(() => this.temperatures().reduce((max, x) => Math.max(max, x.Depth || 0), 0));
+
+  /**
+   * Projiserer temperaturverdier til x-koordinater som passer med temperaturaksen.
+   */
+  private tempProjector = computed(() => createTempProjector(this.frame(), this.tempMin(), this.maxDepth()));
+
+  /**
+   * Temperaturpunkter som vises i plottet
+   */
   tempPoints = computed(() => createTempPoints(this.temperatures(), this.tempProjector()));
+
+  /**
+   * Temperaturgraf/linje som vises i plottet (svg string)
+   */
   tempPath = computed(() => pointsToPath(this.tempPoints()));
+
+  /**
+   * Akse for temperaturene, vises i overkant av plottet
+   */
   tempAxis = computed(() => createTempAxis(this.frame(), this.tempMin(), this.tempProjector()));
 
-  layers = computed(() => this.data()?.StratProfile?.Layers || []);
-  layerDepth = computed(() => this.layers().reduce((depth, x) => depth + (x.Thickness || 0), 0));
-  simplePolygons = computed(() =>
+  /**
+   * Lagene i snøprofilen
+   */
+  private layers = computed(() => this.profile()?.StratProfile?.Layers || []);
+
+  /**
+   * Maks dybde for lag i snøprofilen
+   */
+  private layerDepth = computed(() => this.layers().reduce((depth, x) => depth + (x.Thickness || 0), 0));
+
+  /**
+   * Polygon-koordinater for lag i snøprofilen.
+   * NB! Disse er IKKE ekspandert for å få plass til labels.
+   */
+  private simplePolygons = computed(() =>
     createLayerPolygons(this.frame(), this.layers(), this.hardnessProjector(), this.depthProjector())
   );
+
+  /**
+   * Tooltips for lag i snøprofilen.
+   */
   layerTooltips = computed(() => {
-    const formatter = this.layerFormatter();
+    const formatter = this.formatter();
     return this.layers().map((l) => formatter.tooltip(l));
   });
-  layerHeights = computed(() => this.simplePolygons().map((l) => l.bottomRight.y - l.topRight.y));
-  layerHeightsExpanded = computed(() => computeExpandedHeights(this.layerHeights(), this.minLayerHeight));
-  expandedPolygons = computed(() =>
+
+  /**
+   * "Sann" laghøyde, den som vises helt til høyre i plottet
+   */
+  private layerHeights = computed(() => this.simplePolygons().map((l) => l.bottomRight.y - l.topRight.y));
+
+  /**
+   * Ekspandert laghøyde, den som brukes for å få plass til labels.
+   */
+  private layerHeightsExpanded = computed(() => computeExpandedHeights(this.layerHeights(), this.minLayerHeight));
+
+  /**
+   * Ekspanderte lagpolygoner.
+   * Lagene ekspanderes for å få plass til labels.
+   * Dette objektet deler polygonene i to (topEdge og bottomEdge), fordi disse evt brukes til å markere kritiske lag.
+   */
+  private expandedPolygons = computed(() =>
     expandLayerPolygons(this.simplePolygons(), this.layerHeightsExpanded(), {
-      minHeight: this.minLayerHeight,
-      transitionEndOffsetFromRight: this.transitionEndOffset,
-      transitionWidth: this.transitionWidth,
+      transitionEndOffsetFromRight: this.expandLayerPolygonOffsetX(),
+      transitionWidth: EXPAND_LAYER_POLYGON_TRANSITION_WIDTH,
     })
   );
 
-  criticalLayers = computed(() => createCriticalLayers(this.layers(), this.expandedPolygons()));
+  /**
+   * Linjer som markerer kritiske lag. Vises oppå andre lag-polygoner, og vises rødt i plottet.
+   * Plukker ut enten topEdge eller bottomEdge fra lagpolygonene, om et lag er markert som kritisk.
+   */
   criticalLayerPolylines = computed(() =>
-    this.criticalLayers()
+    createCriticalLayers(this.layers(), this.expandedPolygons())
       .map((x) => x?.points)
       .filter((x) => x != null)
   );
 
-  expandedPolygonPoints = computed(() =>
+  /**
+   * Slår sammen "topEdge" og "bottomEdge" for ekspanderte lagpolygoner, her er alle punktene til hvert lagpolygon i
+   * én liste.
+   */
+  private expandedPolygonPoints = computed(() =>
     this.expandedPolygons().map((x) => ({ points: [...x.topEdge, ...x.bottomEdge], layer: x.layer }))
   );
 
-  // Labels
-  layerLabels = computed(() => createLayerLabels(this.expandedPolygonPoints()));
+  /**
+   * Samleberegning av labels for lag. Gjøres sammen fordi de bruker samme y-verdi per lag, blant annet.
+   */
+  private layerLabels = computed(() => createLayerLabels(this.expandedPolygonPoints()));
+
+  /**
+   * Label for korntype. Vises med egen korntype-font.
+   * Vises i "utvidet" lag-polygon.
+   * Lag-polygon må utvides hvis laget er for tynt til å vise label. Dette gjøres av "expandLayerPolygons".
+   */
   grainFormLabels = computed(() => this.layerLabels().gf);
+
+  /**
+   * Labels for kornstørrelse. Vises som feks "1.5-3mm".
+   */
   grainSizeLabels = computed(() => this.layerLabels().gs);
+
+  /**
+   * Labels for våthet. Vises med våthetsverdier fra KDV, feks "W" for "wet".
+   */
   lwcLabels = computed(() => {
+    const lwcKdv = this.kdvs().wetness;
     return this.layerLabels().lwc.map(({ value, y }) => {
-      const kdv = this.lwcKdv().find((x) => x.Id === value);
+      const kdv = lwcKdv.find((x) => x.Id === value);
       return {
         value: kdv?.Name ?? value.toString(),
         desc: kdv?.Description,
@@ -212,6 +394,22 @@ export class SnowProfileComponent {
     });
   });
 
+  /**
+   * Tester, skal vises på venstre side i profilen.
+   * Vises som feks "ECTP", eller "PST End", med horisontal linje som markerer hvor i profilen testen ga brudd.
+   */
+  testLabels = computed(() => {
+    const tests = this.tests();
+    if (tests) {
+      return createCompressionTestPlots(tests, this.formatter().compressionTest, this.depthProjector());
+    }
+    return [];
+  });
+
+  /**
+   * SVG polyline points per lag i snøprofilen, pluss noe tilleggsinfo som brukes til å legge til CSS-klasser,
+   * feks for å markere et lag med rød farge om det er et "kritisk" lag.
+   */
   layerPolylines = computed(() => {
     return this.expandedPolygonPoints().map((x) => ({
       layer: x.layer,
@@ -221,38 +419,64 @@ export class SnowProfileComponent {
     }));
   });
 
-  toGround = computed(() => !!this.data()?.IsProfileToGround);
+  /**
+   * Om snøprofilen går helt til bakken
+   */
+  toGround = computed(() => !!this.profile()?.IsProfileToGround);
+
+  /**
+   * y-koordinat for [GND]-symbolet som vises om profilen går til bakken.
+   */
   groundSymbolY = computed(() => {
     return this.simplePolygons().at(-1)?.bottomRight.y as number;
   });
 
-  hardnessProjector = computed(() => createHardnessWidthProjector(this.frame()));
+  /**
+   * Projiserer hardhetsverdier til x-verdier for plotting.
+   * Returnerer verdier fra høyre side av plottet, altså F har en mindre verdi enn P eller K.
+   */
+  private hardnessProjector = computed(() => createHardnessWidthProjector(this.frame()));
+
+  /**
+   * Akse for hardhet, vises under plottet.
+   */
   hardnessAxis = computed(() => createHardnessAxis(this.frame(), this.hardnessProjector()));
 
-  maxDepth = computed(() => Math.max(this.tempDepth(), this.layerDepth()));
-  depthProjector = computed(() => createDepthProjector(this.frame(), this.maxDepth()));
+  /**
+   * Maks dybde i profilen, settes på bakgrunn av hva som er maks lagdybde eller temperaturdybde.
+   */
+  private maxDepth = computed(() => Math.max(this.tempDepth(), this.layerDepth()));
+
+  /**
+   * Projiserer dybdeverdier til y-koordinater for plotting.
+   */
+  private depthProjector = computed(() => createDepthProjector(this.frame(), this.maxDepth()));
+
+  /**
+   * Akse for dybde i plottet, vises på høyre siden av plottet.
+   */
   depthAxis = computed(() => createDepthAxis(this.frame(), this.maxDepth(), this.depthProjector()));
 
-  testFormatter = computed(() => {
-    const propagationKdv = this.propagationKdv();
-    const fractureKdv = this.fractureKdv();
-    return (test: CompressionTestEditModel, opts: { includeDepth: boolean; includeFracture: boolean }) => {
-      return formatCompressionTest(test, propagationKdv, fractureKdv, opts);
-    };
-  });
-  layerFormatter = computed(() => createSnowProfileLayerFormatter(this.translate, { wetness: this.lwcKdv() }));
+  /**
+   * Formateringsfunksjoner, feks for å lage en tooltip per lag i snøprofilen.
+   */
+  private formatter = computed(() => createSnowProfileLayerFormatter(this.translate, this.kdvs()));
 
-  testPlots = computed(() => {
-    const tests = this.tests();
-    if (tests) {
-      return createCompressionTestPlots(tests, this.testFormatter(), this.depthProjector());
-    }
-    return [];
-  });
+  /**
+   * Kommentarer i DOM, vises bare om profilen har nok tilgjengelig bredde.
+   */
+  private commentRefs = viewChildren<ElementRef<HTMLDivElement>>('comment');
 
-  commentRefs = viewChildren<ElementRef<HTMLDivElement>>('comment');
-  commentHeights = signal<number[]>([]);
+  /**
+   * Høyden på kommentarene.
+   * Må beregnes for å kunne plassere kommentarene riktig i forhold til lagene i profilen.
+   * Beregnes via afterNextRender etter kommentarene er lagt til i DOM.
+   */
+  private commentHeights = signal<number[]>([]);
 
+  /**
+   * Linjer som markerer hvor i profilen kommentarene hører til
+   */
   annotationLines = computed(() => {
     const positions = this.commentYPositions();
     const heights = this.commentHeights();
@@ -278,6 +502,9 @@ export class SnowProfileComponent {
     });
   });
 
+  /**
+   * Kommentarer, y-koordinat for kommentar osv.
+   */
   comments = computed(() => {
     const layers = this.layers();
     const layerPolygons = this.simplePolygons();
@@ -304,15 +531,20 @@ export class SnowProfileComponent {
 
   constructor() {
     afterNextRender(() => {
+      // CSSen setter at komponenten skal bruke all tilgjengelig bredde og høyde.
+      // Men SVG i seg selv er ikke responsivt, og for å lage et responsivt plott må vi ha tilgjengelig bredde og
+      // høyde for beregning av alt som har plottet å gjøre.
+      // Her leser vi bredde og høyde fra DOM etter komponenten rendres første gangen (uten at plottet er laget enda).
       this.width.set(this.elementRef.nativeElement.offsetWidth);
       this.height.set(this.elementRef.nativeElement.offsetHeight);
 
+      // Lytt til evt endringer i bredde og høyde og oppdater
       const observer = new ResizeObserver(([entry]) => {
         const { width, height } = entry.contentRect;
         this.width.set(width);
         this.height.set(height);
 
-        // Update comment heights
+        // Oppdater kommentarhøyder for å sørge for at de vises riktig sted
         this.updateCommentHeights();
       });
 
@@ -320,7 +552,7 @@ export class SnowProfileComponent {
       this.destroyRef.onDestroy(() => observer.disconnect());
 
       // Nå vet komponenten hva bredden og høyden sin skal være, og kan evt vise kommentarer.
-      // Etter de er skrevet til domen, flytt de til riktig sted - ved korresponderende lag i snøprofil
+      // Vi må derfor lese kommentarhøyden etter neste render igjen.
       afterNextRender(
         () => {
           this.updateCommentHeights();
@@ -330,10 +562,9 @@ export class SnowProfileComponent {
     });
   }
 
-  readSize() {
-    this.elementRef.nativeElement.contentRect;
-  }
-
+  /**
+   * Finnes beste mulige y-posisjon for kommentarer som vises til høyre for snøprofilen
+   */
   commentYPositions = computed(() => {
     const targetYsSvg = this.comments().map((c) => c.y);
     const scaleFactor = this.scaleFactor();
@@ -382,6 +613,9 @@ export class SnowProfileComponent {
     return positions;
   });
 
+  /**
+   * Les høyde på kommentarene fra DOM
+   */
   private updateCommentHeights() {
     if (!this.showComments()) {
       return;

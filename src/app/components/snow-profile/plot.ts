@@ -15,7 +15,7 @@ import {
   CriticalLayer,
   CriticalLayerPoints,
 } from './models';
-import { GrainForm, grainFormTidToSnowSymbolKey } from './grainforms';
+import { formatGrainFormSymbol, formatGrainSizeMm } from './formatters';
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -220,6 +220,10 @@ export function createCriticalLayer(
   return undefined;
 }
 
+/**
+ * Hvis et lag er markert som et "kritisk lag", trekkes det ut linje fra overkant / underkant av lag-polygonet for å
+ * markere kritisk lag.
+ */
 export function createCriticalLayers(layers: StratProfileLayerEditModel[], polygons: ExpandedPolygon[]) {
   const result = [];
   for (let i = 0; i < layers.length; i++) {
@@ -535,18 +539,7 @@ export function createLayerLabels(layers: { points: readonly PlotPoint[]; layer:
     const y = getLabelPositionY(points);
 
     if (GrainFormPrimaryTID != null) {
-      // TODO: GrainformSecondary
-      let value = grainFormTidToSnowSymbolKey(GrainFormPrimaryTID);
-      if (GrainFormSecondaryTID != null && GrainFormSecondaryTID !== GrainFormPrimaryTID) {
-        if (GrainFormPrimaryTID === GrainForm.MFcr) {
-          value += grainFormTidToSnowSymbolKey(GrainFormSecondaryTID);
-        } else {
-          value += '(' + grainFormTidToSnowSymbolKey(GrainFormSecondaryTID) + ')';
-        }
-      } else if (GrainFormPrimaryTID === GrainForm.MFcr) {
-        value += grainFormTidToSnowSymbolKey(GrainForm.MF);
-      }
-      labels.gf.push({ y, value });
+      labels.gf.push({ y, value: formatGrainFormSymbol(GrainFormPrimaryTID, GrainFormSecondaryTID) });
     }
 
     if (WetnessTID != null) {
@@ -554,12 +547,7 @@ export function createLayerLabels(layers: { points: readonly PlotPoint[]; layer:
     }
 
     if (GrainSizeAvg != null) {
-      let value = fmt(GrainSizeAvg * 100, 1).toString();
-      if (GrainSizeAvgMax) {
-        value += '-';
-        value += fmt(GrainSizeAvgMax * 100, 1);
-      }
-      labels.gs.push({ y, value });
+      labels.gs.push({ y, value: formatGrainSizeMm(GrainSizeAvg, GrainSizeAvgMax) });
     }
   }
 

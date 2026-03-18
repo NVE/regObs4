@@ -101,7 +101,9 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
     }
     return true;
   });
-  attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
+  attachments = computed(() =>
+    getAllAttachmentsFromViewModel(this.registration()).filter((a) => a.IsSnowProfilePlot != true)
+  );
 
   constructor() {
     addIcons({
@@ -120,7 +122,7 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   // Etter å ha lagt til dette fikk jeg ikke lenger sporadiske kræsj ved superhurtig scrolling,
   // men bør sikkert testes mer.
   private isVisible$ = new Subject<boolean>();
-  isVisible = toSignal(this.isVisible$.pipe(debounceTime(100)), { initialValue: false, equal: (a, b) => a === b });
+  isVisible = toSignal(this.isVisible$.pipe(debounceTime(100)), { initialValue: false });
 
   ngAfterViewInit(): void {
     this.intersectionObserver = new IntersectionObserver(
@@ -167,7 +169,7 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
 
   async openImageCarousel(index: number) {
     let items: CarouselItems = this.attachments()
-      .filter((x) => !x.IsSnowProfilePlot) // TODO: Remove
+      .filter((x) => !x.IsSnowProfilePlot) // Bruk ny snøprofil-komponent, ikke vis genererte bilder
       .map((data) => ({ type: 'Attachment', data }));
     if (this.hasSnowProfile()) {
       items = [{ type: 'SnowProfile' }, ...items];

@@ -125,5 +125,6 @@ ion-fab-button::part(native):hover {
 }
 
 app-snow-profile {
+  // For å unngå at swiper-"prikkene" legger seg oppå hardhets-axis i bunnen
   padding-bottom: 20px;
 }

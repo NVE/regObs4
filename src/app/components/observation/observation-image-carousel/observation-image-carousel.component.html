@@ -11,7 +11,7 @@
     @if (item.type === "SnowProfile") {
       @let reg = registration();
       <swiper-slide>
-        <app-snow-profile [data]="reg.SnowProfile2!" [tests]="reg.CompressionTest"></app-snow-profile>
+        <app-snow-profile [profile]="reg.SnowProfile2!" [tests]="reg.CompressionTest"></app-snow-profile>
       </swiper-slide>
     } @else {
       @let attachment = item.data;

@@ -2,7 +2,7 @@
   <svg
     [attr.viewBox]="viewBox()"
     preserveAspectRatio="none"
-    aria-label="Tom snøprofil"
+    aria-label="Snøprofil"
     role="img"
     [style.height]="height()"
   >
@@ -71,7 +71,7 @@
             @if (hardnessAxis().get("4F"); as h) {
               <text [attr.x]="h.x1" [attr.y]="label.y">
                 @if (showTooltips) {
-                  <title>Kornstørrelse {{ label.value }}mm</title>
+                  <title>{{ "SNOW_PROFILE.LABEL_GRAIN_SIZE" | translate: { value: label.value } }}</title>
                 }
                 {{ label.value }}
               </text>
@@ -118,10 +118,14 @@
           <!-- Hardhet - vises alltid -->
           @let x = x0() + availableWidth() + 50;
           @let y = y0() + availableHeight() / 2;
-          <text [attr.x]="x" [attr.y]="y" [attr.transform]="'rotate(-90 ' + x + ' ' + y + ')'">Dybde [cm]</text>
+          <text [attr.x]="x" [attr.y]="y" [attr.transform]="'rotate(-90 ' + x + ' ' + y + ')'">
+            {{ "SNOW_PROFILE.DEPTH_AXIS_LABEL" | translate }} [cm]
+          </text>
 
           @if (showTemp()) {
-            <text [attr.x]="x0() + availableWidth() / 2" [attr.y]="y0() - 35">Temperatur [C&deg;]</text>
+            <text [attr.x]="x0() + availableWidth() / 2" [attr.y]="y0() - 35">
+              {{ "SNOW_PROFILE.TEMP_AXIS_LABEL" | translate }} [C&deg;]
+            </text>
             @for (axis of tempAxis(); track $index) {
               <line [attr.x1]="axis.x1" [attr.y1]="axis.y1" [attr.x2]="axis.x2" [attr.y2]="axis.y2" />
               <text [attr.x]="axis.x1" [attr.y]="axis.y1 - axisLabelOffset">{{ axis.temp }}</text>
@@ -149,11 +153,13 @@
         @let y = y0() + availableHeight() + 45;
         <g class="label-axis">
           @if (hardnessAxis().get("F"); as h) {
-            <text [attr.x]="h.x1" [attr.y]="y">Kornform</text>
+            <text [attr.x]="h.x1" [attr.y]="y">{{ "SNOW_PROFILE.GRAIN_FORM_AXIS_LABEL" | translate }}</text>
           }
 
           @if (hardnessAxis().get("4F"); as h) {
-            <text [attr.x]="h.x1" [attr.y]="y + 16" class="gs-axis">Kornstørrelse</text>
+            <text [attr.x]="h.x1" [attr.y]="y + 16" class="gs-axis">
+              {{ "SNOW_PROFILE.GRAIN_SIZE_AXIS_LABEL" | translate }}
+            </text>
           }
 
           @if (hardnessAxis().get("1F"); as h) {
@@ -161,7 +167,9 @@
           }
 
           @if (tests()?.length) {
-            <text [attr.x]="x0()" [attr.y]="y" text-anchor="start">Tester</text>
+            <text [attr.x]="x0()" [attr.y]="y" text-anchor="start">
+              {{ "SNOW_PROFILE.TESTS_AXIS_LABEL" | translate }}
+            </text>
           }
         </g>
       }
@@ -180,11 +188,15 @@
         <line [attr.x1]="xEnd - 19" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd - 9" [attr.y2]="groundSymbolY() + 10" />
         <line [attr.x1]="xEnd - 9" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd + 1" [attr.y2]="groundSymbolY() + 10" />
         <rect [attr.x]="xEnd + 10" [attr.y]="groundSymbolY() - 10" [attr.width]="33" [attr.height]="20" [attr.rx]="0" />
+        <!--
+          GND er engelsk tekst, men siden det vises en boks rundt er det knot å få til oversettelser.
+          Dropper det for nå
+        -->
         <text [attr.x]="xEnd + 13" [attr.y]="groundSymbolY() + 1">GND</text>
       </g>
     }
 
-    @if (testPlots(); as tests) {
+    @if (testLabels(); as tests) {
       @let x = x0() + 2;
       @let x2 = x0() + availableWidth();
       <g class="tests">

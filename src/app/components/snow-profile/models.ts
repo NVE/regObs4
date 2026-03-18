@@ -47,8 +47,6 @@ export interface SimplePolygon {
 }
 
 export interface LayerExpansionConfig {
-  /** Minimum height in pixels for each layer on the left (expanded) side */
-  minHeight: number;
   /** Offset from right edge where the transition zone ends and original thickness begins */
   transitionEndOffsetFromRight: number;
   /** Width of the transition ramp in pixels */
