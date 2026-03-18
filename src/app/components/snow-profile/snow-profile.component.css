@@ -88,11 +88,13 @@ text {
 .gf-labels,
 .gs-labels,
 .lwc-labels {
-  dominant-baseline: middle;
-  text-anchor: end;
+  text {
+    dominant-baseline: middle;
+    text-anchor: end;
+  }
 }
 
-.c-labels {
+.c-labels text {
   dominant-baseline: middle;
   font-style: italic;
   text-anchor: middle;
