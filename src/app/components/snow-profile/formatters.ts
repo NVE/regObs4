@@ -13,11 +13,13 @@ type CompressionTestFormatOpts = { includeDepth?: boolean; includeFracture?: boo
  * Formatterer kornform til snøsymbol-nøkkel for SVG-font.
  * Håndterer primær + sekundær kornform, inkludert MFcr-spesialtilfelle.
  */
-export function formatGrainFormSymbol(primaryTID: number, secondaryTID?: number | null): string {
+export function formatGrainFormSymbol(primaryTID: GrainForm, secondaryTID?: GrainForm | null): string {
   let value = grainFormTidToSnowSymbolKey(primaryTID);
   if (secondaryTID != null && secondaryTID !== primaryTID) {
     if (primaryTID === GrainForm.MFcr) {
       value += grainFormTidToSnowSymbolKey(secondaryTID);
+    } else if (secondaryTID === GrainForm.MFcr) {
+      value += '(' + grainFormTidToSnowSymbolKey(secondaryTID) + grainFormTidToSnowSymbolKey(GrainForm.MF) + ')';
     } else {
       value += '(' + grainFormTidToSnowSymbolKey(secondaryTID) + ')';
     }

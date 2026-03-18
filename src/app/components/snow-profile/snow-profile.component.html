@@ -69,7 +69,7 @@
         <g class="gs-labels">
           @for (label of labels; track $index) {
             @if (hardnessAxis().get("4F"); as h) {
-              <text [attr.x]="h.x1" [attr.y]="label.y">
+              <text [attr.x]="h.x1 - 2" [attr.y]="label.y">
                 @if (showTooltips) {
                   <title>{{ "SNOW_PROFILE.LABEL_GRAIN_SIZE" | translate: { value: label.value } }}</title>
                 }
@@ -84,7 +84,7 @@
         <g class="lwc-labels">
           @for (label of labels; track $index) {
             @if (hardnessAxis().get("1F"); as h) {
-              <text [attr.x]="h.x1" [attr.y]="label.y">
+              <text [attr.x]="h.x1 - 2" [attr.y]="label.y">
                 @if (showTooltips) {
                   <title>Liquid Water Content (LWC): {{ label.value }}{{ label.desc ? " - " + label.desc : "" }}</title>
                 }

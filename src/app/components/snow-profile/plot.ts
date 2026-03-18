@@ -333,10 +333,10 @@ export function expandLayerPolygons(
     return [];
   }
 
-  const { transitionEndOffsetFromRight, transitionWidth } = config;
-  const rightEdge = layers[0].topRight.x;
-  const transitionEndX = fmt(rightEdge - transitionEndOffsetFromRight);
-  const transitionStartX = fmt(transitionEndX - transitionWidth);
+  const { transitionOffsetFromRight: transitionEndOffsetFromRight, transitionWidth } = config;
+  const rightEdge = layers[0].topRight.x; // TODO: Put in frame ?
+  const transitionRightX = fmt(rightEdge - transitionEndOffsetFromRight);
+  const transitionLeftX = fmt(transitionRightX - transitionWidth);
 
   const { tops: expandedTops, bottoms: expandedBottoms } = computeExpandedYCoordinates(
     layers[0].topRight.y,
@@ -362,8 +362,8 @@ export function expandLayerPolygons(
     if (expandsTop && !expandsBottom) {
       // Expansion upward only: 6-point polygon
       const p0 = { x: topLeft.x, y: expandedTops[i] };
-      const p1 = { x: transitionStartX, y: expandedTops[i] };
-      const p2 = { x: transitionEndX, y: topRight.y };
+      const p1 = { x: transitionLeftX, y: expandedTops[i] };
+      const p2 = { x: transitionRightX, y: topRight.y };
       const p3 = { x: bottomRight.x, y: topRight.y };
       const p4 = { x: bottomRight.x, y: bottomRight.y };
       const p5 = { x: bottomLeft.x, y: bottomRight.y };
@@ -379,8 +379,8 @@ export function expandLayerPolygons(
       const p0 = { x: topLeft.x, y: topRight.y };
       const p1 = { x: bottomRight.x, y: topRight.y };
       const p2 = { x: bottomRight.x, y: bottomRight.y };
-      const p3 = { x: transitionEndX, y: bottomRight.y };
-      const p4 = { x: transitionStartX, y: expandedBottoms[i] };
+      const p3 = { x: transitionRightX, y: bottomRight.y };
+      const p4 = { x: transitionLeftX, y: expandedBottoms[i] };
       const p5 = { x: bottomLeft.x, y: expandedBottoms[i] };
       return {
         topEdge: [p0, p1],
@@ -391,12 +391,12 @@ export function expandLayerPolygons(
 
     // Expansion both directions: 8-point polygon
     const p0 = { x: topLeft.x, y: expandedTops[i] };
-    const p1 = { x: transitionStartX, y: expandedTops[i] };
-    const p2 = { x: transitionEndX, y: topRight.y };
+    const p1 = { x: transitionLeftX, y: expandedTops[i] };
+    const p2 = { x: transitionRightX, y: topRight.y };
     const p3 = { x: bottomRight.x, y: topRight.y };
     const p4 = { x: bottomRight.x, y: bottomRight.y };
-    const p5 = { x: transitionEndX, y: bottomRight.y };
-    const p6 = { x: transitionStartX, y: expandedBottoms[i] };
+    const p5 = { x: transitionRightX, y: bottomRight.y };
+    const p6 = { x: transitionLeftX, y: expandedBottoms[i] };
     const p7 = { x: bottomLeft.x, y: expandedBottoms[i] };
     return {
       topEdge: [p0, p1, p2, p3],

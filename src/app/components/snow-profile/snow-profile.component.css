@@ -53,12 +53,15 @@ text {
   }
 
   polyline.no-hardness {
-    fill: white;
     stroke: none;
+    /* Trenger fill for å trigge tooltip */
+    fill: white;
+    opacity: 0;
+    stroke-opacity: 0;
   }
 
   @media (hover: hover) {
-    polyline:hover {
+    polyline:not(.no-hardness):hover {
       opacity: 0.7;
     }
   }

@@ -18,7 +18,7 @@ import {
   SnowProfileEditModel,
   StratProfileLayerEditModel,
 } from 'src/app/modules/common-regobs-api';
-import { CriticalLayer, Hardness, PlotFrame } from './models';
+import { CriticalLayer, Hardness, LayerExpansionConfig, PlotFrame } from './models';
 import {
   createTempProjector,
   createTempPoints,
@@ -42,12 +42,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { injectSnowProfileKdvs } from './kdvs';
 
 const PLOT_MAX_WIDTH = 700;
-
-/**
- * Lag i snøprofilen ekspanderes for å få plass til labels.
- * Denne verdien angir minimumsverdien for hvor langt fra høyre siden av plottet ekspanderingen skal starte.
- */
-const EXPAND_LAYER_POLYGON_MIN_OFFSET_X = 20;
 
 /**
  * Lag i snøprofilen ekspanderes for å få plass til labels.
@@ -170,20 +164,6 @@ export class SnowProfileComponent {
    * Lag i snøprofilen ekspanderes til denne verdien for å få plass til labels.
    */
   private minLayerHeight = 20;
-
-  /**
-   * Beregner hvor ekspanderingen av lag skal starte.
-   * Lag ekspanderes for å få plass til labels.
-   */
-  private expandLayerPolygonOffsetX = computed(() => {
-    // Hvis mulig, bruk hardhets-skalaen til å vurdere hvor ekspanderingen skal starte.
-    // Første label vises ved hardhet F. Ved å bruke F- med en liten offset (5 px), bør ekspanderingen havne et
-    // egnet sted.
-    // Det er viktig at det alltid vises hvor tynt laget egentlig er helt til høyre i plottet.
-    // Derfor brukes en minimumsverdi (EXPAND_LAYER_POLYGON_MIN_OFFSET_X) dersom plottet er veldig smalt.
-    const hardnessF = this.hardnessProjector()(Hardness['F-']) - 5;
-    return Math.max(hardnessF, EXPAND_LAYER_POLYGON_MIN_OFFSET_X);
-  });
 
   /**
    * Offset for labels på aksene (hardhet, temperatur)
@@ -333,15 +313,38 @@ export class SnowProfileComponent {
   private layerHeightsExpanded = computed(() => computeExpandedHeights(this.layerHeights(), this.minLayerHeight));
 
   /**
+   * Konfig for ekspandering av lag for å få plass til labels
+   */
+  private expandLayerPolygonConfig = computed<LayerExpansionConfig>(() => {
+    const minHardness = Math.min(
+      Hardness.F, // F som default - korntype labels plasseres ved F
+      ...this.layers()
+        .map((x) => x.HardnessTID)
+        .filter((x) => x != null)
+        .filter((x) => x > 0)
+    );
+    const offset = minHardness === Hardness['F-'] ? 1 : 5;
+    const end = this.hardnessProjector()(minHardness) - offset;
+    let start = end - EXPAND_LAYER_POLYGON_TRANSITION_WIDTH;
+
+    // Forsikre oss om at start ikke går ut over plot bredden til høyre
+    start = Math.max(10, start);
+    // Og at det fortsatt er min 1px til en slags ekspansjon. Det vil se veldig rart, men sånn er det.
+    start = Math.min(start, end - 1);
+
+    return {
+      transitionOffsetFromRight: start,
+      transitionWidth: end - start,
+    };
+  });
+
+  /**
    * Ekspanderte lagpolygoner.
    * Lagene ekspanderes for å få plass til labels.
    * Dette objektet deler polygonene i to (topEdge og bottomEdge), fordi disse evt brukes til å markere kritiske lag.
    */
   private expandedPolygons = computed(() =>
-    expandLayerPolygons(this.simplePolygons(), this.layerHeightsExpanded(), {
-      transitionEndOffsetFromRight: this.expandLayerPolygonOffsetX(),
-      transitionWidth: EXPAND_LAYER_POLYGON_TRANSITION_WIDTH,
-    })
+    expandLayerPolygons(this.simplePolygons(), this.layerHeightsExpanded(), this.expandLayerPolygonConfig())
   );
 
   /**
