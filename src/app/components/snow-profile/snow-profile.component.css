@@ -16,6 +16,7 @@
   --gs-color: brown;
   --temp-color: red;
   --layer-color: #cccbea;
+  --cl-color: red;
 }
 
 svg {
@@ -24,7 +25,7 @@ svg {
 }
 
 text {
-  font-size: 14px;
+  font-size: 16px;
   /* font-family: Helvetica, Arial, sans-serif; */
   fill: #000000;
   stroke-width: 0px;
@@ -43,11 +44,11 @@ text {
   }
 
   polyline.critical-layer-full {
-    fill: red;
+    fill: var(--cl-color);
   }
 
   polyline.critical-layer {
-    stroke: red;
+    stroke: var(--cl-color);
     stroke-width: 3;
     fill: none;
   }
