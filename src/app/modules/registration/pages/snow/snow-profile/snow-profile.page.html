@@ -41,14 +41,18 @@
         <app-snow-temp [draft]="draft"></app-snow-temp>
         <app-snow-density [draft]="draft"></app-snow-density>
         <app-compression-test [draft]="draft"> </app-compression-test>
-        <!-- Snow profile preview -->
-        <ion-list-header class="ion-text-uppercase">
-          <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }} </ion-label>
-        </ion-list-header>
-        <ion-item [disabled]="noLayersInSnowProfile()" (click)="openPreview()" button detail="false">
-          <ion-icon name="eye" color="dark" slot="start"></ion-icon>
-          <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW_ITEM" | translate }}</ion-label>
-        </ion-item>
+        @if (!noLayersInSnowProfile()) {
+          <!-- Snow profile preview -->
+          <ion-list-header class="ion-text-uppercase">
+            <ion-label> {{ "REGISTRATION.SNOW.SNOW_PROFILE.PREVIEW" | translate }} </ion-label>
+          </ion-list-header>
+          <app-snow-profile
+            [profile]="snowProfile"
+            [tests]="draft.registration.CompressionTest"
+            (click)="showPreview.set(true)"
+          />
+        }
+
         <ion-modal [isOpen]="showPreview()" (ionModalDidDismiss)="showPreview.set(false)">
           <ng-template>
             <ion-header>
@@ -61,7 +65,7 @@
             </ion-header>
             <ion-content>
               <div class="img-container">
-                <img [src]="previewUrl()" />
+                <app-snow-profile [profile]="snowProfile" [tests]="draft.registration.CompressionTest" />
               </div>
             </ion-content>
           </ng-template>

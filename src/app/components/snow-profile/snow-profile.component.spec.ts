@@ -28,4 +28,24 @@ describe('SnowProfileComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  /**
+   * BUG (review punkt 3): groundSymbolY bruker `as number` for å caste
+   * `simplePolygons().at(-1)?.bottomRight.y` som kan være `undefined`
+   * når det ikke finnes noen lag i profilen.
+   *
+   * Forventet: groundSymbolY() skal returnere et tall (number), ikke undefined.
+   * Faktisk: returnerer undefined fordi det ikke er noen lag.
+   */
+  it('groundSymbolY should be a number when profile has IsProfileToGround=true', () => {
+    fixture.componentRef.setInput('profile', {
+      IsProfileToGround: true,
+      StratProfile: { Layers: [] },
+    } as SnowProfileEditModel);
+    fixture.detectChanges();
+
+    const y = component.groundSymbolY();
+    expect(typeof y).toBe('number');
+    expect(Number.isFinite(y)).toBe(true);
+  });
 });

@@ -238,17 +238,8 @@ export class SnowProfileComponent {
    * Settes til -10, -20, osv avhengig av hva min temp er.
    */
   private tempMin = computed(() => {
-    const minTemp = this.temperatures().reduce((min, x) => Math.min(min, x.SnowTemp || 0), 0);
-    if (minTemp > -10) {
-      return -10;
-    }
-    if (minTemp > -20) {
-      return -20;
-    }
-    if (minTemp > -30) {
-      return -30;
-    }
-    return -40;
+    const minTemp = this.temperatures().reduce((min, x) => Math.min(min, x.SnowTemp ?? 0), 0);
+    return Math.floor(minTemp / 10) * 10;
   });
 
   /**
@@ -431,7 +422,8 @@ export class SnowProfileComponent {
    * y-koordinat for [GND]-symbolet som vises om profilen går til bakken.
    */
   groundSymbolY = computed(() => {
-    return this.simplePolygons().at(-1)?.bottomRight.y as number;
+    // Bruk "dypeste" y-koordinat til underste lag i snøprofilen
+    return this.simplePolygons().at(-1)?.bottomRight.y || 0;
   });
 
   /**

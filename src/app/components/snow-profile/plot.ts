@@ -507,11 +507,18 @@ export function generateStepList(min: number, max: number, step: number): number
   return result;
 }
 
+/**
+ * Finner egnet label-koordinat (y) for et polygon (snøprofillag).
+ * Posisjonen skal være midt på venstre siden av polygonet, der x-koordinatene er minst, selv om det kan finnes
+ * y-koordinater som er større eller mindre på høyre siden av polygonet.
+ * Dette er fordi polygonene er de ekspanderte polygonene som er ekspandert på venstre for å få plass til label.
+ */
 export function getLabelPositionY(polygon: readonly PlotPoint[]): number {
-  const sortedY = [...polygon].sort((a, b) => a.x - b.x || a.y - b.y).map(({ y }) => y);
-  const [yMin, yMax] = sortedY;
-  const diff = yMax - yMin;
-  return yMin + diff / 2;
+  const minX = Math.min(...polygon.map((p) => p.x));
+  const leftPoints = polygon.filter((p) => p.x === minX);
+  const yMin = Math.min(...leftPoints.map((p) => p.y));
+  const yMax = Math.max(...leftPoints.map((p) => p.y));
+  return yMin + (yMax - yMin) / 2;
 }
 
 export function createLayerLabels(layers: { points: readonly PlotPoint[]; layer: StratProfileLayerEditModel }[]) {

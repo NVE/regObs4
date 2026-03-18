@@ -7,5 +7,17 @@ ion-modal {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    app-snow-profile {
+      width: 100%;
+      height: 100%;
+    }
   }
+}
+
+app-snow-profile {
+  width: min(100%, 400px);
+  height: min(100vh, 600px);
+  margin: 0 auto;
+  cursor: pointer;
 }
