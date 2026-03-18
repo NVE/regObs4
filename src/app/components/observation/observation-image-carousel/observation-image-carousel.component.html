@@ -30,7 +30,6 @@
 <div class="image-description">
   <div class="image-description__content">
     @let item = currentItem();
-    @let isSnowProfile = item.type === "SnowProfile";
     @let attachment = item.type === "Attachment" ? item.data : null;
 
     <!-- tittel -->
@@ -39,7 +38,7 @@
     }
 
     <!-- kommentar -->
-    @if (isSnowProfile) {
+    @if (item.type === "SnowProfile") {
       @if (!showsComments()) {
         @for (layer of layerComments(); track layer.i) {
           <app-key-value [key]="layer.key" [value]="layer.comment"></app-key-value>
@@ -49,6 +48,7 @@
         <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment"></app-key-value>
       }
     }
+
     @if (attachment?.Comment; as comment) {
       <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment"></app-key-value>
     }
@@ -106,12 +106,6 @@
         </a>
       }
 
-      <!-- @if (currentAttachmentData().IsSnowProfilePlot) {
-        <a [href]="snowProfileUrl()" target="_blank">
-          <ion-icon name="open-outline"></ion-icon>
-          {{ "REGISTRATION.CARD.GO_TO_SNOW_PROFILE" | translate }}
-        </a>
-      } -->
       @if (isImageListView()) {
         <a [routerLink]="'registration/' + registration().RegId" (click)="closeModal()">
           <ion-icon name="eye-outline"></ion-icon>
