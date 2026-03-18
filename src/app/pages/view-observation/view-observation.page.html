@@ -267,12 +267,12 @@
                 (attachmentClicked)="openImageCarousel($event, attachments)"
               ></app-attachment-grid>
             }
-            <!-- @if (snowProfileUrl()) {
-              <img [src]="snowProfileUrl()" alt="Snow Profile" />
-            } -->
             @let layers = reg.SnowProfile2?.StratProfile?.Layers || [];
             @if (reg.SnowProfile2 && layers.length > 0) {
               <app-snow-profile [data]="reg.SnowProfile2" [tests]="reg.CompressionTest"></app-snow-profile>
+              @for (comment of snowProfileLayerComments(); track comment.i) {
+                <app-key-value [key]="comment.key" [value]="comment.comment"></app-key-value>
+              }
             }
             <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
           </app-registration-view>

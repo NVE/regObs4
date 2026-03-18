@@ -194,8 +194,13 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     this.kdvService.getViewRepositoryByKeyObservable('RegistrationTypesV') as Observable<RegistrationTypesV>
   );
 
-  snowProfileContainer = viewChild<ElementRef<HTMLElement>>('sp');
-  snowProfileWidth = computed(() => this.snowProfileContainer()?.nativeElement.offsetWidth);
+  snowProfile = viewChild(SnowProfileComponent);
+  snowProfileLayerComments = computed(() => {
+    const sp = this.snowProfile();
+    if (!sp) return [];
+    if (sp.showComments()) return []; // Ikke vis kommentarer hvis snøprofilkomponent selv viser det.
+    return sp.comments();
+  });
 
   constructor() {
     super();

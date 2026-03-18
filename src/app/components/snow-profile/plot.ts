@@ -504,8 +504,6 @@ export function generateStepList(min: number, max: number, step: number): number
 }
 
 export function getLabelPositionY(polygon: readonly PlotPoint[]): number {
-  // TODO! Hvis laget ikke har hardhet / HardnessTID, så kan polygonet være en strek. Da feiler denne.
-  // Se http://localhost:8100/registration/454886
   const sortedY = [...polygon].sort((a, b) => a.x - b.x || a.y - b.y).map(({ y }) => y);
   const [yMin, yMax] = sortedY;
   const diff = yMax - yMin;
