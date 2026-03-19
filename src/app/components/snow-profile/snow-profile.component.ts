@@ -349,13 +349,8 @@ export class SnowProfileComponent {
   );
 
   /**
-   * Slår sammen "topEdge" og "bottomEdge" for ekspanderte lagpolygoner, her er alle punktene til hvert lagpolygon i
-   * én liste.
+   * Finner posisjoner til labels fra ekspanderte lagtykkelser
    */
-  private expandedPolygonPoints = computed(() =>
-    this.expandedPolygons().map((x) => ({ points: [...x.topEdge, ...x.bottomEdge], layer: x.layer }))
-  );
-
   private labelPositionsY = computed(() => {
     const heights = this.layerHeightsExpanded();
     let y1 = this.y0();
@@ -418,9 +413,9 @@ export class SnowProfileComponent {
    * feks for å markere et lag med rød farge om det er et "kritisk" lag.
    */
   layerPolylines = computed(() => {
-    return this.expandedPolygonPoints().map((x) => ({
+    return this.expandedPolygons().map((x) => ({
       layer: x.layer,
-      points: pointsToPolyline(x.points),
+      points: pointsToPolyline([...x.topEdge, ...x.bottomEdge]),
       isCl: x.layer.CriticalLayerTID === CriticalLayer.ENTIRE_LAYER,
       missingHardness: x.layer.HardnessTID == null || x.layer.HardnessTID == Hardness[' - '],
     }));
