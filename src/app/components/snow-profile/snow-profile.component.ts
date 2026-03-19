@@ -356,10 +356,23 @@ export class SnowProfileComponent {
     this.expandedPolygons().map((x) => ({ points: [...x.topEdge, ...x.bottomEdge], layer: x.layer }))
   );
 
+  private labelPositionsY = computed(() => {
+    const heights = this.layerHeightsExpanded();
+    let y1 = this.y0();
+    const labelPositions = [];
+    for (const height of heights) {
+      const y2 = y1 + height;
+      const y = (y1 + y2) / 2;
+      labelPositions.push(Number(y.toFixed(1)));
+      y1 = y2;
+    }
+    return labelPositions;
+  });
+
   /**
    * Samleberegning av labels for lag. Gjøres sammen fordi de bruker samme y-verdi per lag, blant annet.
    */
-  private layerLabels = computed(() => createLayerLabels(this.expandedPolygonPoints()));
+  private layerLabels = computed(() => createLayerLabels(this.layers(), this.labelPositionsY()));
 
   /**
    * Label for korntype. Vises med egen korntype-font.

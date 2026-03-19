@@ -15,7 +15,6 @@ import {
   createDepthAxis,
   createTempAxis,
   generateStepList,
-  getLabelPositionY,
   createLayerLabels,
   createCompressionTestPlots,
   offsetCriticalLayerPointsTop,
@@ -726,195 +725,52 @@ describe('createCriticalLayers', () => {
   });
 });
 
-// ── getLabelPositionY ────────────────────────────────────
-
-describe('getLabelPositionY', () => {
-  it('returns midpoint of y-range for simple rectangle', () => {
-    const points: PlotPoint[] = [
-      { x: 0, y: 10 },
-      { x: 100, y: 10 },
-      { x: 100, y: 30 },
-      { x: 0, y: 30 },
-    ];
-    const y = getLabelPositionY(points);
-    // Sorted by x, then y: (0,10), (0,30), (100,10), (100,30)
-    // yMin=10, yMax=30, midpoint=20
-    expect(y).toBe(20);
-  });
-
-  it('should return midpoint of left side, not global min/max y', () => {
-    // Polygon der global yMin=5 og yMax=100, men venstre side (x=10) har y=30 og y=70.
-    // Korrekt resultat er (30+70)/2 = 50 (venstre-sidens midtpunkt).
-    // Feil resultat ville vært (5+100)/2 = 52.5 (globalt midtpunkt).
-    const points: PlotPoint[] = [
-      { x: 10, y: 30 },
-      { x: 50, y: 100 }, // global max y, men ikke på venstre side
-      { x: 80, y: 5 }, // global min y, men ikke på venstre side
-      { x: 90, y: 40 },
-      { x: 90, y: 60 },
-      { x: 10, y: 70 },
-    ];
-
-    const y = getLabelPositionY(points);
-    // Sjekk at vi IKKE bruker global midpoint
-    expect(y).not.toBe((5 + 100) / 2);
-    // Sjekk at vi bruker venstre-sidens midpoint
-    expect(y).toBe((30 + 70) / 2);
-  });
-
-  const duplicateTestCases: PlotPoint[][] = [
-    [
-      { x: 0, y: 10 },
-      { x: 0, y: 10 },
-      { x: 50, y: 10 },
-      { x: 80, y: 0 },
-      { x: 100, y: 0 },
-      { x: 100, y: 5 },
-      { x: 80, y: 5 },
-      { x: 50, y: 30 },
-      { x: 0, y: 30 },
-    ],
-    [
-      { x: 0, y: 10 },
-      { x: 50, y: 10 },
-      { x: 80, y: 0 },
-      { x: 100, y: 0 },
-      { x: 100, y: 5 },
-      { x: 80, y: 5 },
-      { x: 50, y: 30 },
-      { x: 0, y: 30 },
-      { x: 0, y: 30 },
-    ],
-    [
-      { x: 0, y: 10 },
-      { x: 0, y: 10 },
-      { x: 0, y: 10 },
-      { x: 50, y: 10 },
-      { x: 80, y: 0 },
-      { x: 100, y: 0 },
-      { x: 100, y: 5 },
-      { x: 100, y: 5 },
-      { x: 80, y: 5 },
-      { x: 50, y: 30 },
-      { x: 0, y: 30 },
-      { x: 0, y: 30 },
-    ],
-  ];
-
-  for (const points of duplicateTestCases) {
-    it('should handle duplicates', () => {
-      const y = getLabelPositionY(points);
-      expect(y).toBe(20);
-    });
-  }
-
-  const varHardnessTestCases: PlotPoint[][] = [
-    [
-      { x: 5, y: 10 },
-      { x: 100, y: 10 },
-      { x: 100, y: 30 },
-      { x: 0, y: 30 },
-    ],
-    [
-      { x: 0, y: 10 },
-      { x: 100, y: 10 },
-      { x: 100, y: 30 },
-      { x: 5, y: 30 },
-    ],
-  ];
-
-  for (const points of varHardnessTestCases) {
-    it('should handle variable hardness', () => {
-      const y = getLabelPositionY(points);
-      expect(y).toBe(20);
-    });
-  }
-});
-
 // ── createLayerLabels ────────────────────────────────────
 
 describe('createLayerLabels', () => {
   it('creates grain form labels', () => {
     const layers = [
-      {
-        points: [
-          { x: 0, y: 0 },
-          { x: 100, y: 0 },
-          { x: 100, y: 20 },
-          { x: 0, y: 20 },
-        ],
-        layer: layer({ GrainFormPrimaryTID: 1 }), // PP
-      },
+      layer({ GrainFormPrimaryTID: 1 }), // PP
     ];
-    const result = createLayerLabels(layers);
+    const heights = [5];
+    const result = createLayerLabels(layers, heights);
     expect(result.gf.length).toBe(1);
     expect(result.gf[0].value).toBeTruthy();
+    expect(result.gf[0].y).toBe(5);
   });
 
   it('creates grain size labels from avg', () => {
     const layers = [
-      {
-        points: [
-          { x: 0, y: 0 },
-          { x: 100, y: 0 },
-          { x: 100, y: 20 },
-          { x: 0, y: 20 },
-        ],
-        layer: layer({ GrainSizeAvg: 0.015 }), // 1.5mm
-      },
+      layer({ GrainSizeAvg: 0.015 }), // 1.5mm
     ];
-    const result = createLayerLabels(layers);
+    const heights = [5];
+    const result = createLayerLabels(layers, heights);
     expect(result.gs.length).toBe(1);
     expect(result.gs[0].value).toBe('1.5');
   });
 
   it('creates grain size label with range', () => {
     const layers = [
-      {
-        points: [
-          { x: 0, y: 0 },
-          { x: 100, y: 0 },
-          { x: 100, y: 20 },
-          { x: 0, y: 20 },
-        ],
-        layer: layer({ GrainSizeAvg: 0.01, GrainSizeAvgMax: 0.03 }), // 1-3mm
-      },
+      layer({ GrainSizeAvg: 0.01, GrainSizeAvgMax: 0.03 }), // 1-3mm
     ];
-    const result = createLayerLabels(layers);
+    const heights = [5];
+    const result = createLayerLabels(layers, heights);
     expect(result.gs.length).toBe(1);
     expect(result.gs[0].value).toBe('1-3');
   });
 
   it('creates wetness labels', () => {
-    const layers = [
-      {
-        points: [
-          { x: 0, y: 0 },
-          { x: 100, y: 0 },
-          { x: 100, y: 20 },
-          { x: 0, y: 20 },
-        ],
-        layer: layer({ WetnessTID: 5 }),
-      },
-    ];
-    const result = createLayerLabels(layers);
+    const layers = [layer({ WetnessTID: 5 })];
+    const heights = [5];
+    const result = createLayerLabels(layers, heights);
     expect(result.lwc.length).toBe(1);
     expect(result.lwc[0].value).toBe(5);
   });
 
   it('skips layers with no relevant data', () => {
-    const layers = [
-      {
-        points: [
-          { x: 0, y: 0 },
-          { x: 100, y: 0 },
-          { x: 100, y: 20 },
-          { x: 0, y: 20 },
-        ],
-        layer: layer({ GrainFormPrimaryTID: undefined, GrainSizeAvg: undefined, WetnessTID: undefined }),
-      },
-    ];
-    const result = createLayerLabels(layers);
+    const layers = [layer({ GrainFormPrimaryTID: undefined, GrainSizeAvg: undefined, WetnessTID: undefined })];
+    const heights = [5];
+    const result = createLayerLabels(layers, heights);
     expect(result.gf.length).toBe(0);
     expect(result.gs.length).toBe(0);
     expect(result.lwc.length).toBe(0);

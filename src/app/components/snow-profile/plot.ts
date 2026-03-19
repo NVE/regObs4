@@ -507,21 +507,7 @@ export function generateStepList(min: number, max: number, step: number): number
   return result;
 }
 
-/**
- * Finner egnet label-koordinat (y) for et polygon (snøprofillag).
- * Posisjonen skal være midt på venstre siden av polygonet, der x-koordinatene er minst, selv om det kan finnes
- * y-koordinater som er større eller mindre på høyre siden av polygonet.
- * Dette er fordi polygonene er de ekspanderte polygonene som er ekspandert på venstre for å få plass til label.
- */
-export function getLabelPositionY(polygon: readonly PlotPoint[]): number {
-  const minX = Math.min(...polygon.map((p) => p.x));
-  const leftPoints = polygon.filter((p) => p.x === minX);
-  const yMin = Math.min(...leftPoints.map((p) => p.y));
-  const yMax = Math.max(...leftPoints.map((p) => p.y));
-  return yMin + (yMax - yMin) / 2;
-}
-
-export function createLayerLabels(layers: { points: readonly PlotPoint[]; layer: StratProfileLayerEditModel }[]) {
+export function createLayerLabels(layers: readonly StratProfileLayerEditModel[], labelPositions: readonly number[]) {
   const labels = {
     gf: [] as Label<string>[],
     gs: [] as Label<string>[],
@@ -530,20 +516,9 @@ export function createLayerLabels(layers: { points: readonly PlotPoint[]; layer:
 
   // Grain form, grain size, wetness, density?
   for (let i = 0; i < layers.length; i++) {
-    const { layer, points } = layers[i];
+    const layer = layers[i];
+    const y = labelPositions[i];
     const { GrainFormPrimaryTID, GrainFormSecondaryTID, WetnessTID, GrainSizeAvg, GrainSizeAvgMax } = layer;
-
-    const shouldHaveLabel = !!(
-      GrainFormPrimaryTID ||
-      GrainFormSecondaryTID ||
-      WetnessTID ||
-      GrainSizeAvg ||
-      GrainSizeAvgMax
-    );
-
-    if (!shouldHaveLabel) continue;
-
-    const y = getLabelPositionY(points);
 
     if (GrainFormPrimaryTID != null) {
       labels.gf.push({ y, value: formatGrainFormSymbol(GrainFormPrimaryTID, GrainFormSecondaryTID) });
