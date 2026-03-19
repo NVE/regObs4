@@ -807,6 +807,28 @@ describe('getLabelPositionY', () => {
       expect(y).toBe(20);
     });
   }
+
+  const varHardnessTestCases: PlotPoint[][] = [
+    [
+      { x: 5, y: 10 },
+      { x: 100, y: 10 },
+      { x: 100, y: 30 },
+      { x: 0, y: 30 },
+    ],
+    [
+      { x: 0, y: 10 },
+      { x: 100, y: 10 },
+      { x: 100, y: 30 },
+      { x: 5, y: 30 },
+    ],
+  ];
+
+  for (const points of varHardnessTestCases) {
+    it('should handle variable hardness', () => {
+      const y = getLabelPositionY(points);
+      expect(y).toBe(20);
+    });
+  }
 });
 
 // ── createLayerLabels ────────────────────────────────────
