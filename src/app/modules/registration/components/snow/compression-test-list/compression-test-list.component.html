@@ -5,7 +5,7 @@
     </ion-label>
   </ion-list-header>
 
-  @for (test of tests(); track $index; let i = $index) {
+  @for (item of testsWithLabel(); track $index; let i = $index) {
     <ion-item
       tabindex="0"
       detail="true"
@@ -14,23 +14,13 @@
       button
     >
       <ion-label>
-        @if (test.PropagationTID) {
-          {{ test.PropagationTID | kdvDescription: "Snow_PropagationKDV" | async }}
-        }
-        @if ((test.TapsFracture || 0) > 0) {
-          {{ test.TapsFracture }}
-        }
-        @if (test.ComprTestFractureTID) {
-          ({{ test.ComprTestFractureTID | kdvDescription: "Snow_ComprTestFractureKDV" | async }})
-        }
-        @if ((test.FractureDepth || 0) > 0) {
-          &#64;{{ test.FractureDepth | metersToCm: 0 }}cm
+        {{ item.label }}
+        @if (item.test.Comment) {
+          <ion-note color="medium">{{ item.test.Comment }}</ion-note>
         }
       </ion-label>
-      @if (test.IncludeInSnowProfile) {
-        @if (test.IncludeInSnowProfile) {
-          <ion-icon slot="end" name="link"></ion-icon>
-        }
+      @if (item.test.IncludeInSnowProfile) {
+        <ion-icon slot="end" name="link"></ion-icon>
       }
     </ion-item>
   }

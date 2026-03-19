@@ -35,6 +35,7 @@ import {
   createDepthAxis,
   createCompressionTestPlots,
   createCriticalLayers,
+  groupTestsByY,
 } from './plot';
 import { Platform } from '@ionic/angular';
 import { createSnowProfileLayerFormatter } from './formatters';
@@ -403,9 +404,9 @@ export class SnowProfileComponent {
   testLabels = computed(() => {
     const tests = this.tests();
     if (tests) {
-      return createCompressionTestPlots(tests, this.formatter().compressionTest, this.depthProjector());
+      return groupTestsByY(createCompressionTestPlots(tests, this.formatter().compressionTest, this.depthProjector()));
     }
-    return [];
+    return undefined;
   });
 
   /**

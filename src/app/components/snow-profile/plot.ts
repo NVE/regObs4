@@ -536,11 +536,13 @@ export function createLayerLabels(layers: readonly StratProfileLayerEditModel[],
   return labels;
 }
 
+type TestPlot = { label: string; tooltip: string; y: number };
+
 export function createCompressionTestPlots(
   tests: CompressionTestEditModel[],
   testFormatter: (test: CompressionTestEditModel, opts: { includeDepth: boolean; includeFracture: boolean }) => string,
   depthProjector: (depth: number) => number
-) {
+): TestPlot[] {
   return tests
     .filter((x) => x.FractureDepth != null)
     .filter((x) => x.IncludeInSnowProfile)
@@ -554,8 +556,22 @@ export function createCompressionTestPlots(
       }
       return {
         label,
-        y,
+        y: fmt(y),
         tooltip,
       };
     });
+}
+
+export function groupTestsByY(tests: TestPlot[]) {
+  const groups = new Map();
+  for (const test of tests) {
+    const group = groups.get(test.y);
+    if (group) {
+      group.label += `, ${test.label}`;
+      group.tooltip += `\n${test.tooltip}`;
+    } else {
+      groups.set(test.y, test);
+    }
+  }
+  return [...groups.values()];
 }

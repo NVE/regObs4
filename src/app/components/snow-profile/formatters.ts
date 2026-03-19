@@ -6,6 +6,7 @@ import { CompressionTestEditModel, KdvElement, StratProfileLayerEditModel } from
 import { GrainForm, grainFormTidToSnowSymbolKey } from './grainforms';
 import { Hardness } from './models';
 import { KDVs } from './kdvs';
+import { CompressionTestPropagation } from './propagation';
 
 type CompressionTestFormatOpts = { includeDepth?: boolean; includeFracture?: boolean };
 
@@ -135,7 +136,70 @@ function formatTooltip(layer: StratProfileLayerEditModel, translate: TranslateSe
   return items.filter((x) => x != null).join('\n');
 }
 
-function formatCompressionTest(
+type CompressionTestFormatter = (
+  test: CompressionTestEditModel,
+  kdvs: KDVs,
+  opts: { includeDepth?: boolean; includeFracture?: boolean }
+) => string;
+
+function getCompressionTestFormatter(test: CompressionTestEditModel): CompressionTestFormatter {
+  switch (test.PropagationTID) {
+    case CompressionTestPropagation['PST Arr']:
+    case CompressionTestPropagation['PST End']:
+    case CompressionTestPropagation['PST SF']:
+      return formatCompressionTestPST;
+    default:
+      return formatCompressionTestDefault;
+  }
+}
+
+function formatPstXY(value: number) {
+  return (value * 100).toFixed(0);
+}
+
+function formatCompressionTestPST(
+  test: CompressionTestEditModel,
+  kdvs: KDVs,
+  opts: { includeDepth?: boolean; includeFracture?: boolean }
+) {
+  const { PstX, PstY, PropagationTID, FractureDepth } = test;
+
+  let result = 'PST';
+  if (PstX && PstY) {
+    result += ` ${formatPstXY(PstX)}/${formatPstXY(PstY)}`;
+  }
+  if (PropagationTID === CompressionTestPropagation['PST End']) {
+    result += ' End';
+  } else if (PropagationTID === CompressionTestPropagation['PST Arr']) {
+    result += ' Arr';
+  } else if (PropagationTID === CompressionTestPropagation['PST SF']) {
+    result += ' SF';
+  }
+  if (opts.includeDepth && FractureDepth) {
+    result += ' ' + formatFractureDepth(FractureDepth);
+  }
+
+  return result;
+}
+
+/**
+ * Format fracture depth
+ * Converts to cm and removes decimals
+ */
+function formatFractureDepth(value: number) {
+  return (value * 100).toFixed(0);
+}
+
+export function formatCompressionTest(
+  test: CompressionTestEditModel,
+  kdvs: KDVs,
+  opts: { includeDepth?: boolean; includeFracture?: boolean }
+) {
+  const format = getCompressionTestFormatter(test);
+  return format(test, kdvs, opts);
+}
+
+function formatCompressionTestDefault(
   test: CompressionTestEditModel,
   kdvs: KDVs,
   opts: { includeDepth?: boolean; includeFracture?: boolean }
@@ -144,6 +208,7 @@ function formatCompressionTest(
   if (test.PropagationTID) {
     parts.push(kdvs.propagation.find((x) => x.Id === test.PropagationTID)?.Name);
   }
+
   if (test.TapsFracture) {
     parts.push(test.TapsFracture);
   }
@@ -154,8 +219,7 @@ function formatCompressionTest(
     }
   }
   if (opts.includeDepth && test.FractureDepth && test.FractureDepth > 0) {
-    const depth = (test.FractureDepth * 100).toFixed(0);
-    parts.push(`@${depth}cm`);
+    parts.push(`@${formatFractureDepth(test.FractureDepth)}cm`);
   }
   return parts.join('');
 }

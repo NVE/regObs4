@@ -1,37 +1,46 @@
-import { Component, inject, input, model , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, model, ChangeDetectionStrategy, computed } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
-import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, ModalController } from '@ionic/angular/standalone';
+import {
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonNote,
+  ModalController,
+} from '@ionic/angular/standalone';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
-import { AsyncPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { KdvDescriptionPipe } from '../../../pipes/kdv-description.pipe';
-import { MetersToCmPipe } from '../../../pipes/meters-to-cm.pipe';
 import { addIcons } from 'ionicons';
 import { link, addCircleOutline } from 'ionicons/icons';
+import { injectSnowProfileKdvs } from 'src/app/components/snow-profile/kdvs';
+import { formatCompressionTest } from 'src/app/components/snow-profile/formatters';
 
 @Component({
   selector: 'app-compression-test-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './compression-test-list.component.html',
   styleUrls: ['./compression-test-list.component.scss'],
-  imports: [
-    AsyncPipe,
-    IonIcon,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonListHeader,
-    KdvDescriptionPipe,
-    MetersToCmPipe,
-    TranslatePipe,
-  ],
+  imports: [IonIcon, IonItem, IonLabel, IonList, IonListHeader, TranslatePipe, IonNote],
 })
 export class CompressionTestListComponent {
   private modalController = inject(ModalController);
+  private kdvs = injectSnowProfileKdvs();
 
   readonly tests = model<CompressionTestEditModel[]>();
   readonly includeInSnowProfileAsDefault = input(false);
   private isOpen = false;
+
+  private formatter = computed(() => {
+    const kdvs = this.kdvs();
+    return (test: CompressionTestEditModel) =>
+      formatCompressionTest(test, kdvs, { includeDepth: true, includeFracture: true });
+  });
+
+  testsWithLabel = computed(() => {
+    const fmt = this.formatter();
+    return this.tests()?.map((test) => ({ test, label: fmt(test) }));
+  });
 
   constructor() {
     addIcons({ link, addCircleOutline });
