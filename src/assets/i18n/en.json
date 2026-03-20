@@ -411,7 +411,6 @@
     "CARD": {
       "DOWNLOAD": "Download",
       "GO_TO_ORIGINAL_IMAGE": "See original",
-      "GO_TO_SNOW_PROFILE": "Go to profile",
       "OBSERVED_BY": "Sent in by",
       "TIME": {
         "OBSERVED": "Observed",
@@ -760,14 +759,11 @@
         },
         "CONFIRM_CANCEL": "This will delete any changes.",
         "EAST": "E",
-        "GENERATING_PREVIEW": "Generating preview...",
         "IS_PROFILE_TO_GROUND": "Is the profile dug to the ground?",
         "NORTH": "N",
         "NORTH_EAST": "NE",
         "NORTH_WEST": "NW",
         "PREVIEW": "Preview",
-        "PREVIEW_ERROR": "Could not create plot preview",
-        "PREVIEW_ITEM": "Show Snow Profile",
         "SLOPE_ANGLE": "Slope angle",
         "SLOPE_ANGLE_PLACEHOLDER": "Degrees without decimals",
         "SNOW_DENSITY": {
@@ -1106,5 +1102,19 @@
     "TITLE_SNOW": "Avalanche Forecasts",
     "TITLE_WATER": "Flood and Landslide Forecasts",
     "VALID_FROM": "Valid from"
+  },
+  "SNOW_PROFILE": {
+    "LABEL_THICKNESS": "Thickness: {{value}}cm",
+    "LABEL_GRAIN_FORM_PRIMARY_AND_SECONDARY": "Grain form: {{primary}} ({{secondary}})",
+    "LABEL_GRAIN_FORM_PRIMARY_ONLY": "Grain form: {{primary}}",
+    "LABEL_GRAIN_SIZE": "Grain size: {{value}}mm",
+    "LABEL_HARDNESS": "Hardness: {{value}}",
+    "LABEL_WETNESS": "Liquid water content (LWC): {{value}}",
+    "LABEL_HARDNESS_MISSING": "Hardness: MISSING VALUE",
+    "GRAIN_FORM_AXIS_LABEL": "Grain form",
+    "GRAIN_SIZE_AXIS_LABEL": "Grain size",
+    "TESTS_AXIS_LABEL": "Tests",
+    "DEPTH_AXIS_LABEL": "Depth",
+    "TEMP_AXIS_LABEL": "Temperature"
   }
 }

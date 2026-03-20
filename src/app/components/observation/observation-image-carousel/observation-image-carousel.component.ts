@@ -6,7 +6,6 @@ import {
   ElementRef,
   inject,
   input,
-  linkedSignal,
   model,
   viewChild,
   ChangeDetectionStrategy,
@@ -21,10 +20,11 @@ import { DatePipe } from '@angular/common';
 import { KeyValueComponent } from '../key-value/key-value.component';
 import { settings } from 'src/settings';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
-import { PlotService } from 'src/app/core/services/plot.service';
 import { Router, RouterLink } from '@angular/router';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { CarouselItems } from './models';
+import { SnowProfileComponent } from '../../snow-profile/snow-profile.component';
 
 const DEBUG_TAG = 'ImageCarousel';
 
@@ -34,49 +34,49 @@ const DEBUG_TAG = 'ImageCarousel';
   templateUrl: './observation-image-carousel.component.html',
   styleUrls: ['./observation-image-carousel.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  imports: [IonIcon, IonFabButton, TranslatePipe, DatePipe, KeyValueComponent, RouterLink, IonChip],
+  imports: [
+    IonIcon,
+    IonFabButton,
+    TranslatePipe,
+    DatePipe,
+    KeyValueComponent,
+    RouterLink,
+    IonChip,
+    SnowProfileComponent,
+  ],
 })
 export class ObservationImageCarouselComponent {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
   private router = inject(Router);
-  private plotService = inject(PlotService);
   private logger = inject(LoggingService);
-
-  isImageListView = computed(() => this.router.url.includes('search/pictures'));
-  attachments = input<AttachmentViewModel[]>([]);
   translateService = inject(TranslateService);
 
   registration = input.required<RegistrationViewModel>();
-  attachmentIndex = model<number>(0);
+  items = input<CarouselItems>([]);
+  index = model<number>(0);
 
+  private snowProfile = viewChild(SnowProfileComponent);
+  layerComments = computed(() => this.snowProfile()?.comments());
+  showsComments = computed(() => !!this.snowProfile()?.showComments());
+
+  isImageListView = computed(() => this.router.url.includes('search/pictures'));
   roundedDownOrientationValue = computed(() => {
-    const aspectValue = this.currentAttachmentData().Aspect; //256
+    const item = this.currentItem();
+    if (item.type === 'SnowProfile') {
+      return '';
+    }
+    const aspectValue = item.data.Aspect; //256
     if (!aspectValue) return '';
     const roundedDownOrientation = getRoundedDownOrientationValue(aspectValue);
     if (!roundedDownOrientation) return '';
     return settings.orientation[roundedDownOrientation];
   });
 
-  currentAttachmentData = computed(() => this.attachments()?.[this.attachmentIndex()]);
-
-  snowProfileUrl = linkedSignal(() => {
-    const reg = this.registration();
-    if (!reg) return undefined;
-    return this.plotService.getSnowProfileSvgUrl(reg);
-  });
+  currentItem = computed(() => this.items()[this.index()]);
 
   constructor() {
     addIcons({ close, downloadOutline, openOutline, eyeOutline });
-  }
-
-  useFallbackSnowProfileImage(attachment: AttachmentViewModel, event: Event) {
-    const target = event.target as HTMLImageElement;
-    if (target.src === attachment.Url) {
-      attachment.Url = 'assets/images/broken-image-w-bg.svg';
-      attachment.Alt = this.translateService.instant('REGISTRATION.COULD_NOT_DOWNLOAD_IMAGE');
-    }
-    this.snowProfileUrl.set(attachment.Url as string);
   }
 
   closeModal() {
@@ -86,12 +86,11 @@ export class ObservationImageCarouselComponent {
   setCurrentSlideIndex(e: Event) {
     const customEvent = e as CustomEvent;
     const activeIndex = customEvent.detail[0].activeIndex;
-    this.attachmentIndex.set(activeIndex);
-    this;
+    this.index.set(activeIndex);
   }
 
   ngAfterViewInit() {
-    this.swiper()?.nativeElement.swiper.slideTo(this.attachmentIndex());
+    this.swiper()?.nativeElement.swiper.slideTo(this.index());
   }
 
   setFallbackImage(attachment: AttachmentViewModel) {

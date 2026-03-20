@@ -90,6 +90,8 @@
     }
     <app-text-comment label="REGISTRATION.DANGER_OBS.COMMENT" [(value)]="comment"> </app-text-comment>
   </ion-list>
+</ion-content>
+<ion-footer>
   <app-modal-save-or-delete-buttons
     [saveDisabled]="!isValid()"
     (saveClicked)="ok()"
@@ -97,4 +99,4 @@
     [showDelete]="showDelete()"
   >
   </app-modal-save-or-delete-buttons>
-</ion-content>
+</ion-footer>

@@ -1,0 +1,169 @@
+@font-face {
+  font-family: 'SnowSymbols';
+  src: url('/assets/fonts/SnowSymbolsIACS.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+:host {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  justify-content: center;
+
+  --lwc-color: blue;
+  --gs-color: brown;
+  --temp-color: red;
+  --layer-color: #cccbea;
+  --cl-color: red;
+}
+
+svg {
+  user-select: none;
+  flex-shrink: 0;
+}
+
+text {
+  font-size: 16px;
+  /* font-family: Helvetica, Arial, sans-serif; */
+  fill: #000000;
+  stroke-width: 0px;
+}
+
+.temp circle {
+  fill: var(--temp-color, red);
+}
+
+.layers {
+  stroke-width: 1;
+  stroke: black;
+
+  polyline {
+    fill: var(--layer-color);
+  }
+
+  polyline.critical-layer-full {
+    fill: var(--cl-color);
+  }
+
+  polyline.critical-layer {
+    stroke: var(--cl-color);
+    stroke-width: 3;
+    fill: none;
+  }
+
+  polyline.no-hardness {
+    stroke: none;
+    /* Trenger fill for å trigge tooltip */
+    fill: white;
+    opacity: 0;
+    stroke-opacity: 0;
+  }
+
+  @media (hover: hover) {
+    polyline:not(.no-hardness):hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+.axis {
+  stroke-width: 1;
+  stroke: black;
+
+  .axis-x {
+    text-anchor: middle;
+  }
+
+  .axis-y {
+    dominant-baseline: middle;
+  }
+}
+
+.label-axis {
+  text-anchor: middle;
+}
+
+.gf-labels,
+.gs-labels,
+.lwc-labels {
+  text {
+    dominant-baseline: middle;
+    text-anchor: end;
+  }
+}
+
+.c-labels text {
+  dominant-baseline: middle;
+  font-style: italic;
+  text-anchor: middle;
+}
+
+.gs-labels text,
+.gs-axis {
+  fill: var(--gs-color, black);
+}
+
+.lwc-labels text,
+.lwc-axis {
+  fill: var(--lwc-color, black);
+}
+
+.gf-labels {
+  text {
+    font-family: 'SnowSymbols';
+  }
+}
+
+.ground {
+  stroke: brown;
+  stroke-width: 2;
+
+  rect {
+    fill: white;
+  }
+
+  text {
+    dominant-baseline: middle;
+    text-anchor: start;
+    fill: brown;
+  }
+}
+
+.comments {
+  position: relative;
+  flex-grow: 1;
+  overflow: hidden;
+  max-width: 500px;
+
+  .comment {
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding: 2px 4px;
+    font-size: 14px;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.annotation-lines {
+  line {
+    stroke: #888;
+    stroke-width: 1;
+    stroke-dasharray: 3 2;
+  }
+}
+
+.tests {
+  text {
+    text-anchor: start;
+  }
+  line {
+    stroke: gray;
+    stroke-width: 1;
+    stroke-dasharray: 2;
+  }
+}

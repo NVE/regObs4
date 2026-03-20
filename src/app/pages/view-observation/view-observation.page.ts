@@ -23,6 +23,7 @@ import {
   numberAttribute,
   computed,
   signal,
+  viewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { PopupInfoService } from '../../core/services/popup-info/popup-info.service';
@@ -61,13 +62,14 @@ import { GeohazardChipComponent } from 'src/app/components/observation/geohazard
 import { IceThicknessViewComponent } from 'src/app/components/observation/registrations/ice-thickness-view/ice-thickness-view.component';
 import { AvalancheProblemsViewComponent } from 'src/app/components/observation/registrations/avalanche-problem-view/avalanche-problems-view.component';
 import { AvalancheEvaluationViewComponent } from 'src/app/components/observation/registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
-import { linkedSignal } from '@angular/core';
 import { PlotService } from 'src/app/core/services/plot.service';
 import { ObservationActionsComponent } from 'src/app/components/observation/observation-actions/observation-actions.component';
 import { ObservationLocationMapComponent } from 'src/app/components/observation/observation-location-map/observation-location-map.component';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
+import { SnowProfileComponent } from 'src/app/components/snow-profile/snow-profile.component';
+import { CarouselItems } from 'src/app/components/observation/observation-image-carousel/models';
 
 const DEBUG_TAG = 'ViewObservationPage';
 
@@ -114,6 +116,7 @@ type RegistrationTypesV = { [geoHazardId: string]: RegistrationType[] };
     RegistrationViewComponent,
     TranslatePipe,
     SummaryComponent,
+    SnowProfileComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {
@@ -179,16 +182,18 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   );
   isLoggingIn$ = merge(this._isLoggingIn, this.authService.isLoggingIn$);
 
-  snowProfileUrl = linkedSignal(() => {
-    const reg = this.registration.value();
-    if (!reg) return undefined;
-    return this.plotService.getSnowProfileSvgUrl(reg);
-  });
-
   // Inneholder navn på hvert skjema for angitt språk
   private registrationTypesV = toSignal<RegistrationTypesV>(
     this.kdvService.getViewRepositoryByKeyObservable('RegistrationTypesV') as Observable<RegistrationTypesV>
   );
+
+  snowProfile = viewChild(SnowProfileComponent);
+  snowProfileLayerComments = computed(() => {
+    const sp = this.snowProfile();
+    if (!sp) return [];
+    if (sp.showComments()) return []; // Ikke vis kommentarer hvis snøprofilkomponent selv viser det.
+    return sp.comments();
+  });
 
   constructor() {
     super();
@@ -222,9 +227,44 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
     this.popupInfoService.checkObservationInfoPopup().pipe(takeUntil(this.ngDestroy$)).subscribe();
   }
 
+  snowProfileLayers = computed(() => {
+    if (!this.registration.hasValue()) {
+      return [];
+    }
+    return this.registration.value().SnowProfile2?.StratProfile?.Layers || [];
+  });
+
+  snowProfileHasLayers = computed(() => {
+    if (!this.registration.hasValue()) {
+      return false;
+    }
+    return !isEmpty(this.snowProfileLayers());
+  });
+
+  openSnowProfileCarousel($event: { index: number }, attachments: AttachmentViewModel[]) {
+    if (!this.registration.hasValue()) {
+      return;
+    }
+
+    if (!this.snowProfileHasLayers()) {
+      return this.openImageCarousel($event, attachments);
+    }
+
+    const items: CarouselItems = [
+      ...attachments.map((data) => ({ type: 'Attachment' as const, data })),
+      { type: 'SnowProfile' },
+    ];
+
+    this.imageCarousel.open($event.index, items, this.registration.value());
+  }
+
   openImageCarousel($event: { index: number }, attachments: AttachmentViewModel[]) {
     if (this.registration.hasValue()) {
-      this.imageCarousel.open($event.index, attachments, this.registration.value());
+      this.imageCarousel.open(
+        $event.index,
+        attachments.map((data) => ({ type: 'Attachment', data })),
+        this.registration.value()
+      );
     }
   }
 

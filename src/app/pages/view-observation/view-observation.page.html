@@ -264,11 +264,18 @@
             @if (attachments.length > 0) {
               <app-attachment-grid
                 [attachments]="attachments"
-                (attachmentClicked)="openImageCarousel($event, attachments)"
+                (attachmentClicked)="openSnowProfileCarousel($event, attachments)"
               ></app-attachment-grid>
             }
-            @if (snowProfileUrl()) {
-              <img [src]="snowProfileUrl()" alt="Snow Profile" />
+            @if (snowProfileHasLayers()) {
+              <app-snow-profile
+                [profile]="reg.SnowProfile2!"
+                [tests]="reg.CompressionTest"
+                (click)="openSnowProfileCarousel({ index: attachments.length }, attachments)"
+              ></app-snow-profile>
+              @for (comment of snowProfileLayerComments(); track comment.i) {
+                <app-key-value [key]="comment.key" [value]="comment.comment"></app-key-value>
+              }
             }
             <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
           </app-registration-view>

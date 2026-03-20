@@ -7,18 +7,14 @@
   keyboard="false"
   (swiperslidechange)="setCurrentSlideIndex($event)"
 >
-  @for (attachment of attachments(); track attachment.AttachmentId) {
-    @if (attachment.IsSnowProfilePlot) {
-      <swiper-slide lazy="true">
-        <img
-          [alt]="attachment.Alt || attachment.Comment"
-          [src]="snowProfileUrl()"
-          (error)="useFallbackSnowProfileImage(attachment, $event)"
-          class="snow-profile"
-          loading="lazy"
-        />
+  @for (item of items(); track $index) {
+    @if (item.type === "SnowProfile") {
+      @let reg = registration();
+      <swiper-slide>
+        <app-snow-profile [profile]="reg.SnowProfile2!" [tests]="reg.CompressionTest"></app-snow-profile>
       </swiper-slide>
     } @else {
+      @let attachment = item.data;
       <swiper-slide>
         <div class="swiper-zoom-container">
           <img
@@ -33,17 +29,30 @@
 </swiper-container>
 <div class="image-description">
   <div class="image-description__content">
+    @let item = currentItem();
+    @let attachment = item.type === "Attachment" ? item.data : null;
+
     <!-- tittel -->
-    @if (currentAttachmentData().RegistrationName) {
-      <ion-chip color="primary"> {{ currentAttachmentData().RegistrationName }}</ion-chip>
+    @if (attachment?.RegistrationName; as regName) {
+      <ion-chip color="primary">{{ regName }}</ion-chip>
     }
+
     <!-- kommentar -->
-    @if (currentAttachmentData().Comment) {
-      <app-key-value
-        [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate"
-        [value]="currentAttachmentData().Comment"
-      ></app-key-value>
+    @if (item.type === "SnowProfile") {
+      @if (!showsComments()) {
+        @for (layer of layerComments(); track layer.i) {
+          <app-key-value [key]="layer.key" [value]="layer.comment"></app-key-value>
+        }
+      }
+      @if (registration().SnowProfile2?.Comment; as comment) {
+        <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment"></app-key-value>
+      }
     }
+
+    @if (attachment?.Comment; as comment) {
+      <app-key-value [key]="'REGISTRATION.DANGER_OBS.COMMENT' | translate" [value]="comment"></app-key-value>
+    }
+
     <div class="image-description__params">
       <!-- region -->
       @if (registration().ObsLocation.ForecastRegionName) {
@@ -55,7 +64,7 @@
       }
 
       <!-- himmelretning -->
-      @if (currentAttachmentData().Aspect) {
+      @if (attachment?.Aspect) {
         <app-key-value
           [key]="'REGISTRATION.IMAGE_ASPECT' | translate"
           [value]="roundedDownOrientationValue() | translate"
@@ -70,15 +79,13 @@
       }
 
       <!-- opphavsrett -->
-      @if (currentAttachmentData().Copyright) {
-        <app-key-value [key]="'MY_PROFILE.COPYRIGHT' | translate" [value]="currentAttachmentData().Copyright">
-        </app-key-value>
+      @if (attachment?.Copyright; as copyright) {
+        <app-key-value [key]="'MY_PROFILE.COPYRIGHT' | translate" [value]="copyright"> </app-key-value>
       }
 
       <!-- fotograf -->
-      @if (currentAttachmentData().Photographer) {
-        <app-key-value [key]="'MY_PROFILE.PHOTOGRAPHER' | translate" [value]="currentAttachmentData().Photographer">
-        </app-key-value>
+      @if (attachment?.Photographer; as photographer) {
+        <app-key-value [key]="'MY_PROFILE.PHOTOGRAPHER' | translate" [value]="photographer"> </app-key-value>
       }
       <!-- observert dato-->
       @if (registration().DtObsTime) {
@@ -90,20 +97,15 @@
       }
     </div>
     <div class="image-description__links">
-      <a [href]="currentAttachmentData().Url" download>
-        <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}
-      </a>
-
-      @if (currentAttachmentData().IsSnowProfilePlot) {
-        <a [href]="snowProfileUrl()" target="_blank">
-          <ion-icon name="open-outline"></ion-icon>
-          {{ "REGISTRATION.CARD.GO_TO_SNOW_PROFILE" | translate }}
+      @if (attachment?.Url; as url) {
+        <a [href]="url" download>
+          <ion-icon name="download-outline"></ion-icon> {{ "REGISTRATION.CARD.DOWNLOAD" | translate }}
         </a>
-      } @else {
-        <a [href]="currentAttachmentData().Url" target="_blank">
+        <a [href]="url" target="_blank">
           <ion-icon name="open-outline"></ion-icon> {{ "REGISTRATION.CARD.GO_TO_ORIGINAL_IMAGE" | translate }}
         </a>
       }
+
       @if (isImageListView()) {
         <a [routerLink]="'registration/' + registration().RegId" (click)="closeModal()">
           <ion-icon name="eye-outline"></ion-icon>

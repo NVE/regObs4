@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -10,6 +10,7 @@ import {
   IonToggle,
   IonToolbar,
   ModalController,
+  IonFooter,
 } from '@ionic/angular/standalone';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { SelectOption } from '../../../../../shared/components/input/select/select-option.model';
@@ -72,6 +73,7 @@ enum Propagation {
     SelectComponent,
     TextCommentComponent,
     TranslatePipe,
+    IonFooter,
   ],
 })
 export class CompressionTestModalPage {

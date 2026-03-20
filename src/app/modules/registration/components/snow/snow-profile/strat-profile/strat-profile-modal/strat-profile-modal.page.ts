@@ -1,4 +1,12 @@
-import { Component, inject, computed, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  computed,
+  input,
+  linkedSignal,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import {
   IonButton,
   IonButtons,
@@ -78,6 +86,7 @@ export class StratProfileModalPage {
   private modalController = inject(ModalController);
   private regobsAuthService = inject(RegobsAuthService);
   private draftRepository = inject(DraftRepositoryService);
+  private cdr = inject(ChangeDetectorRef);
 
   uuid = input.required<string>();
   draft = this.draftRepository.getDraftSignal(this.uuid);
@@ -137,6 +146,7 @@ export class StratProfileModalPage {
     this.layers.update((value) => ArrayHelper.reorderList(value, event.detail.from, event.detail.to));
     event.detail.complete();
     this.draftRepository.save(this.getDraftUpdate());
+    this.cdr.detectChanges();
   }
 
   async getPrevousUsedLayers(): Promise<void> {

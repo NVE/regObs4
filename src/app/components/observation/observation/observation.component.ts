@@ -44,6 +44,8 @@ import { AvalancheActivitesViewComponent } from '../registrations/avalanche-acti
 import { ObservationActionsComponent } from '../observation-actions/observation-actions.component';
 import { ObservationLocationMapComponent } from '../observation-location-map/observation-location-map.component';
 import { GeohazardChipComponent } from '../geohazard-chip/geohazard-chip.component';
+import { SnowProfileComponent } from '../../snow-profile/snow-profile.component';
+import { CarouselItems } from '../observation-image-carousel/models';
 
 const DEBUG_TAG = 'ObservationComponent';
 
@@ -65,6 +67,7 @@ const DEBUG_TAG = 'ObservationComponent';
     AvalancheProblemsViewComponent,
     AvalancheEvaluationViewComponent,
     ObservationActionsComponent,
+    SnowProfileComponent,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',
@@ -81,6 +84,13 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   modalController = inject(ModalController);
 
   readonly registration = input.required<RegistrationViewModel>();
+  hasSnowProfile = computed(() => {
+    const snowProfileForm = this.registration().SnowProfile2;
+    if (snowProfileForm == null) {
+      return false;
+    }
+    return snowProfileForm.StratProfile?.Layers?.at(0) != null;
+  });
   showChangedTime = computed(() => {
     const { DtChangeTime, DtRegTime } = this.registration();
     if (DtChangeTime == null) {
@@ -91,7 +101,9 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
     }
     return true;
   });
-  attachments = computed(() => getAllAttachmentsFromViewModel(this.registration()));
+  attachments = computed(() =>
+    getAllAttachmentsFromViewModel(this.registration()).filter((a) => a.IsSnowProfilePlot != true)
+  );
 
   constructor() {
     addIcons({
@@ -156,7 +168,14 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
   }
 
   async openImageCarousel(index: number) {
-    await this.imageCarousel.open(index, this.attachments(), this.registration());
+    let items: CarouselItems = this.attachments()
+      .filter((x) => !x.IsSnowProfilePlot) // Bruk ny snøprofil-komponent, ikke vis genererte bilder
+      .map((data) => ({ type: 'Attachment', data }));
+    if (this.hasSnowProfile()) {
+      items = [{ type: 'SnowProfile' }, ...items];
+    }
+
+    await this.imageCarousel.open(index, items, this.registration());
   }
 
   hasData(data: unknown) {

@@ -43,7 +43,7 @@ export abstract class BasePage extends NgDestoryBase {
         }),
         tap((reg) => {
           this.draft = reg;
-          this.cdr.markForCheck();
+          this.cdr.detectChanges();
         }),
         switchMap(() => this.createInitObservable())
       )
@@ -52,7 +52,7 @@ export abstract class BasePage extends NgDestoryBase {
     // Update registration data eg. when navigating back from subforms
     draft$.pipe(skip(1), takeUntil(this.ngDestroy$)).subscribe((draft) => {
       this.draft = draft;
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
     });
   }
 

@@ -18,16 +18,22 @@
         <app-observation-location-map [registration]="reg"></app-observation-location-map>
       </swiper-slide>
 
+      @if (hasSnowProfile()) {
+        <swiper-slide>
+          <app-snow-profile
+            [profile]="reg.SnowProfile2!"
+            [tests]="reg.CompressionTest"
+            [style.width.px]="250"
+            (click)="openImageCarousel(0)"
+          ></app-snow-profile>
+        </swiper-slide>
+      }
+
+      @let carouselIndexOffset = hasSnowProfile() ? 1 : 0;
       <!-- lazy-preload-prev-next="2" -->
-      @for (attachment of attachments(); track attachment.AttachmentId; let index = $index) {
-        <swiper-slide (click)="openImageCarousel(index)" lazy="true">
-          <img
-            [src]="attachment.UrlFormats?.Large"
-            [alt]="attachment.Comment"
-            loading="lazy"
-            decoding="async"
-            (error)="setFallbackImage(attachment)"
-          />
+      @for (attachment of attachments(); track attachment.AttachmentId) {
+        <swiper-slide (click)="openImageCarousel($index + carouselIndexOffset)">
+          <img [src]="attachment.UrlFormats?.Large" [alt]="attachment.Comment" (error)="setFallbackImage(attachment)" />
         </swiper-slide>
       }
     </swiper-container>

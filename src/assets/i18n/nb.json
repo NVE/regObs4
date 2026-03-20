@@ -410,7 +410,6 @@
     "CARD": {
       "DOWNLOAD": "Last ned",
       "GO_TO_ORIGINAL_IMAGE": "Se original",
-      "GO_TO_SNOW_PROFILE": "Gå til profil",
       "OBSERVED_BY": "Sendt inn av",
       "TIME": {
         "OBSERVED": "Observert",
@@ -759,14 +758,11 @@
         },
         "CONFIRM_CANCEL": "Dette vil slette alle endringer.",
         "EAST": "Ø",
-        "GENERATING_PREVIEW": "Genererer forhåndsvisning...",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
         "NORTH": "N",
         "NORTH_EAST": "NØ",
         "NORTH_WEST": "NV",
         "PREVIEW": "Forhåndsvisning",
-        "PREVIEW_ERROR": "Klarte ikke generere forhåndsvisning",
-        "PREVIEW_ITEM": "Se snøprofil",
         "SLOPE_ANGLE": "Bratthet",
         "SLOPE_ANGLE_PLACEHOLDER": "Kun hele grader",
         "SNOW_DENSITY": {
@@ -1104,5 +1100,19 @@
     "TITLE_SNOW": "Snøskredvarsel",
     "TITLE_WATER": "Flom- og jordskredvarsel",
     "VALID_FROM": "Gyldig fra"
+  },
+  "SNOW_PROFILE": {
+    "LABEL_THICKNESS": "Tykkelse: {{value}}cm",
+    "LABEL_GRAIN_FORM_PRIMARY_AND_SECONDARY": "Korntype: {{primary}} ({{secondary}})",
+    "LABEL_GRAIN_FORM_PRIMARY_ONLY": "Korntype: {{primary}}",
+    "LABEL_GRAIN_SIZE": "Kornstørrelse: {{value}}mm",
+    "LABEL_HARDNESS": "Hardhet: {{value}}",
+    "LABEL_WETNESS": "Snøfuktighet (LWC): {{value}}",
+    "LABEL_HARDNESS_MISSING": "Hardhet: MANGLER VERDI",
+    "GRAIN_FORM_AXIS_LABEL": "Kornform",
+    "GRAIN_SIZE_AXIS_LABEL": "Kornstørrelse",
+    "TESTS_AXIS_LABEL": "Tester",
+    "DEPTH_AXIS_LABEL": "Dybde",
+    "TEMP_AXIS_LABEL": "Temperatur"
   }
 }

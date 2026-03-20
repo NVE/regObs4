@@ -1,0 +1,16 @@
+export enum CompressionTestPropagation {
+  LBT = 5,
+  CTV = 11,
+  CTE = 12,
+  CTM = 13,
+  CTH = 14,
+  CTN = 15,
+  ECTPV = 21,
+  ECTP = 22,
+  ECTN = 23,
+  ECTX = 24,
+  'PST End' = 31,
+  'PST SF' = 32,
+  'PST Arr' = 33,
+  RB = 41,
+}
