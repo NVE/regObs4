@@ -16,6 +16,7 @@ import {
 import {
   CompressionTestEditModel,
   SnowProfileEditModel,
+  SnowTempObsModel,
   StratProfileLayerEditModel,
 } from 'src/app/modules/common-regobs-api';
 import { CriticalLayer, Hardness, LayerExpansionConfig, PlotFrame } from './models';
@@ -224,9 +225,13 @@ export class SnowProfileComponent {
   }));
 
   /**
-   * Liste med temperaturverdier
+   * Liste med gyldige temperaturverdier sortert etter dybde
    */
-  private temperatures = computed(() => this.profile()?.SnowTemp?.Layers || []);
+  private temperatures = computed(() =>
+    (this.profile()?.SnowTemp?.Layers || [])
+      .filter((x): x is Required<SnowTempObsModel> => x.Depth != null && x.SnowTemp != null)
+      .sort((a, b) => a.Depth - b.Depth)
+  );
 
   /**
    * Om temperaturer skal vises i plottet.
