@@ -179,12 +179,14 @@ text {
 
 .label-axis {
   display: grid;
-  grid: 1fr / 1.5fr 1fr 1fr 1fr 1fr 0.5fr;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 0.5fr;
+  grid-template-rows: auto;
+  grid-template-areas: 'tests . lwc gs gf .';
   gap: 4px;
   text-align: center;
 
   div.hidden {
-    visibility: hidden;
+    display: none;
   }
 
   div {
@@ -192,15 +194,21 @@ text {
   }
 
   div.gs {
+    grid-area: gs;
     color: var(--gs-color);
   }
 
+  div.gf {
+    grid-area: gf;
+  }
+
   div.lwc {
+    grid-area: lwc;
     color: var(--lwc-color);
   }
 
-  /* Første div er labels for tester. De vises venstrestilt. */
-  div:first-child {
+  div.tests {
+    grid-area: tests;
     justify-self: left;
   }
 }

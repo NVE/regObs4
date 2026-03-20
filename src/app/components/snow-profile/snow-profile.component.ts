@@ -128,11 +128,19 @@ export class SnowProfileComponent {
   plotHeight = signal(0);
 
   /**
-   * Små profiler skaleres for å få plass til alt
+   * Små profiler skaleres for å få plass til alt.
+   * Hvert lag har en minimum høyde for å få plass til labels.
+   * Hvis summen av minimumshøyden for alle lag blir større enn tilgjengelig høyde, skaleres plottet.
    */
   scaleFactor = computed(() => {
     const width = this.width();
     let scaleFactor = 1;
+    if (width === 0) {
+      // Not initialized yet
+      return scaleFactor;
+    }
+
+    // Dette passer bra med bildekarusellen, men kunne også vært fjernet, if-setningen under håndterer dette fint
     if (width < 400) {
       scaleFactor = 1.5;
     }
@@ -140,10 +148,10 @@ export class SnowProfileComponent {
     if (this.showLabels()) {
       // Bruker height() (ikke plotHeight()) for å unngå sirkulær avhengighet:
       // plotHeight → labelAxisHeight → (ResizeObserver) → scaleFactor → font-size → labelAxisHeight
-      const height = this.height() - this.y0() - this.yMargin();
-      const layerHeights = this.layers().reduce((sum) => sum + this.minLayerHeight, 0);
+      const height = this.plotHeight() - this.y0() - this.yMargin();
+      const layerHeights = this.layerHeightSum();
       if (layerHeights > height) {
-        const fixFactor = layerHeights / height;
+        const fixFactor = layerHeights / height + 0.1; // 0.1 for å få litt ekstra plass
         scaleFactor = Math.max(fixFactor, scaleFactor);
       }
     }
@@ -188,6 +196,8 @@ export class SnowProfileComponent {
    * Lag i snøprofilen ekspanderes til denne verdien for å få plass til labels.
    */
   private minLayerHeight = 20;
+
+  layerHeightSum = computed(() => this.layers().reduce((sum) => sum + this.minLayerHeight, 0));
 
   /**
    * Offset for labels på aksene (hardhet, temperatur)
