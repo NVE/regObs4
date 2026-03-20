@@ -476,7 +476,7 @@ export function createDepthAxis(frame: PlotFrame, maxDepth: number, depthProject
   const steps = generateStepList(0, maxDepth, step);
   const x1 = frame.x0 + frame.width;
   const x2 = x1 + frame.axisSize;
-  return steps.map((depth) => {
+  const axis = steps.map((depth) => {
     const y = fmt(depthProjector(depth));
     return {
       x1,
@@ -486,6 +486,14 @@ export function createDepthAxis(frame: PlotFrame, maxDepth: number, depthProject
       depth: (depth * 100).toFixed(0),
     };
   });
+
+  // Fjern elementer som nesten overlapper nederst på aksen
+  const last = axis.at(-1);
+  const nextLast = axis.at(-2);
+  if (last && nextLast && last.y1 - nextLast.y2 < 30) {
+    axis.pop();
+  }
+  return axis;
 }
 
 function niceStep(range: number, maxTicks: number, steps: number[]): number {

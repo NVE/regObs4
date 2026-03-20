@@ -19,9 +19,21 @@
   --cl-color: red;
 }
 
-svg {
-  user-select: none;
+.profile {
   flex-shrink: 0;
+  height: 100%;
+  display: grid;
+  grid: 1fr min-content / 1fr;
+}
+
+.svg-container {
+  overflow: hidden;
+  min-height: 0;
+}
+
+svg {
+  display: block;
+  user-select: none;
 }
 
 text {
@@ -79,10 +91,6 @@ text {
   .axis-y {
     dominant-baseline: middle;
   }
-}
-
-.label-axis {
-  text-anchor: middle;
 }
 
 .gf-labels,
@@ -165,5 +173,36 @@ text {
     stroke: gray;
     stroke-width: 1;
     stroke-dasharray: 2;
+  }
+}
+
+.label-axis {
+  display: grid;
+  grid: 1fr / 1.5fr 1fr 1fr 1fr 1.5fr;
+  gap: 4px;
+  text-align: center;
+
+  div.hidden {
+    visibility: hidden;
+  }
+
+  div {
+    justify-self: center;
+  }
+
+  div.gs {
+    color: var(--gs-color);
+  }
+
+  div.lwc {
+    color: var(--lwc-color);
+  }
+
+  div:first-child {
+    justify-self: left;
+  }
+
+  div:last-child {
+    justify-self: left;
   }
 }

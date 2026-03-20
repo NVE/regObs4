@@ -1,229 +1,246 @@
-@if (width() > 0 && height() > 0) {
-  <svg
-    [attr.viewBox]="viewBox()"
-    preserveAspectRatio="none"
-    [aria-label]="'REGISTRATION.SNOW.SNOW_PROFILE.TITLE' | translate"
-    role="img"
-    [style.height.px]="height()"
-  >
-    <rect
-      [attr.x]="x0()"
-      [attr.y]="y0()"
-      [attr.width]="availableWidth()"
-      [attr.height]="availableHeight()"
-      fill="none"
-      stroke="black"
-      stroke-width="1"
-    />
+<div class="profile">
+  <div class="svg-container" #svgcontainer>
+    @if (width() > 0 && height() > 0) {
+      <svg
+        [attr.viewBox]="viewBox()"
+        preserveAspectRatio="none"
+        [style.height.px]="plotHeight()"
+        [aria-label]="'REGISTRATION.SNOW.SNOW_PROFILE.TITLE' | translate"
+        role="img"
+      >
+        <rect
+          [attr.x]="x0()"
+          [attr.y]="y0()"
+          [attr.width]="availableWidth()"
+          [attr.height]="availableHeight()"
+          fill="none"
+          stroke="black"
+          stroke-width="1"
+        />
 
-    <!-- Layers -->
-    <g class="layers">
-      @for (layer of layerPolylines(); track $index) {
-        <polyline
-          [attr.points]="layer.points"
-          [class.critical-layer-full]="layer.isCl"
-          [class.no-hardness]="layer.missingHardness"
-          (click)="layerClick.emit({ i: $index, layer: layer.layer })"
-        >
-          @if (showTooltips) {
-            <title>{{ layerTooltips()[$index] }}</title>
+        <!-- Layers -->
+        <g class="layers">
+          @for (layer of layerPolylines(); track $index) {
+            <polyline
+              [attr.points]="layer.points"
+              [class.critical-layer-full]="layer.isCl"
+              [class.no-hardness]="layer.missingHardness"
+              (click)="layerClick.emit({ i: $index, layer: layer.layer })"
+            >
+              @if (showTooltips) {
+                <title>{{ layerTooltips()[$index] }}</title>
+              }
+            </polyline>
           }
-        </polyline>
-      }
 
-      @for (points of criticalLayerPolylines(); track $index) {
-        <polyline [attr.points]="points" class="critical-layer"></polyline>
-      }
-    </g>
+          @for (points of criticalLayerPolylines(); track $index) {
+            <polyline [attr.points]="points" class="critical-layer"></polyline>
+          }
+        </g>
 
-    @if (showLabels()) {
-      @if (!showComments()) {
-        @let cmts = comments();
-        @if (cmts.length > 0) {
-          <g class="c-labels">
-            @let x = x0() + availableWidth() + 10;
-            @for (comment of cmts; track comment.i) {
-              <text [attr.x]="x" [attr.y]="comment.y">
-                <title>{{ comment.comment }}</title>
-                <!-- 💬 -->
-                {{ comment.key }}
-              </text>
+        @if (showLabels()) {
+          @if (!showComments()) {
+            @let cmts = comments();
+            @if (cmts.length > 0) {
+              <g class="c-labels">
+                @let x = x0() + availableWidth() + 10;
+                @for (comment of cmts; track comment.i) {
+                  <text [attr.x]="x" [attr.y]="comment.y">
+                    <title>{{ comment.comment }}</title>
+                    <!-- 💬 -->
+                    {{ comment.key }}
+                  </text>
+                }
+              </g>
+            }
+          }
+
+          @if (grainFormLabels(); as labels) {
+            <g class="gf-labels">
+              @for (label of labels; track $index) {
+                @if (hardnessAxis().get("F"); as h) {
+                  <text [attr.x]="h.x1" [attr.y]="label.y">
+                    {{ label.value }}
+                  </text>
+                }
+              }
+            </g>
+          }
+
+          @if (grainSizeLabels(); as labels) {
+            <g class="gs-labels">
+              @for (label of labels; track $index) {
+                @if (hardnessAxis().get("4F"); as h) {
+                  <text [attr.x]="h.x1 - 2" [attr.y]="label.y">
+                    @if (showTooltips) {
+                      <title>{{ "SNOW_PROFILE.LABEL_GRAIN_SIZE" | translate: { value: label.value } }}</title>
+                    }
+                    {{ label.value }}
+                  </text>
+                }
+              }
+            </g>
+          }
+
+          @if (lwcLabels(); as labels) {
+            <g class="lwc-labels">
+              @for (label of labels; track $index) {
+                @if (hardnessAxis().get("1F"); as h) {
+                  <text [attr.x]="h.x1 - 2" [attr.y]="label.y">
+                    @if (showTooltips) {
+                      <title>
+                        {{ "SNOW_PROFILE.LABEL_WETNESS" | translate: { value: label.value }
+                        }}{{ label.desc ? " - " + label.desc : "" }}
+                      </title>
+                    }
+                    {{ label.value }}
+                  </text>
+                }
+              }
+            </g>
+          }
+        }
+
+        <!-- Temp -->
+        @if (showTemp()) {
+          <g class="temp">
+            <path [attr.d]="tempPath()" fill="none" stroke="red" />
+            @if (showLabels()) {
+              @for (tempPoint of tempPoints(); track $index) {
+                <circle [attr.cx]="tempPoint.x" [attr.cy]="tempPoint.y" r="2">
+                  @if (showTooltips) {
+                    <title>{{ tempPoint.temp }}&deg;</title>
+                  }
+                </circle>
+              }
             }
           </g>
         }
-      }
 
-      @if (grainFormLabels(); as labels) {
-        <g class="gf-labels">
-          @for (label of labels; track $index) {
-            @if (hardnessAxis().get("F"); as h) {
-              <text [attr.x]="h.x1" [attr.y]="label.y">
-                {{ label.value }}
+        @if (showAxis()) {
+          <g class="axis">
+            <g class="axis-x">
+              <!-- Hardhet - vises alltid -->
+              @let x = x0() + availableWidth() + 50;
+              @let y = y0() + availableHeight() / 2;
+              <text [attr.x]="x" [attr.y]="y" [attr.transform]="'rotate(-90 ' + x + ' ' + y + ')'">
+                {{ "SNOW_PROFILE.DEPTH_AXIS_LABEL" | translate }} [cm]
               </text>
-            }
-          }
-        </g>
-      }
 
-      @if (grainSizeLabels(); as labels) {
-        <g class="gs-labels">
-          @for (label of labels; track $index) {
-            @if (hardnessAxis().get("4F"); as h) {
-              <text [attr.x]="h.x1 - 2" [attr.y]="label.y">
-                @if (showTooltips) {
-                  <title>{{ "SNOW_PROFILE.LABEL_GRAIN_SIZE" | translate: { value: label.value } }}</title>
+              @if (showTemp()) {
+                <text [attr.x]="x0() + availableWidth() / 2" [attr.y]="y0() - 35">
+                  {{ "SNOW_PROFILE.TEMP_AXIS_LABEL" | translate }} [C&deg;]
+                </text>
+                @for (axis of tempAxis(); track $index) {
+                  <line [attr.x1]="axis.x1" [attr.y1]="axis.y1" [attr.x2]="axis.x2" [attr.y2]="axis.y2" />
+                  <text [attr.x]="axis.x1" [attr.y]="axis.y1 - axisLabelOffset">{{ axis.temp }}</text>
                 }
-                {{ label.value }}
-              </text>
-            }
-          }
-        </g>
-      }
-
-      @if (lwcLabels(); as labels) {
-        <g class="lwc-labels">
-          @for (label of labels; track $index) {
-            @if (hardnessAxis().get("1F"); as h) {
-              <text [attr.x]="h.x1 - 2" [attr.y]="label.y">
-                @if (showTooltips) {
-                  <title>
-                    {{ "SNOW_PROFILE.LABEL_WETNESS" | translate: { value: label.value }
-                    }}{{ label.desc ? " - " + label.desc : "" }}
-                  </title>
-                }
-                {{ label.value }}
-              </text>
-            }
-          }
-        </g>
-      }
-    }
-
-    <!-- Temp -->
-    @if (showTemp()) {
-      <g class="temp">
-        <path [attr.d]="tempPath()" fill="none" stroke="red" />
-        @if (showLabels()) {
-          @for (tempPoint of tempPoints(); track $index) {
-            <circle [attr.cx]="tempPoint.x" [attr.cy]="tempPoint.y" r="2">
-              @if (showTooltips) {
-                <title>{{ tempPoint.temp }}&deg;</title>
               }
-            </circle>
-          }
+
+              @for (axis of hardnessAxis().entries(); track $index) {
+                @let hardness = axis[0];
+                @let value = axis[1];
+                <line [attr.x1]="value.x1" [attr.y1]="value.y1" [attr.x2]="value.x2" [attr.y2]="value.y2" />
+                <text [attr.x]="value.x1" [attr.y]="value.y2 + axisLabelOffset">{{ hardness }}</text>
+              }
+            </g>
+            <g class="axis-y">
+              @for (axis of depthAxis(); track $index) {
+                <line [attr.x1]="axis.x1" [attr.y1]="axis.y1" [attr.x2]="axis.x2" [attr.y2]="axis.y2" />
+                <text [attr.x]="axis.x1 + axisLabelOffset" [attr.y]="axis.y2">
+                  {{ axis.depth }}
+                </text>
+              }
+            </g>
+          </g>
         }
-      </g>
-    }
 
-    @if (showAxis()) {
-      <g class="axis">
-        <g class="axis-x">
-          <!-- Hardhet - vises alltid -->
-          @let x = x0() + availableWidth() + 50;
-          @let y = y0() + availableHeight() / 2;
-          <text [attr.x]="x" [attr.y]="y" [attr.transform]="'rotate(-90 ' + x + ' ' + y + ')'">
-            {{ "SNOW_PROFILE.DEPTH_AXIS_LABEL" | translate }} [cm]
-          </text>
+        @if (showAxis() && toGround()) {
+          <g class="ground">
+            @let xEnd = x0() + availableWidth();
+            <line [attr.x1]="xEnd - 30" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd + 10" [attr.y2]="groundSymbolY()" />
+            <line
+              [attr.x1]="xEnd - 29"
+              [attr.y1]="groundSymbolY()"
+              [attr.x2]="xEnd - 19"
+              [attr.y2]="groundSymbolY() + 10"
+            />
+            <line
+              [attr.x1]="xEnd - 19"
+              [attr.y1]="groundSymbolY()"
+              [attr.x2]="xEnd - 9"
+              [attr.y2]="groundSymbolY() + 10"
+            />
+            <line
+              [attr.x1]="xEnd - 9"
+              [attr.y1]="groundSymbolY()"
+              [attr.x2]="xEnd + 1"
+              [attr.y2]="groundSymbolY() + 10"
+            />
+            <rect
+              [attr.x]="xEnd + 10"
+              [attr.y]="groundSymbolY() - 10"
+              [attr.width]="35"
+              [attr.height]="20"
+              [attr.rx]="0"
+            />
+            <!--
+              GND er engelsk tekst, men siden det vises en boks rundt er det knot å få til oversettelser.
+              Dropper det for nå
+            -->
+            <text [attr.x]="xEnd + 13" [attr.y]="groundSymbolY() + 1">GND</text>
+          </g>
+        }
 
-          @if (showTemp()) {
-            <text [attr.x]="x0() + availableWidth() / 2" [attr.y]="y0() - 35">
-              {{ "SNOW_PROFILE.TEMP_AXIS_LABEL" | translate }} [C&deg;]
-            </text>
-            @for (axis of tempAxis(); track $index) {
-              <line [attr.x1]="axis.x1" [attr.y1]="axis.y1" [attr.x2]="axis.x2" [attr.y2]="axis.y2" />
-              <text [attr.x]="axis.x1" [attr.y]="axis.y1 - axisLabelOffset">{{ axis.temp }}</text>
+        @if (testLabels(); as tests) {
+          @let x = x0() + 2;
+          @let x2 = x0() + availableWidth();
+          <g class="tests">
+            @for (test of tests; track $index) {
+              <text [attr.y]="test.y - 2" [attr.x]="x">
+                @if (showTooltips) {
+                  <title>{{ test.tooltip }}</title>
+                }
+                {{ test.label }}
+              </text>
+              <line [attr.x1]="x" [attr.x2]="x2" [attr.y1]="test.y" [attr.y2]="test.y"></line>
             }
-          }
+          </g>
+        }
 
-          @for (axis of hardnessAxis().entries(); track $index) {
-            @let hardness = axis[0];
-            @let value = axis[1];
-            <line [attr.x1]="value.x1" [attr.y1]="value.y1" [attr.x2]="value.x2" [attr.y2]="value.y2" />
-            <text [attr.x]="value.x1" [attr.y]="value.y2 + axisLabelOffset">{{ hardness }}</text>
-          }
-        </g>
-        <g class="axis-y">
-          @for (axis of depthAxis(); track $index) {
-            <line [attr.x1]="axis.x1" [attr.y1]="axis.y1" [attr.x2]="axis.x2" [attr.y2]="axis.y2" />
-            <text [attr.x]="axis.x1 + axisLabelOffset" [attr.y]="axis.y2">
-              {{ axis.depth }}
-            </text>
-          }
-        </g>
-      </g>
-
-      @if (showLabelAxis() && showLabels()) {
-        @let y = y0() + availableHeight() + 45;
-        <g class="label-axis">
-          @if (hardnessAxis().get("F"); as h) {
-            <text [attr.x]="h.x1" [attr.y]="y">{{ "SNOW_PROFILE.GRAIN_FORM_AXIS_LABEL" | translate }}</text>
-          }
-
-          @if (hardnessAxis().get("4F"); as h) {
-            <text [attr.x]="h.x1" [attr.y]="y + 16" class="gs-axis">
-              {{ "SNOW_PROFILE.GRAIN_SIZE_AXIS_LABEL" | translate }}
-            </text>
-          }
-
-          @if (hardnessAxis().get("1F"); as h) {
-            <text [attr.x]="h.x1" [attr.y]="y" class="lwc-axis">LWC</text>
-          }
-
-          @if (tests()?.length) {
-            <text [attr.x]="x0()" [attr.y]="y" text-anchor="start">
-              {{ "SNOW_PROFILE.TESTS_AXIS_LABEL" | translate }}
-            </text>
-          }
-        </g>
-      }
-    }
-
-    @if (showAxis() && toGround()) {
-      <g class="ground">
-        @let xEnd = x0() + availableWidth();
-        <line [attr.x1]="xEnd - 30" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd + 10" [attr.y2]="groundSymbolY()" />
-        <line
-          [attr.x1]="xEnd - 29"
-          [attr.y1]="groundSymbolY()"
-          [attr.x2]="xEnd - 19"
-          [attr.y2]="groundSymbolY() + 10"
-        />
-        <line [attr.x1]="xEnd - 19" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd - 9" [attr.y2]="groundSymbolY() + 10" />
-        <line [attr.x1]="xEnd - 9" [attr.y1]="groundSymbolY()" [attr.x2]="xEnd + 1" [attr.y2]="groundSymbolY() + 10" />
-        <rect [attr.x]="xEnd + 10" [attr.y]="groundSymbolY() - 10" [attr.width]="35" [attr.height]="20" [attr.rx]="0" />
-        <!--
-          GND er engelsk tekst, men siden det vises en boks rundt er det knot å få til oversettelser.
-          Dropper det for nå
-        -->
-        <text [attr.x]="xEnd + 13" [attr.y]="groundSymbolY() + 1">GND</text>
-      </g>
-    }
-
-    @if (testLabels(); as tests) {
-      @let x = x0() + 2;
-      @let x2 = x0() + availableWidth();
-      <g class="tests">
-        @for (test of tests; track $index) {
-          <text [attr.y]="test.y - 2" [attr.x]="x">
-            @if (showTooltips) {
-              <title>{{ test.tooltip }}</title>
+        @if (showComments()) {
+          <g class="annotation-lines">
+            @for (line of annotationLines(); track $index) {
+              <line [attr.x1]="line.x1" [attr.y1]="line.y1" [attr.x2]="line.x2" [attr.y2]="line.y2" />
             }
-            {{ test.label }}
-          </text>
-          <line [attr.x1]="x" [attr.x2]="x2" [attr.y1]="test.y" [attr.y2]="test.y"></line>
+          </g>
         }
-      </g>
+      </svg>
     }
+  </div>
 
-    @if (showComments()) {
-      <g class="annotation-lines">
-        @for (line of annotationLines(); track $index) {
-          <line [attr.x1]="line.x1" [attr.y1]="line.y1" [attr.x2]="line.x2" [attr.y2]="line.y2" />
-        }
-      </g>
-    }
-  </svg>
-}
+  @if (showLabelAxis()) {
+    <div
+      class="label-axis"
+      #labelaxis
+      [style.width.px]="labelAxisWidth()"
+      [style.margin-left.px]="labelAxisOffset()"
+      [style.font-size.px]="14 / scaleFactor()"
+    >
+      <div [class.hidden]="testLabels().length === 0">
+        {{ "SNOW_PROFILE.TESTS_AXIS_LABEL" | translate }}
+      </div>
+      <div></div>
+      <div [class.hidden]="lwcLabels().length === 0" class="lwc">LWC</div>
+      <div [class.hidden]="grainSizeLabels().length === 0" class="gs">
+        {{ "SNOW_PROFILE.GRAIN_SIZE_AXIS_LABEL" | translate }} [mm]
+      </div>
+      <div [class.hidden]="grainFormLabels().length === 0">
+        {{ "SNOW_PROFILE.GRAIN_FORM_AXIS_LABEL" | translate }}
+      </div>
+    </div>
+  }
+</div>
 
 @if (showComments() && comments().length > 0) {
   <div class="comments" [style.height.px]="height()">

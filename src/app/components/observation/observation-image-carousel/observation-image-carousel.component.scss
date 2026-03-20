@@ -118,13 +118,7 @@ ion-fab-button::part(native):hover {
   }
 }
 
-.snow-profile {
-  width: 100%;
-  height: 100%;
-  background-color: white;
-}
-
 app-snow-profile {
-  // For å unngå at swiper-"prikkene" legger seg oppå hardhets-axis i bunnen
-  padding-bottom: 20px;
+  // For å unngå at swiper-"prikkene" legger seg oppå label-axis i bunnen
+  padding-bottom: 25px;
 }

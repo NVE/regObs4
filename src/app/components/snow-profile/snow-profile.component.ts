@@ -11,6 +11,7 @@ import {
   output,
   signal,
   Signal,
+  viewChild,
   viewChildren,
 } from '@angular/core';
 import {
@@ -80,7 +81,7 @@ export class SnowProfileComponent {
    * NB: Denne aksen fungerer ikke optimalt (labels kan overskrive hverandre) og er derfor default satt til false
    * for nå.
    */
-  showLabelAxis = input(false);
+  showLabelAxis = input(true);
 
   /**
    * Event for å lytte på klikk på lag i snøprofil. Kan brukes for å vise relevant info om lag utenfor profilen.
@@ -102,10 +103,26 @@ export class SnowProfileComponent {
    */
   height = signal(0);
 
+  svgContainer = viewChild.required<ElementRef<HTMLDivElement>>('svgcontainer');
+
+  /**
+   * Akse for labels i plottet. Vises under hardhets-akse, som [Tester LWC Kornstørrelse Kornform].
+   */
+  labelAxis = viewChild<ElementRef<HTMLDivElement>>('labelaxis');
+  labelAxisOffset = computed(() => this.x0() / this.scaleFactor());
+  labelAxisWidth = computed(() => this.availableWidth() / this.scaleFactor());
+  labelAxisHeight = signal(0); // Oppdateres automatisk via ResizeObserver
+  private labelAxisObserver: ResizeObserver | null = null;
+
+  /**
+   * Høyde for selve SVG plottet. Label Axis tegnes med HTML og må derfor trekkes fra.
+   */
+  plotHeight = computed(() => this.height() - this.labelAxisHeight());
+
   /**
    * Små profiler skaleres for å få plass til alt
    */
-  private scaleFactor = computed(() => {
+  scaleFactor = computed(() => {
     const width = this.width();
     let scaleFactor = 1;
     if (width < 400) {
@@ -113,6 +130,8 @@ export class SnowProfileComponent {
     }
 
     if (this.showLabels()) {
+      // Bruker height() (ikke plotHeight()) for å unngå sirkulær avhengighet:
+      // plotHeight → labelAxisHeight → (ResizeObserver) → scaleFactor → font-size → labelAxisHeight
       const height = this.height() - this.y0() - this.yMargin();
       const layerHeights = this.layers().reduce((sum) => sum + this.minLayerHeight, 0);
       if (layerHeights > height) {
@@ -144,7 +163,7 @@ export class SnowProfileComponent {
   /**
    * SVG høyde
    */
-  private svgHeight = computed(() => this.height() * this.scaleFactor());
+  private svgHeight = computed(() => this.plotHeight() * this.scaleFactor());
 
   /**
    * SVG Viewbox attributt
@@ -154,7 +173,7 @@ export class SnowProfileComponent {
   /**
    * For svært små profiler skjules aksene
    */
-  showAxis = computed(() => this.width() > 100 && this.height() > 200);
+  showAxis = computed(() => this.width() > 100 && this.plotHeight() > 200);
 
   /**
    * For svært små profiler skjules labels
@@ -200,10 +219,7 @@ export class SnowProfileComponent {
    */
   private yMargin = computed(() => {
     if (this.showAxis()) {
-      if (this.showLabelAxis()) {
-        return 60;
-      }
-      return 40;
+      return 30;
     }
     return 0;
   });
@@ -413,7 +429,7 @@ export class SnowProfileComponent {
     if (tests) {
       return groupTestsByY(createCompressionTestPlots(tests, this.formatter().compressionTest, this.depthProjector()));
     }
-    return undefined;
+    return [];
   });
 
   /**
@@ -551,20 +567,23 @@ export class SnowProfileComponent {
       this.height.set(this.elementRef.nativeElement.offsetHeight);
 
       // Lytt til evt endringer i bredde og høyde og oppdater
-      const observer = new ResizeObserver(([entry]) => {
+      const hostObserver = new ResizeObserver(([entry]) => {
         const { width, height } = entry.contentRect;
         this.width.set(width);
         this.height.set(height);
 
-        // Oppdater kommentarhøyder for å sørge for at de vises riktig sted
+        // Kommentarene kan endre høyde ved resize (tekst-wrapping)
         this.updateCommentHeights();
       });
 
-      observer.observe(this.elementRef.nativeElement);
-      this.destroyRef.onDestroy(() => observer.disconnect());
+      hostObserver.observe(this.elementRef.nativeElement);
+      this.destroyRef.onDestroy(() => hostObserver.disconnect());
 
-      // Nå vet komponenten hva bredden og høyden sin skal være, og kan evt vise kommentarer.
-      // Vi må derfor lese kommentarhøyden etter neste render igjen.
+      // Koble opp observer for label-axis (rendres utenfor @if, så elementet finnes allerede)
+      this.observeLabelAxis();
+
+      // Kommentarer rendres først etter at width/height er satt (de er inne i @if).
+      // Les kommentarhøyder etter neste renderrunde.
       afterNextRender(
         () => {
           this.updateCommentHeights();
@@ -572,6 +591,26 @@ export class SnowProfileComponent {
         { injector: this.injector }
       );
     });
+  }
+
+  /**
+   * Observér label-axis elementet med ResizeObserver.
+   * Høyden kan endre seg pga font-size endringer (scaleFactor), tekst-wrapping osv.
+   * Ved å bruke ResizeObserver oppdateres labelAxisHeight automatisk når DOM-høyden endres.
+   */
+  private observeLabelAxis() {
+    if (this.labelAxisObserver || !this.showLabelAxis()) {
+      return;
+    }
+    const el = this.labelAxis()?.nativeElement;
+    if (!el) {
+      return;
+    }
+    this.labelAxisObserver = new ResizeObserver(([entry]) => {
+      this.labelAxisHeight.set(entry.contentRect.height);
+    });
+    this.labelAxisObserver.observe(el);
+    this.destroyRef.onDestroy(() => this.labelAxisObserver?.disconnect());
   }
 
   /**
