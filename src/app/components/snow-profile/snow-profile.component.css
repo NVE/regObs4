@@ -17,15 +17,28 @@
   --temp-color: red;
   --layer-color: #cccbea;
   --cl-color: red;
+  --font-size: 16px;
+}
+
+.profile {
+  flex-shrink: 0;
+  height: 100%;
+  display: grid;
+  grid: 1fr min-content / 1fr;
+}
+
+.svg-container {
+  overflow: hidden;
+  min-height: 0;
 }
 
 svg {
+  display: block;
   user-select: none;
-  flex-shrink: 0;
 }
 
 text {
-  font-size: 16px;
+  font-size: var(--font-size, 16px);
   /* font-family: Helvetica, Arial, sans-serif; */
   fill: #000000;
   stroke-width: 0px;
@@ -79,10 +92,6 @@ text {
   .axis-y {
     dominant-baseline: middle;
   }
-}
-
-.label-axis {
-  text-anchor: middle;
 }
 
 .gf-labels,
@@ -142,7 +151,7 @@ text {
     left: 0;
     right: 0;
     padding: 2px 4px;
-    font-size: 14px;
+    font-size: var(--font-size, 14px);
     line-height: 1.3;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -165,5 +174,41 @@ text {
     stroke: gray;
     stroke-width: 1;
     stroke-dasharray: 2;
+  }
+}
+
+.label-axis {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 0.5fr;
+  grid-template-rows: auto;
+  grid-template-areas: 'tests . lwc gs gf .';
+  gap: 4px;
+  text-align: center;
+
+  div.hidden {
+    display: none;
+  }
+
+  div {
+    justify-self: center;
+  }
+
+  div.gs {
+    grid-area: gs;
+    color: var(--gs-color);
+  }
+
+  div.gf {
+    grid-area: gf;
+  }
+
+  div.lwc {
+    grid-area: lwc;
+    color: var(--lwc-color);
+  }
+
+  div.tests {
+    grid-area: tests;
+    justify-self: left;
   }
 }
