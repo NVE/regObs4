@@ -25,7 +25,7 @@
     [value]="formatTime().toLowerCase()"
   />
 }
-@if (!noActivity && estimatedNum()) {
+@if (!noActivity() && estimatedNum()) {
   <app-key-value
     [key]="'REGISTRATION.SNOW.AVALANCHE_ACTIVITY.HOW_MANY_AVALANCHES' | translate"
     [value]="estimatedNum()"
