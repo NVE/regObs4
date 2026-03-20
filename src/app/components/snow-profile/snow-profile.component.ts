@@ -244,7 +244,9 @@ export class SnowProfileComponent {
    * Settes til -10, -20, osv avhengig av hva min temp er.
    */
   private tempMin = computed(() => {
-    const minTemp = this.temperatures().reduce((min, x) => Math.min(min, x.SnowTemp ?? 0), 0);
+    let minTemp = this.temperatures().reduce((min, x) => Math.min(min, x.SnowTemp ?? 0), 0);
+    // Forsikre oss om at minTemp er minst -1 grad, hvis minTemp er 0 kan tempProjector feile
+    minTemp = Math.min(minTemp, -1);
     return Math.floor(minTemp / 10) * 10;
   });
 
@@ -453,8 +455,9 @@ export class SnowProfileComponent {
 
   /**
    * Maks dybde i profilen, settes på bakgrunn av hva som er maks lagdybde eller temperaturdybde.
+   * Settes til minst 0.1 for å unngå evt feil knytta til null dybde (feks deling på null)
    */
-  private maxDepth = computed(() => Math.max(this.tempDepth(), this.layerDepth()));
+  private maxDepth = computed(() => Math.max(this.tempDepth(), this.layerDepth(), 0.1));
 
   /**
    * Projiserer dybdeverdier til y-koordinater for plotting.

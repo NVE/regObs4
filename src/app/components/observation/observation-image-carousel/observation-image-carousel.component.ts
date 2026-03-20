@@ -74,7 +74,6 @@ export class ObservationImageCarouselComponent {
   });
 
   currentItem = computed(() => this.items()[this.index()]);
-  currentAttachmentData = computed(() => this.items()?.[this.index()]);
 
   constructor() {
     addIcons({ close, downloadOutline, openOutline, eyeOutline });
@@ -88,7 +87,6 @@ export class ObservationImageCarouselComponent {
     const customEvent = e as CustomEvent;
     const activeIndex = customEvent.detail[0].activeIndex;
     this.index.set(activeIndex);
-    this;
   }
 
   ngAfterViewInit() {

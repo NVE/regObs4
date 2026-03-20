@@ -29,9 +29,10 @@
         </swiper-slide>
       }
 
+      @let carouselIndexOffset = hasSnowProfile() ? 1 : 0;
       <!-- lazy-preload-prev-next="2" -->
       @for (attachment of attachments(); track attachment.AttachmentId) {
-        <swiper-slide (click)="openImageCarousel($index + 1)">
+        <swiper-slide (click)="openImageCarousel($index + carouselIndexOffset)">
           <img [src]="attachment.UrlFormats?.Large" [alt]="attachment.Comment" (error)="setFallbackImage(attachment)" />
         </swiper-slide>
       }

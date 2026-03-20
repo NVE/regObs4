@@ -29,6 +29,13 @@ export function createTempProjector(
   const { x0, y0, height, width } = frame;
   const tempRange = Math.abs(minTemp);
 
+  if (tempRange === 0) {
+    throw new Error('Temp projector needs a temperature range');
+  }
+  if (maxDepth === 0) {
+    throw new Error('Temp projector needs a temperature range');
+  }
+
   return ({ SnowTemp, Depth }: SnowTempObsModel): PlotPoint => {
     if (SnowTemp == null) throw new Error('Temp required');
     if (Depth == null) throw new Error('Depth required');

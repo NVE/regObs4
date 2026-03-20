@@ -4,7 +4,7 @@
     preserveAspectRatio="none"
     [aria-label]="'REGISTRATION.SNOW.SNOW_PROFILE.TITLE' | translate"
     role="img"
-    [style.height]="height()"
+    [style.height.px]="height()"
   >
     <rect
       [attr.x]="x0()"
@@ -86,7 +86,10 @@
             @if (hardnessAxis().get("1F"); as h) {
               <text [attr.x]="h.x1 - 2" [attr.y]="label.y">
                 @if (showTooltips) {
-                  <title>Liquid Water Content (LWC): {{ label.value }}{{ label.desc ? " - " + label.desc : "" }}</title>
+                  <title>
+                    {{ "SNOW_PROFILE.LABEL_WETNESS" | translate: { value: label.value }
+                    }}{{ label.desc ? " - " + label.desc : "" }}
+                  </title>
                 }
                 {{ label.value }}
               </text>
