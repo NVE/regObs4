@@ -219,13 +219,12 @@
     }
   </div>
 
-  @if (showLabelAxis()) {
+  @if (showLabelAxis() && showLabels()) {
     <div
       class="label-axis"
-      #labelaxis
       [style.width.px]="labelAxisWidth()"
       [style.margin-left.px]="labelAxisOffset()"
-      [style.font-size.px]="14 / scaleFactor()"
+      [style.font-size.px]="16 / scaleFactor()"
     >
       <div [class.hidden]="testLabels().length === 0">
         {{ "SNOW_PROFILE.TESTS_AXIS_LABEL" | translate }}

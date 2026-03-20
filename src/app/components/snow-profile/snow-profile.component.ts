@@ -54,6 +54,11 @@ const EXPAND_LAYER_POLYGON_TRANSITION_WIDTH = 20;
 
 const AXIS_LABEL_OFFSET = 15;
 
+/**
+ * Snøprofil som SVG-plott med lag, hardhet, temperatur, kompresjonstester og kommentarer.
+ * Fungerer responsivt vha ResizeObserver.
+ * Kommentarer til høyre for plott vises kun hvis komponenten har nok bredde.
+ */
 @Component({
   selector: 'app-snow-profile',
   templateUrl: './snow-profile.component.html',
@@ -61,9 +66,6 @@ const AXIS_LABEL_OFFSET = 15;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslatePipe],
 })
-/**
- * Rendrer en snøprofil som SVG-plott med lag, hardhet, temperatur, kompresjonstester og kommentarer.
- */
 export class SnowProfileComponent {
   private elementRef = inject(ElementRef);
   private destroyRef = inject(DestroyRef);
@@ -77,9 +79,14 @@ export class SnowProfileComponent {
   // useRamResistance = input(false);
 
   /**
+   * Om det skal vises korntype, kornstørrelse osv direkte i plottet.
+   * NB showLabels false er ikke testet noe særlig (brukes ikke per nå).
+   */
+  showLabels = input(true);
+
+  /**
    * Om akse for labels skal vises (LWC, kornstørrelse, korntype osv).
-   * NB: Denne aksen fungerer ikke optimalt (labels kan overskrive hverandre) og er derfor default satt til false
-   * for nå.
+   * NB: showLabels overstyrer denne.
    */
   showLabelAxis = input(true);
 
@@ -94,12 +101,16 @@ export class SnowProfileComponent {
   showTooltips = !this.platform.is('mobile');
 
   /**
-   * Bredde - leses fra DOM etter første render
+   * Bredde for hele komponenten.
+   * Inkluderer evt kommentarer til høyre for plottet (tegnes uten SVG)
+   * leses fra DOM etter første render eller via ResizeObserver.
    */
   width = signal(0);
 
   /**
-   * Høyde - leses fra DOM etter første render
+   * Høyde for hele komponenten.
+   * Inkluderer evt labels under plottet (tegnes uten SVG)
+   * Leses fra DOM etter første render eller via ResizeObserver.
    */
   height = signal(0);
 
@@ -108,16 +119,13 @@ export class SnowProfileComponent {
   /**
    * Akse for labels i plottet. Vises under hardhets-akse, som [Tester LWC Kornstørrelse Kornform].
    */
-  labelAxis = viewChild<ElementRef<HTMLDivElement>>('labelaxis');
   labelAxisOffset = computed(() => this.x0() / this.scaleFactor());
   labelAxisWidth = computed(() => this.availableWidth() / this.scaleFactor());
-  labelAxisHeight = signal(0); // Oppdateres automatisk via ResizeObserver
-  private labelAxisObserver: ResizeObserver | null = null;
 
   /**
-   * Høyde for selve SVG plottet. Label Axis tegnes med HTML og må derfor trekkes fra.
+   * Høyde for selve SVG plottet. Leses fra DOM etter første render eller via ResizeObserver.
    */
-  plotHeight = computed(() => this.height() - this.labelAxisHeight());
+  plotHeight = signal(0);
 
   /**
    * Små profiler skaleres for å få plass til alt
@@ -174,11 +182,6 @@ export class SnowProfileComponent {
    * For svært små profiler skjules aksene
    */
   showAxis = computed(() => this.width() > 100 && this.plotHeight() > 200);
-
-  /**
-   * For svært små profiler skjules labels
-   */
-  showLabels = computed(() => this.width() > 200);
 
   /**
    * Minimum lagtykkelse i profilen. Må passe med fontstørrelse for labels.
@@ -558,29 +561,37 @@ export class SnowProfileComponent {
   });
 
   constructor() {
+    // CSSen setter at komponenten skal bruke all tilgjengelig bredde og høyde.
+    // Men SVG i seg selv er ikke responsivt, og for å lage et responsivt plott må vi ha tilgjengelig bredde og
+    // høyde for beregning av alt som har med plottet å gjøre.
+    // Her leser vi bredde og høyde fra DOM etter komponenten rendres første gangen (uten at plottet er laget enda).
     afterNextRender(() => {
-      // CSSen setter at komponenten skal bruke all tilgjengelig bredde og høyde.
-      // Men SVG i seg selv er ikke responsivt, og for å lage et responsivt plott må vi ha tilgjengelig bredde og
-      // høyde for beregning av alt som har plottet å gjøre.
-      // Her leser vi bredde og høyde fra DOM etter komponenten rendres første gangen (uten at plottet er laget enda).
-      this.width.set(this.elementRef.nativeElement.offsetWidth);
-      this.height.set(this.elementRef.nativeElement.offsetHeight);
+      const host = this.elementRef.nativeElement;
+      const svgContainer = this.svgContainer().nativeElement;
+
+      this.width.set(host.offsetWidth);
+      this.height.set(host.offsetHeight);
+      this.plotHeight.set(svgContainer.offsetHeight);
 
       // Lytt til evt endringer i bredde og høyde og oppdater
-      const hostObserver = new ResizeObserver(([entry]) => {
-        const { width, height } = entry.contentRect;
-        this.width.set(width);
-        this.height.set(height);
+      const resizeObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.target === host) {
+            const { width, height } = entry.contentRect;
+            this.width.set(width);
+            this.height.set(height);
+          } else if (entry.target === svgContainer) {
+            this.plotHeight.set(entry.contentRect.height);
+          }
+        }
 
         // Kommentarene kan endre høyde ved resize (tekst-wrapping)
         this.updateCommentHeights();
       });
 
-      hostObserver.observe(this.elementRef.nativeElement);
-      this.destroyRef.onDestroy(() => hostObserver.disconnect());
-
-      // Koble opp observer for label-axis (rendres utenfor @if, så elementet finnes allerede)
-      this.observeLabelAxis();
+      resizeObserver.observe(host);
+      resizeObserver.observe(svgContainer);
+      this.destroyRef.onDestroy(() => resizeObserver.disconnect());
 
       // Kommentarer rendres først etter at width/height er satt (de er inne i @if).
       // Les kommentarhøyder etter neste renderrunde.
@@ -594,27 +605,12 @@ export class SnowProfileComponent {
   }
 
   /**
-   * Observér label-axis elementet med ResizeObserver.
-   * Høyden kan endre seg pga font-size endringer (scaleFactor), tekst-wrapping osv.
-   * Ved å bruke ResizeObserver oppdateres labelAxisHeight automatisk når DOM-høyden endres.
-   */
-  private observeLabelAxis() {
-    if (this.labelAxisObserver || !this.showLabelAxis()) {
-      return;
-    }
-    const el = this.labelAxis()?.nativeElement;
-    if (!el) {
-      return;
-    }
-    this.labelAxisObserver = new ResizeObserver(([entry]) => {
-      this.labelAxisHeight.set(entry.contentRect.height);
-    });
-    this.labelAxisObserver.observe(el);
-    this.destroyRef.onDestroy(() => this.labelAxisObserver?.disconnect());
-  }
-
-  /**
-   * Finnes beste mulige y-posisjon for kommentarer som vises til høyre for snøprofilen
+   * Finner beste mulige y-posisjon for kommentarer som vises til høyre for snøprofilen.
+   * Algoritmen fungerer sånn her:
+   * - Ta utgangspunkt i "target y"-høyden (y-egenskap på kommentar)
+   * - Dytt alle overlappende kommentarer nedover sånn at ingen overlapper
+   * - Når vi kommer til bunnen, sett siste kommentar nederst og gå oppover igjen, sørg for at ingen overlapper på vei
+   *   oppover, dytt de som overlapper oppover
    */
   commentYPositions = computed(() => {
     const targetYsSvg = this.comments().map((c) => c.y);
@@ -651,6 +647,8 @@ export class SnowProfileComponent {
     }
 
     // Clamp first comment to top and re-do forward pass if needed
+    // JOLOKV: Tror egentlig ikke denne siste er nødvendig, men Claude mente det.
+    // Det er sjeldent mange kommentarer, så det gjør ikke så mye å ha den med.
     if (positions[0] < 0) {
       positions[0] = 0;
       for (let i = 1; i < n; i++) {

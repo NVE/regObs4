@@ -490,8 +490,8 @@ export function createDepthAxis(frame: PlotFrame, maxDepth: number, depthProject
   // Fjern elementer som nesten overlapper nederst på aksen
   const last = axis.at(-1);
   const nextLast = axis.at(-2);
-  if (last && nextLast && last.y1 - nextLast.y2 < 30) {
-    axis.pop();
+  if (last && nextLast && last.y1 - nextLast.y2 < 20) {
+    last.depth = '';
   }
   return axis;
 }
