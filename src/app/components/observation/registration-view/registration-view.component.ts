@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   template: `
     <h3>{{ header() }}</h3>
     <ng-content select="app-attachment-grid"></ng-content>
-    <ng-content>Her var det tomt!</ng-content>
+    <ng-content></ng-content>
   `,
   styles: `
     :host {
