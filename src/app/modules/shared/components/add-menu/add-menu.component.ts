@@ -1,5 +1,5 @@
 import { UpperCasePipe } from '@angular/common';
-import { Component, computed, inject, viewChild , ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, viewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   IonFab,

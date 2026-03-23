@@ -11,7 +11,7 @@ import {
   IonHeader,
   IonButtons,
 } from '@ionic/angular/standalone';
-import { Component , ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { map, chevronForward, walk } from 'ionicons/icons';

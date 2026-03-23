@@ -1,5 +1,5 @@
 import { IonListHeader, IonItem, IonRadioGroup, IonRadio, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, Input, Output, EventEmitter, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, inject, ChangeDetectionStrategy } from '@angular/core';
 import { KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Observable } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';

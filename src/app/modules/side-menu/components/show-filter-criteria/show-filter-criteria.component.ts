@@ -1,5 +1,5 @@
 import { IonChip, IonMenuToggle } from '@ionic/angular/standalone';
-import { Component, computed, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';

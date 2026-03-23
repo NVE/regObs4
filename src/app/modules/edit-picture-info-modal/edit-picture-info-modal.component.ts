@@ -1,4 +1,4 @@
-import { Component, inject, model , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, model, ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonInput,

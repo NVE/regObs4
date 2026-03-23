@@ -1,4 +1,4 @@
-import { Component, computed, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/core';
 import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
 import { auditTime, combineLatest, concatMap, Observable } from 'rxjs';
 import { FullscreenService } from '../../core/services/fullscreen/fullscreen.service';

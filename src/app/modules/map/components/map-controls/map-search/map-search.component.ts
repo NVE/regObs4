@@ -1,4 +1,4 @@
-import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ModalSearchPage } from '../../../pages/modal-search/modal-search.page';
 import { IonFab, IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';

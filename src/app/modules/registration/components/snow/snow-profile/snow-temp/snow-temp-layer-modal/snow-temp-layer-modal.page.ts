@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, linkedSignal, Signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal, Signal, ChangeDetectionStrategy } from '@angular/core';
 import { SnowTempObsModel } from 'src/app/modules/common-regobs-api';
 import {
   IonButton,

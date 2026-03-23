@@ -1,4 +1,4 @@
-import { Component, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { LowerCasePipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 

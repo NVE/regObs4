@@ -1,4 +1,4 @@
-import { Component, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { Summary } from 'src/app/modules/common-regobs-api/models';
 import { SummaryType } from '../../../core/models/summmary-type.enum';
 import { NgTemplateOutlet } from '@angular/common';

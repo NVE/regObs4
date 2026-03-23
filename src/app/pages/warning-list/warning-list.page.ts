@@ -1,4 +1,4 @@
-import { Component, inject, viewChildren, signal, computed , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, viewChildren, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { WarningService } from '../../core/services/warning/warning.service';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';

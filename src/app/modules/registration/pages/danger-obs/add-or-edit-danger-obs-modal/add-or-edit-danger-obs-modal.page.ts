@@ -1,4 +1,4 @@
-import { Component, inject, input, linkedSignal, computed , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, linkedSignal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { DangerObsEditModel } from 'src/app/modules/common-regobs-api/models';
 import {
   IonButton,

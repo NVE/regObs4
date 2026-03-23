@@ -1,4 +1,11 @@
-import { Component, inject, CUSTOM_ELEMENTS_SCHEMA, ElementRef, viewChild , ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  CUSTOM_ELEMENTS_SCHEMA,
+  ElementRef,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import {
   IonButton,

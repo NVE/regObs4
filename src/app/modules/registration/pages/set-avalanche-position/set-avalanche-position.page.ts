@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, inject, viewChild, input , ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, viewChild, input, ChangeDetectionStrategy } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
 import {
   IonButton,

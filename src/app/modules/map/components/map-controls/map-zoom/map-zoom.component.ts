@@ -1,5 +1,5 @@
 import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
-import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { MapZoomService } from '../../../services/map/map-zoom.service';
 import { addIcons } from 'ionicons';
 import { add, remove } from 'ionicons/icons';

@@ -42,9 +42,10 @@ export const getHttpErrorResponseMessageAndCode = (
       code = RegistrationDraftErrorCode.Unauthorized;
       break;
     default:
-      code = error.status >= HttpStatusCode.InternalServerError
-        ? RegistrationDraftErrorCode.ServerError
-        : RegistrationDraftErrorCode.Unknown;
+      code =
+        error.status >= HttpStatusCode.InternalServerError
+          ? RegistrationDraftErrorCode.ServerError
+          : RegistrationDraftErrorCode.Unknown;
   }
 
   return { code, message: error.message };

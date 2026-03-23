@@ -1,5 +1,5 @@
 import { IonLabel } from '@ionic/angular/standalone';
-import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';

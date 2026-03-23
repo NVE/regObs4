@@ -1,5 +1,5 @@
 import { IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
-import { Component, Output, EventEmitter, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, Output, EventEmitter, input, ChangeDetectionStrategy } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { HelpTextComponent } from '../help-text/help-text.component';
 import { NavigationButtonsComponent } from '../navigation-buttons/navigation-buttons.component';

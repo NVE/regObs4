@@ -1,4 +1,13 @@
-import { Component, OnInit, Renderer2, inject, viewChild, input, computed , ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Renderer2,
+  inject,
+  viewChild,
+  input,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import {
   DomController,
   IonBadge,

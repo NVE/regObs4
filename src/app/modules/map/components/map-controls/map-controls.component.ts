@@ -1,4 +1,4 @@
-import { Component, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { MapSearchComponent } from './map-search/map-search.component';
 import { FullscreenToggleComponent } from './fullscreen-toggle/fullscreen-toggle.component';
 import { GpsCenterComponent } from './gps-center/gps-center.component';

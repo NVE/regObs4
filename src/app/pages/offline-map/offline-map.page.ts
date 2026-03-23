@@ -1,4 +1,4 @@
-import { Component, inject, signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { OfflineMapService } from '../../core/services/offline-map/offline-map.service';
 import { OfflineMapPackage } from '../../core/services/offline-map/offline-map.model';
 import { HelperService } from '../../core/services/helpers/helper.service';

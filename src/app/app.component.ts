@@ -1,4 +1,4 @@
-import { Component, Injector, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, Injector, inject, ChangeDetectionStrategy } from '@angular/core';
 import { IonApp, IonMenu, IonRouterOutlet, Platform, isPlatform } from '@ionic/angular/standalone';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';

@@ -1,4 +1,4 @@
-import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UserGroupService } from '../../../../core/services/user-group/user-group.service';
 import { ObserverGroupDto, RegistrationEditModel } from 'src/app/modules/common-regobs-api/models';
 import { BasePage } from '../base.page';

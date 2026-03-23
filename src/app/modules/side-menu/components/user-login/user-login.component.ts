@@ -1,5 +1,5 @@
 import { IonItem, IonIcon, IonSpinner, IonText, IonLabel, IonRouterLink } from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy, inject, signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';

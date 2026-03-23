@@ -1,4 +1,4 @@
-import { Component, inject, viewChild, input, signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, viewChild, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
 import {
   IonButton,
