@@ -31,6 +31,7 @@ import { UpdateObservationsService } from 'src/app/modules/side-menu/components/
 import { ObservationImageCarouselComponent } from 'src/app/components/observation/observation-image-carousel/observation-image-carousel.component';
 import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { CarouselItems } from 'src/app/components/observation/observation-image-carousel/models';
 
 const DEBUG_TAG = 'ImageList';
 
@@ -152,12 +153,13 @@ export class ImageListComponent {
 
     const attachmentIndex = attachments.findIndex((attachment) => attachment.Url === attachmentUrl);
     const registration = await firstValueFrom(this.searchService.SearchSearch({ RegId: regId }));
+    const items: CarouselItems = attachments.map((a) => ({ type: 'Attachment', data: a }));
     const modal = await this.modalController.create({
       component: ObservationImageCarouselComponent,
       cssClass: 'fullscreen-modal',
       componentProps: {
-        attachmentIndex: attachmentIndex,
-        attachments: attachments,
+        index: attachmentIndex,
+        items,
         registration: registration[0],
       },
     });
