@@ -1,5 +1,5 @@
 import { IonGrid, IonItem, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, model, computed , ChangeDetectionStrategy } from '@angular/core';
+import { Component, model, computed, ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 
 const EMPTY_EXPOSITION = '00000000';

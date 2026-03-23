@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, input , ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,

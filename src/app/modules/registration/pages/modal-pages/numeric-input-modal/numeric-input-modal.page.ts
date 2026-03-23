@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, input, linkedSignal, computed , ChangeDetectionStrategy } from '@angular/core';
+import { Component, HostListener, inject, input, linkedSignal, computed, ChangeDetectionStrategy } from '@angular/core';
 import {
   IonButton,
   IonButtons,

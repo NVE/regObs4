@@ -1,4 +1,4 @@
-import { Component, inject, model, signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, model, signal, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   IonButton,

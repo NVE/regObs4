@@ -1,4 +1,4 @@
-import { Component, computed, model, signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, model, signal, ChangeDetectionStrategy } from '@angular/core';
 import { IonCol, IonGrid, IonItem, IonLabel, IonRow, IonText } from '@ionic/angular/standalone';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';

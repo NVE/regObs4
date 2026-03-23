@@ -1,5 +1,5 @@
 import { IonSpinner } from '@ionic/angular/standalone';
-import { Component, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 @Component({

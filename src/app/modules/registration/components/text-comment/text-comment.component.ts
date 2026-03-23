@@ -1,5 +1,5 @@
 import { IonItem, IonTextarea } from '@ionic/angular/standalone';
-import { Component, input, model, output , ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, model, output, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { UpperCasePipe } from '@angular/common';

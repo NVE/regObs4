@@ -1,5 +1,15 @@
 import { AsyncPipe } from '@angular/common';
-import { AfterViewChecked, Component, OnDestroy, OnInit, inject, signal, viewChild, DOCUMENT , ChangeDetectionStrategy } from '@angular/core';
+import {
+  AfterViewChecked,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+  signal,
+  viewChild,
+  DOCUMENT,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
 import {

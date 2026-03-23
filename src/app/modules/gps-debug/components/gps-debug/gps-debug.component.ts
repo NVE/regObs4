@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, viewChild, signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, viewChild, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject, of } from 'rxjs';
 import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switchMap } from 'rxjs/operators';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';

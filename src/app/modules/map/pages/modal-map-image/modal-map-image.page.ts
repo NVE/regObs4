@@ -1,4 +1,4 @@
-import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { IonContent, IonFabButton, IonIcon, ModalController } from '@ionic/angular/standalone';
 import { MapImageComponent } from '../../../map-image/map-image.component';
 import { addIcons } from 'ionicons';

@@ -46,7 +46,7 @@ export const settings: ISettings = {
       getObserverUrl: 'https://api.regobs.no/v6/Account/GetObserver',
       myPageUrl: 'https://konto.nve.no/User',
       updateObserverUrl: 'https://api.regobs.no/v6/Account/UpdateObserver',
-    }
+    },
   },
   observations: {
     maxObservationsToFetch: 5000,

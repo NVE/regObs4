@@ -1,5 +1,5 @@
 import { IonButton } from '@ionic/angular/standalone';
-import { Component, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { ExternalLinkService } from '../../../core/services/external-link/external-link.service';
 import { TranslatePipe } from '@ngx-translate/core';
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, inject , ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Component({
   selector: 'app-base64-image',

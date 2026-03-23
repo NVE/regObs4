@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject, signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import L from 'leaflet';
 import {
   IonBackButton,

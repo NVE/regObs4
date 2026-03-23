@@ -351,34 +351,34 @@
     "UNZIP_ERROR_MESSAGE_GENERIC": "Klarte ikke lagre kartpakke på disk. Vennligst prøv igjen. På iPhone/iPad må du ha Varsom-appen aktiv inntil kartpakka er lasted ned og pakket ut."
   },
   "PLANS": {
-    "TITLE": "Planer og spor",
+    "ADD_PLAN": "Legg til plan",
+    "ALERT_INFO": "Dette er en ny side for dine planleggingskart. Foreløpig kan du importere steder og spor fra GPX/GeoJSON-filer og vises disse i kartet. Vi planlegger mer funksjonalitet etter hvert, slik at du kan tegne dine egne steder og spor i kartet. Enn så lenge kan du bruke for eksempel https://gpx.studio/app eller https://geojson.io og så importere filene her. Send oss gjerne innspill på hvordan du syns planleggingssiden fungerer til regobs@nve.no.",
+    "COMMENT": "Kommentar",
+    "DATE_EDITED": "Sist lagret",
+    "DELETE": "Slett",
+    "EDIT": "Rediger",
+    "FILE_NAME": "Filnavn",
+    "GO_TO_DETAILS": "Gå til detaljer",
+    "GO_TO_MAP_EXTENT": "Gå til kartutsnitt",
     "IMPORT_BUTTON": {
       "CAPTION": "Importer GPX/GeoJSON-filer",
       "DROP_LABEL_DESKTOP": "Dra og slipp eller klikk for å legge til GPX/GeoJSON-filer",
       "DROP_LABEL_MOBILE": "Trykk for å legge til GPX/GeoJSON-filer"
     },
-    "DELETE": "Slett",
+    "LENGTH": "Lengde",
     "MISSING_COMMENT": "Beskrivelse/kommentar mangler",
     "MISSING_NAME": "Spor uten navn",
     "NAME": "Navn",
-    "SORT_TITLE": "Sortering",
-    "SORT_BY_NAME": "Navn",
-    "SORT_BY_TIME": "Sist lagret",
-    "DATE_EDITED": "Sist lagret",
     "SAVE": "Lagre",
     "SHOW": "Vis",
-    "SHOW_ONLY_VISIBLE_ON_MAP": "Kun synlige i kart",
     "SHOW_ALL": "Alle",
-    "FILE_NAME": "Filnavn",
-    "COMMENT": "Kommentar",
-    "VISIBLE_ON_MAP": "Vises i kart",
+    "SHOW_ONLY_VISIBLE_ON_MAP": "Kun synlige i kart",
+    "SORT_BY_NAME": "Navn",
+    "SORT_BY_TIME": "Sist lagret",
+    "SORT_TITLE": "Sortering",
+    "TITLE": "Planer og spor",
     "UPLOAD_FAILED": "Filen(e) '{{filenames}}' kunne ikke lastes opp. Sjekk at filene er i korrekt format ({{allowedFileExtensions}}) og at innholdet er gyldig.",
-    "EDIT": "Rediger",
-    "GO_TO_MAP_EXTENT": "Gå til kartutsnitt",
-    "ADD_PLAN": "Legg til plan",
-    "LENGTH": "Lengde",
-    "GO_TO_DETAILS": "Gå til detaljer",
-    "ALERT_INFO": "Dette er en ny side for dine planleggingskart. Foreløpig kan du importere steder og spor fra GPX/GeoJSON-filer og vises disse i kartet. Vi planlegger mer funksjonalitet etter hvert, slik at du kan tegne dine egne steder og spor i kartet. Enn så lenge kan du bruke for eksempel https://gpx.studio/app eller https://geojson.io og så importere filene her. Send oss gjerne innspill på hvordan du syns planleggingssiden fungerer til regobs@nve.no."
+    "VISIBLE_ON_MAP": "Vises i kart"
   },
   "POPUP_DISCLAMER": {
     "ABOUT_OBSERVATIONS": {
@@ -934,6 +934,20 @@
     "INPUT_TEXT": "Skriv inn kallenavn",
     "NICK": "Kallenavn"
   },
+  "SNOW_PROFILE": {
+    "DEPTH_AXIS_LABEL": "Dybde",
+    "GRAIN_FORM_AXIS_LABEL": "Kornform",
+    "GRAIN_SIZE_AXIS_LABEL": "Kornstørrelse",
+    "LABEL_GRAIN_FORM_PRIMARY_AND_SECONDARY": "Korntype: {{primary}} ({{secondary}})",
+    "LABEL_GRAIN_FORM_PRIMARY_ONLY": "Korntype: {{primary}}",
+    "LABEL_GRAIN_SIZE": "Kornstørrelse: {{value}}mm",
+    "LABEL_HARDNESS": "Hardhet: {{value}}",
+    "LABEL_HARDNESS_MISSING": "Hardhet: MANGLER VERDI",
+    "LABEL_THICKNESS": "Tykkelse: {{value}}cm",
+    "LABEL_WETNESS": "Snøfuktighet (LWC): {{value}}",
+    "TEMP_AXIS_LABEL": "Temperatur",
+    "TESTS_AXIS_LABEL": "Tester"
+  },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
       "HEADER": "Velg land",
@@ -1100,19 +1114,5 @@
     "TITLE_SNOW": "Snøskredvarsel",
     "TITLE_WATER": "Flom- og jordskredvarsel",
     "VALID_FROM": "Gyldig fra"
-  },
-  "SNOW_PROFILE": {
-    "LABEL_THICKNESS": "Tykkelse: {{value}}cm",
-    "LABEL_GRAIN_FORM_PRIMARY_AND_SECONDARY": "Korntype: {{primary}} ({{secondary}})",
-    "LABEL_GRAIN_FORM_PRIMARY_ONLY": "Korntype: {{primary}}",
-    "LABEL_GRAIN_SIZE": "Kornstørrelse: {{value}}mm",
-    "LABEL_HARDNESS": "Hardhet: {{value}}",
-    "LABEL_WETNESS": "Snøfuktighet (LWC): {{value}}",
-    "LABEL_HARDNESS_MISSING": "Hardhet: MANGLER VERDI",
-    "GRAIN_FORM_AXIS_LABEL": "Kornform",
-    "GRAIN_SIZE_AXIS_LABEL": "Kornstørrelse",
-    "TESTS_AXIS_LABEL": "Tester",
-    "DEPTH_AXIS_LABEL": "Dybde",
-    "TEMP_AXIS_LABEL": "Temperatur"
   }
 }

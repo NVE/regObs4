@@ -1,4 +1,4 @@
-import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import moment from 'moment';
 import { IonCol, IonGrid, IonLabel, IonRow, Platform } from '@ionic/angular/standalone';
 import { NgTemplateOutlet } from '@angular/common';

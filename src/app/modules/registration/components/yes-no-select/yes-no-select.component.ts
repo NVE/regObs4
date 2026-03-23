@@ -1,4 +1,4 @@
-import { Component, input, model , ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, model, ChangeDetectionStrategy } from '@angular/core';
 import { SelectOption } from '../../../shared/components/input/select/select-option.model';
 import { SelectComponent } from '../../../shared/components/input/select/select.component';
 

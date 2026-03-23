@@ -1,4 +1,4 @@
-import { Component, computed, inject, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';

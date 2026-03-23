@@ -1,4 +1,4 @@
-import { Component, computed, inject, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
 import { SnowTempModalPage } from './snow-temp-modal/snow-temp-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';

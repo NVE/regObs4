@@ -133,7 +133,7 @@ export interface ISettings {
   };
   previewEnvironment: {
     /** Start på URL til PR-bygg */
-    urlPrefix: string;  
+    urlPrefix: string;
     /** Bruk dette endepunktet i stedet for server_host i authConfig. Kun path-delen, ikke hele URL */
     serverHostProxyPath: string;
   };

@@ -1,4 +1,4 @@
-import { Component, inject, viewChild, computed, Signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, viewChild, computed, Signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   IonContent,
   IonHeader,

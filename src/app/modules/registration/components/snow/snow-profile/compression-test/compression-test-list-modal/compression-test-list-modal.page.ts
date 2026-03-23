@@ -1,4 +1,4 @@
-import { Component, inject, input, linkedSignal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api';
 import {
   IonButton,

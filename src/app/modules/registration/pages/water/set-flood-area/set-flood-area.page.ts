@@ -1,5 +1,5 @@
 import { IonToolbar, IonContent, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular/standalone';
-import { ChangeDetectorRef, Component, OnInit, inject, signal , ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import L from 'leaflet';
 import { Observable, Subject } from 'rxjs';
 import { FullscreenService } from 'src/app/core/services/fullscreen/fullscreen.service';

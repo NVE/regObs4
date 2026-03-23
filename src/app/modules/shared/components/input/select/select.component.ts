@@ -1,4 +1,4 @@
-import { Component, inject, input, model, computed, Signal , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, model, computed, Signal, ChangeDetectionStrategy } from '@angular/core';
 import {
   ActionSheetController,
   IonIcon,

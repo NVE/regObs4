@@ -1,4 +1,4 @@
-import { Component, inject, input , ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { ExternalLinkService } from '../../../../core/services/external-link/external-link.service';
 
 @Component({
