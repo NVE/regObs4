@@ -1,6 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
-import { CustomProperties, init } from '@plausible-analytics/tracker';
+import { CustomProperties, init, PlausibleRequestPayload } from '@plausible-analytics/tracker';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
@@ -27,12 +27,18 @@ export class AnalyticService {
   private geoHazard = toSignal(this.settings.currentGeoHazard$, { initialValue: [GeoHazard.NotSpecified] });
   private geoHazardProps = computed(() => this.geoHazard().toSorted().join(','));
 
+  private transformRequest(payload: PlausibleRequestPayload) {
+    // https://plausible.io/docs/stop-tracking-utm-tags
+    payload.u = queryStrippedUrl(); // Remove query params
+    return payload;
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addCustomProps(eventName: string): CustomProperties {
+  private addCustomProps(eventName: string): CustomProperties {
     return {
       appMode: this.appMode(),
       lang: this.langKey(),
-      gh: this.geoHazardProps(),
+      geohazard: this.geoHazardProps(),
       platform,
     };
   }
@@ -44,7 +50,12 @@ export class AnalyticService {
         customProperties: (eventName) => this.addCustomProps(eventName),
         outboundLinks: true,
         captureOnLocalhost: true,
+        transformRequest: (payload) => this.transformRequest(payload),
       });
     }
   }
+}
+
+function queryStrippedUrl() {
+  return location.href.split('?')[0];
 }
