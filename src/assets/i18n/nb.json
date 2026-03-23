@@ -528,6 +528,20 @@
       "TAKE_NEW_PHOTO": "Ta et nytt bilde",
       "TITLE": "Bilde og notat"
     },
+    "ORPHANED_ATTACHMENTS": {
+      "TITLE": "Bilder som ikke er knyttet til et skjema",
+      "DESCRIPTION": "Disse bildene er ikke knyttet til et spesifikt skjema. Klikk på et bilde for å slette det eller flytte det til riktig skjema.",
+      "DELETE_CONFIRM_TITLE": "Slett bilde?",
+      "DELETE_CONFIRM_MESSAGE": "Er du sikker på at du vil slette dette bildet?",
+      "EMPTY_MESSAGE": "Ingen bilder uten tilknytning funnet.",
+      "SUBTITLE_SINGULAR": "{{count}} bilde uten tilknytning",
+      "SUBTITLE_PLURAL": "{{count}} bilder uten tilknytning",
+      "CHOOSE_ACTION": "Velg hvilken handling du vil utføre med dette bildet:",
+      "DELETE_OPTION": "Slett bilde",
+      "MOVE_TO_PREFIX": "Flytt til",
+      "IMAGE_NUMBER": "Bilde {{current}} av {{total}}",
+      "WITH_COMMENT": "med kommentar"
+    },
     "GO_TO": "Gå til observasjon",
     "GROUP": {
       "SUBTITLE": "Del observasjonen med",
