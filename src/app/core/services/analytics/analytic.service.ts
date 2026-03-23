@@ -3,8 +3,8 @@ import { Capacitor } from '@capacitor/core';
 import { CustomProperties, init } from '@plausible-analytics/tracker';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { AppMode, GeoHazard } from '../../common-core/models';
-import { getLangKeyString } from '../../common-core/helpers';
+import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
+import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { environment } from 'src/environments/environment';
 
 const platform = Capacitor.getPlatform();

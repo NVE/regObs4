@@ -33,7 +33,7 @@ import { ConsoleLoggingService } from './modules/shared/services/logging/console
 import { LoggingService } from './modules/shared/services/logging/logging.service';
 import { SentryService } from './modules/shared/services/logging/sentry.service';
 import { OfflineMapTestService } from './core/services/offline-map/offline-map-test.service';
-import { AnalyticService } from './modules/analytics/services/analytic.service';
+import { AnalyticService } from './core/services/analytics/analytic.service';
 import { NewAttachmentService } from './modules/common-registration/registration.services';
 import FileAttachmentService from './modules/common-registration/services/add-new-attachment/file-attachment.service';
 import { WebAttachmentService } from './modules/common-registration/services/add-new-attachment/web-attachment.service';
