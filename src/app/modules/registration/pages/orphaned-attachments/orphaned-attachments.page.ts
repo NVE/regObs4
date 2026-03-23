@@ -168,9 +168,16 @@ export class OrphanedAttachmentsPage extends BasePage {
       return;
     }
 
-    const index = this.draft.registration.Attachments.findIndex(
-      (a) => a.AttachmentId === attachment.attachment.AttachmentId
-    );
+    const target = attachment.attachment;
+    const index = this.draft.registration.Attachments.findIndex((a) => {
+      if (a === target) {
+        return true;
+      }
+      if (target.AttachmentId != null) {
+        return a.AttachmentId === target.AttachmentId;
+      }
+      return false;
+    });
 
     if (index > -1) {
       this.draft.registration.Attachments.splice(index, 1);
@@ -183,7 +190,7 @@ export class OrphanedAttachmentsPage extends BasePage {
     const pleaseReset = await this.basePageService.confirmDelete();
     if (pleaseReset) {
       this.removeAllAttachments();
-      this.navContoller.navigateBack('registration/edit/' + this.draft.uuid);
+      this.navController.navigateBack('registration/edit/' + this.draft.uuid);
     }
     return pleaseReset;
   }
@@ -193,10 +200,8 @@ export class OrphanedAttachmentsPage extends BasePage {
       return;
     }
 
-    const orphaned = this.orphanedAttachments;
-    this.draft.registration.Attachments = this.draft.registration.Attachments.filter(
-      (a) => !orphaned.find((x) => x.AttachmentId === a.AttachmentId)
-    );
+    const orphaned = new Set(this.orphanedAttachments);
+    this.draft.registration.Attachments = this.draft.registration.Attachments.filter((a) => !orphaned.has(a));
     this.save();
   }
 
@@ -205,9 +210,16 @@ export class OrphanedAttachmentsPage extends BasePage {
       return;
     }
 
-    const index = this.draft.registration.Attachments.findIndex(
-      (a) => a.AttachmentId === attachment.attachment.AttachmentId
-    );
+    const target = attachment.attachment;
+    const index = this.draft.registration.Attachments.findIndex((a) => {
+      if (a === target) {
+        return true;
+      }
+      if (target.AttachmentId != null) {
+        return a.AttachmentId === target.AttachmentId;
+      }
+      return false;
+    });
 
     if (index > -1) {
       this.draft.registration.Attachments[index].RegistrationTID = registrationTid;

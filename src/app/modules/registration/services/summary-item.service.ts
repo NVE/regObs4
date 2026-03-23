@@ -147,10 +147,10 @@ export class SummaryItemService {
    * (dvs. bilder hvor RegistrationTID ikke er satt).
    * Dette er ofte bilder fra eksterne systemer som Elrapp/Easyroad.
    */
-  private async getOrphanedAttachmentsItem(
+  private getOrphanedAttachmentsItem(
     draft: RegistrationDraft,
     allAttachments: ExistingOrNewAttachment[]
-  ): Promise<ISummaryItem | undefined> {
+  ): ISummaryItem | undefined {
     const orphanedAttachments = allAttachments.filter((a) => a.attachment.RegistrationTID == null);
     const count = orphanedAttachments.length;
 
@@ -212,9 +212,9 @@ export class SummaryItemService {
     }
 
     // Legg til sammendragselement for bilder som ikke er knyttet til noe skjema (dvs. bilder hvor RegistrationTID ikke er satt)
-    const orphanedAttachmentsSummeryItem = await this.getOrphanedAttachmentsItem(draft, attachmentsToUse);
-    if (orphanedAttachmentsSummeryItem) {
-      summaryItems.push(orphanedAttachmentsSummeryItem);
+    const orphanedAttachmentsSummaryItem = this.getOrphanedAttachmentsItem(draft, attachmentsToUse);
+    if (orphanedAttachmentsSummaryItem) {
+      summaryItems.push(orphanedAttachmentsSummaryItem);
     }
 
     if (userGroupsToUse.length > 0) {
