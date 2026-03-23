@@ -9,12 +9,6 @@
 </ion-header>
 <ion-content>
   <div class="content">
-    @if (showAlert()) {
-      <nve-alert open closable showIcon="false" (sl-after-hide)="dismissAlert()">
-        {{ "PLANS.ALERT_INFO" | translate }}
-      </nve-alert>
-    }
-
     @if (numberOfPlans() > 1) {
       <div class="filter-panel">
         <nve-select
@@ -80,5 +74,11 @@
         </ng-template>
       </ngx-file-drop>
     </div>
+
+    @if (showAlert()) {
+      <nve-alert open closable showIcon="false" (sl-after-hide)="dismissAlert()">
+        {{ "PLANS.ALERT_INFO" | translate }}
+      </nve-alert>
+    }
   </div>
 </ion-content>
