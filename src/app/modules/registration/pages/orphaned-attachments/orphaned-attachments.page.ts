@@ -6,6 +6,7 @@ import {
   IonHeader,
   IonButtons,
   AlertController,
+  NavController,
 } from '@ionic/angular/standalone';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
@@ -48,6 +49,7 @@ export class OrphanedAttachmentsPage extends BasePage {
   private alertController = inject(AlertController);
   private translateService = inject(TranslateService);
   private kdvService = inject(KdvService);
+  private navContoller = inject(NavController);
 
   override registrationTid = undefined;
 
@@ -93,7 +95,7 @@ export class OrphanedAttachmentsPage extends BasePage {
       })),
       {
         type: 'radio' as const,
-        label: await this.translate('REGISTRATION.ORPHANED_ATTACHMENTS.DELETE_OPTION'),
+        label: this.translateService.instant('REGISTRATION.ORPHANED_ATTACHMENTS.DELETE_OPTION'),
         value: 'DELETE',
         cssClass: 'alert-radio-destructive',
       },
@@ -115,17 +117,15 @@ export class OrphanedAttachmentsPage extends BasePage {
 
     const alert = await this.alertController.create({
       header,
-      message: await this.translate('REGISTRATION.ORPHANED_ATTACHMENTS.CHOOSE_ACTION'),
+      message: this.translateService.instant('REGISTRATION.ORPHANED_ATTACHMENTS.CHOOSE_ACTION'),
       inputs,
-      cssClass: 'orphaned-attachment-alert',
       buttons: [
         {
-          text: await this.translate('DIALOGS.CANCEL'),
+          text: this.translateService.instant('DIALOGS.CANCEL'),
           role: 'cancel',
         },
         {
-          text: await this.translate('DIALOGS.OK'),
-          cssClass: 'alert-button-confirm',
+          text: this.translateService.instant('DIALOGS.OK'),
           handler: (selectedValue: string) => {
             if (selectedValue === 'DELETE') {
               this.confirmDeleteAttachment({ type: 'existing', attachment });
@@ -143,18 +143,16 @@ export class OrphanedAttachmentsPage extends BasePage {
 
   private async confirmDeleteAttachment(attachment: ExistingOrNewAttachment) {
     const alert = await this.alertController.create({
-      header: await this.translate('REGISTRATION.ORPHANED_ATTACHMENTS.DELETE_CONFIRM_TITLE'),
-      message: await this.translate('REGISTRATION.ORPHANED_ATTACHMENTS.DELETE_CONFIRM_MESSAGE'),
-      cssClass: 'orphaned-attachment-alert',
+      header: this.translateService.instant('REGISTRATION.ORPHANED_ATTACHMENTS.DELETE_CONFIRM_TITLE'),
+      message: this.translateService.instant('REGISTRATION.ORPHANED_ATTACHMENTS.DELETE_CONFIRM_MESSAGE'),
       buttons: [
         {
-          text: await this.translate('DIALOGS.CANCEL'),
+          text: this.translateService.instant('DIALOGS.CANCEL'),
           role: 'cancel',
         },
         {
-          text: await this.translate('DIALOGS.DELETE'),
+          text: this.translateService.instant('DIALOGS.DELETE'),
           role: 'destructive',
-          cssClass: 'alert-button-destructive',
           handler: () => {
             this.removeAttachment(attachment);
           },
@@ -179,6 +177,27 @@ export class OrphanedAttachmentsPage extends BasePage {
       this.save();
       this.cdr.markForCheck();
     }
+  }
+
+  override async reset(): Promise<boolean> {
+    const pleaseReset = await this.basePageService.confirmDelete();
+    if (pleaseReset) {
+      this.removeAllAttachments();
+      this.navContoller.navigateBack('registration/edit/' + this.draft.uuid);
+    }
+    return pleaseReset;
+  }
+
+  private removeAllAttachments() {
+    if (!this.draft.registration.Attachments) {
+      return;
+    }
+
+    const orphaned = this.orphanedAttachments;
+    this.draft.registration.Attachments = this.draft.registration.Attachments.filter(
+      (a) => !orphaned.find((x) => x.AttachmentId === a.AttachmentId)
+    );
+    this.save();
   }
 
   private moveAttachmentToForm(attachment: ExistingOrNewAttachment, registrationTid: RegistrationTid) {
@@ -246,11 +265,15 @@ export class OrphanedAttachmentsPage extends BasePage {
     return unknownRegistrationType;
   }
 
-  private async translate(key: string): Promise<string> {
-    return this.translateService.instant(key);
-  }
-
   override async isEmpty(): Promise<boolean> {
     return this.orphanedAttachments.length === 0;
+  }
+
+  protected override async delete(): Promise<void> {
+    if (await this.isEmpty()) {
+      return;
+    }
+    this.removeAllAttachments();
+    return;
   }
 }

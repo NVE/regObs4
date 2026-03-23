@@ -9,7 +9,7 @@
 </ion-header>
 
 <ion-content>
-  <app-registration-content-wrapper [draft]="draft">
+  <app-registration-content-wrapper [draft]="draft" (reset)="reset()">
     <div class="ion-padding description">
       {{ "REGISTRATION.ORPHANED_ATTACHMENTS.DESCRIPTION" | translate }}
     </div>
