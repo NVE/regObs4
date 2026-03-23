@@ -1,101 +1,50 @@
-import { inject, Injectable } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { filter, map, distinctUntilChanged } from 'rxjs/operators';
-import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
-import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';
-import { environment } from '../../../../environments/environment';
-import { AppCustomDimension } from '../enums/app-custom-dimension.enum';
-import { AppEventAction } from '../enums/app-event-action.enum';
-import { AppEventCategory } from '../enums/app-event-category.enum';
-import { removeOauthTokenFromUrl } from '../../shared/services/logging/url-utils';
+import { computed, inject, Injectable } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
+import { CustomProperties, init } from '@plausible-analytics/tracker';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { AppMode, GeoHazard } from '../../common-core/models';
+import { getLangKeyString } from '../../common-core/helpers';
+import { environment } from 'src/environments/environment';
 
-// In order to have IntelliSense on the custom events we need to declare Plausible on the global window element.
-// This code comes from https://www.lekoarts.de/garden/how-to-add-plausible-analytics-to-gatsby#typescript
-declare global {
-  interface Window {
-    plausible: (
-      name: string,
-      options?: { callback?: () => void; props?: { [key: string]: string | number | boolean } }
-    ) => void;
-  }
-}
+const platform = Capacitor.getPlatform();
 
-const DEBUG_TAG = 'AnalyticService';
 @Injectable({
   providedIn: 'root',
 })
 export class AnalyticService {
-  private router = inject(Router);
-  private loggingService = inject(LoggingService);
+  private settings = inject(UserSettingService);
 
-  private isTrackingOn(): boolean {
-    const url = new URL(window.location.href);
-    const isTestSite = ['test.regobs.no', 'demo.regobs.no'].includes(url.hostname);
-    return !!window.plausible && environment.production && !isTestSite;
-  }
-
-  trackView(url: string) {
-    if (!this.isTrackingOn()) return;
-    const safeUrl = removeOauthTokenFromUrl(url);
-    this.loggingService.debug(`Tracking pageview ${safeUrl}`, DEBUG_TAG);
-    window.plausible('Track view', { props: { safeUrl } });
-  }
-
-  trackDimension(dimension: AppCustomDimension, value: string | number | boolean) {
-    if (!this.isTrackingOn()) return;
-    this.loggingService.debug(`Tracking dimension ${dimension}: ${value}`, DEBUG_TAG);
-    window.plausible('Track dimension', { props: { [dimension]: value } });
-  }
-
-  trackEvent(eventCategory: AppEventCategory, eventAction: AppEventAction, eventLabel?: string, eventValue?: number) {
-    if (!this.isTrackingOn()) return;
-    this.loggingService.debug(
-      `Tracking event eventCategory:${eventCategory}, eventAction:${eventAction},` +
-        ` eventLabel:${eventLabel || ''}, eventValue: ${eventValue || ''}`,
-      DEBUG_TAG
-    );
-    const props: { [key: string]: string | number } = { eventCategory, eventAction };
-    if (eventLabel) {
-      props[eventLabel] = eventLabel;
+  private appMode = toSignal(this.settings.appMode$, { initialValue: AppMode.Prod });
+  private langKeyNumber = toSignal(this.settings.language$);
+  private langKey = computed(() => {
+    const lk = this.langKeyNumber();
+    if (lk) {
+      return getLangKeyString(lk);
     }
-    if (eventValue != null) {
-      props[eventValue] = eventValue;
-    }
-    window.plausible('Track event', { props });
+    return 'init';
+  });
+  private geoHazard = toSignal(this.settings.currentGeoHazard$, { initialValue: [GeoHazard.NotSpecified] });
+  private geoHazardProps = computed(() => this.geoHazard().toSorted().join(','));
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  addCustomProps(eventName: string): CustomProperties {
+    return {
+      appMode: this.appMode(),
+      lang: this.langKey(),
+      gh: this.geoHazardProps(),
+      platform,
+    };
   }
 
   init() {
-    if (!window.plausible) {
-      this.loggingService.log(
-        'Could not load Plausible script. Probably ad blocker installed.',
-        null,
-        LogLevel.Warning,
-        DEBUG_TAG
-      );
-      return;
-    }
-    if (!this.isTrackingOn()) {
-      this.loggingService.debug('Init Plausible (DEV/TEST-MODE! Analytics data is not sent to server!)', DEBUG_TAG);
-      return;
-    }
-    this.loggingService.debug('Init Plausible', DEBUG_TAG);
-    this.startTrackingPageViews();
-    // track platform
-    this.trackDimension(AppCustomDimension.platform, Capacitor.isNativePlatform() ? 'app' : 'web');
-    this.loggingService.debug('Plausible setup completed', DEBUG_TAG);
-  }
-
-  private startTrackingPageViews() {
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .pipe(
-        map((val: NavigationEnd) => val.urlAfterRedirects),
-        distinctUntilChanged()
-      )
-      .subscribe((url: string) => {
-        const safeUrl = removeOauthTokenFromUrl(url);
-        this.trackView(safeUrl);
+    if (environment.production) {
+      init({
+        domain: 'regobs.no',
+        customProperties: (eventName) => this.addCustomProps(eventName),
+        outboundLinks: true,
+        captureOnLocalhost: true,
       });
+    }
   }
 }
