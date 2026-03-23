@@ -663,14 +663,11 @@
           "TITLE": "Preizkusi"
         },
         "EAST": "V",
-        "GENERATING_PREVIEW": "Ustvarjanje predogleda...",
         "IS_PROFILE_TO_GROUND": "Je snežni profil izkopan do tal?",
         "NORTH": "S",
         "NORTH_EAST": "SV",
         "NORTH_WEST": "SZ",
         "PREVIEW": "Predogled",
-        "PREVIEW_ERROR": "Predogleda ni bilo mogoče ustvariti",
-        "PREVIEW_ITEM": "Pokaži snežni profil",
         "SLOPE_ANGLE": "Naklon površja",
         "SLOPE_ANGLE_PLACEHOLDER": "V stopinjah brez decimalk",
         "SNOW_DENSITY": {
