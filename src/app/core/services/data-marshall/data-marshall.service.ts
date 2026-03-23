@@ -2,11 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Platform } from '@ionic/angular/standalone';
 import { firstValueFrom, Subject, Subscription } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
-import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../settings';
-import { AppCustomDimension } from '../../../modules/analytics/enums/app-custom-dimension.enum';
-import { AnalyticService } from '../../../modules/analytics/services/analytic.service';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';
 import { OnReset } from '../../../modules/shared/interfaces/on-reset.interface';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
@@ -26,7 +22,6 @@ export class DataMarshallService implements OnReset {
   private platform = inject(Platform);
   private tripLoggerService = inject(TripLoggerService);
   private loggingService = inject(LoggingService);
-  private analyticService = inject(AnalyticService);
   private router = inject(Router);
 
   foregroundUpdateInterval?: number;
@@ -47,46 +42,10 @@ export class DataMarshallService implements OnReset {
 
   init(): void {
     this.subscriptions.push(
-      this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(([appMode, langKey, geoHazards]) => {
+      this.userSettingService.appModeLanguageAndCurrentGeoHazard$.subscribe(() => {
         this.loggingService.debug('AppMode, Language or CurrentGeoHazard has changed. Update warnings.', DEBUG_TAG);
-        this.analyticService.trackDimension(AppCustomDimension.language, LangKey[langKey]);
-        this.analyticService.trackDimension(AppCustomDimension.appMode, appMode);
-        this.analyticService.trackDimension(
-          AppCustomDimension.geoHazard,
-          geoHazards.map((gh) => GeoHazard[gh]).join(',')
-        );
         this.warningService.updateWarnings();
       })
-    );
-    this.subscriptions.push(
-      this.userSettingService.showMapCenter$.subscribe((showMapCenter) => {
-        this.analyticService.trackDimension(AppCustomDimension.showMapCenter, showMapCenter.toString());
-      })
-    );
-    this.subscriptions.push(
-      this.userSettingService.userSetting$
-        .pipe(
-          map((userSetting) => userSetting.topoMap),
-          distinctUntilChanged()
-        )
-        .subscribe((topoMap) => {
-          this.analyticService.trackDimension(AppCustomDimension.topoMap, topoMap);
-        })
-    );
-    this.subscriptions.push(
-      this.userSettingService.supportTiles$
-        .pipe(
-          map((st) =>
-            st
-              .filter((x) => x.enabled)
-              .map((x) => x.name)
-              .join(',')
-          ),
-          distinctUntilChanged()
-        )
-        .subscribe((supportMap) => {
-          this.analyticService.trackDimension(AppCustomDimension.supportMap, supportMap);
-        })
     );
     this.subscriptions.push(
       this.regobsAuthService.loggedInUser$.subscribe((user) => this.loggingService.setUser(user))

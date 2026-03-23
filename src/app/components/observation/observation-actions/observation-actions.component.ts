@@ -3,15 +3,11 @@ import { IonIcon, ModalController, ToastController } from '@ionic/angular/standa
 import { TranslatePipe } from '@ngx-translate/core';
 import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';
-import { AppEventCategory } from 'src/app/modules/analytics/enums/app-event-category.enum';
-import { AppEventAction } from 'src/app/modules/analytics/enums/app-event-action.enum';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService } from '@ngx-translate/core';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
-import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { settings } from 'src/settings';
 import { firstValueFrom } from 'rxjs';
 import { RouterLink } from '@angular/router';
@@ -32,8 +28,6 @@ import { addIcons } from 'ionicons';
  */
 export class ObservationActionsComponent {
   private userSettingService = inject(UserSettingService);
-  private analyticService = inject(AnalyticService);
-  private logger = inject(LoggingService);
   private toastController = inject(ToastController);
   private translateService = inject(TranslateService);
   modalController = inject(ModalController);
@@ -62,12 +56,6 @@ export class ObservationActionsComponent {
 
   async share(): Promise<void> {
     const url = this.registrationUrl();
-    this.analyticService.trackEvent(
-      AppEventCategory.Observations,
-      AppEventAction.Share,
-      url,
-      this.registration().RegId
-    );
     if (await this.canShareNative()) {
       Share.share({
         url,

@@ -22,15 +22,11 @@ import {
   IonRow,
 } from '@ionic/angular/standalone';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
-import { ExternalLinkService } from '../../core/services/external-link/external-link.service';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { settings } from '../../../settings';
 import moment from 'moment';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { WarningGroupFavouriteToggleComponent } from '../warning-group-favourite-toggle/warning-group-favourite-toggle.component';
-import { AnalyticService } from '../../modules/analytics/services/analytic.service';
-import { AppEventCategory } from '../../modules/analytics/enums/app-event-category.enum';
-import { AppEventAction } from '../../modules/analytics/enums/app-event-action.enum';
 import { from, of, Subject, timer } from 'rxjs';
 import { map, catchError, takeUntil, switchMap } from 'rxjs/operators';
 import { NgDestoryBase } from '../../core/helpers/observable-helper';
@@ -60,10 +56,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
   ],
 })
 export class WarningListItemComponent extends NgDestoryBase implements OnInit {
-  private externalLinkService = inject(ExternalLinkService);
   private userSettingService = inject(UserSettingService);
   private domCtrl = inject(DomController);
-  private analyticService = inject(AnalyticService);
   private renderer = inject(Renderer2);
 
   readonly warningGroup = input.required<WarningGroup>();
@@ -151,9 +145,5 @@ export class WarningListItemComponent extends NgDestoryBase implements OnInit {
       return LangKey.nb;
     }
     return LangKey.en;
-  }
-
-  trackAnalytics(group: WarningGroup) {
-    this.analyticService.trackEvent(AppEventCategory.Warnings, AppEventAction.Click, group.getKeyAsString());
   }
 }

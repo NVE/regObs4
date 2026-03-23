@@ -1,7 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom, Observable, Subject, tap, timeout } from 'rxjs';
-import { AppCustomDimension } from 'src/app/modules/analytics/enums/app-custom-dimension.enum';
-import { AnalyticService } from 'src/app/modules/analytics/services/analytic.service';
 import { LangKey } from 'src/app/modules/common-core/models';
 import { removeEmptyRegistrations } from 'src/app/modules/common-registration/registration.helpers';
 import { AttachmentUploadEditModel } from 'src/app/modules/common-registration/registration.models';
@@ -27,7 +25,6 @@ export class AddUpdateDeleteRegistrationService {
   private uploadAttachmentsService = inject(UploadAttachmentsService);
   private regobsApiRegistrationService = inject(RegistrationService);
   private userSettings = inject(UserSettingService);
-  private analytics = inject(AnalyticService);
   private logger = inject(LoggingService);
 
   private changedRegistrations = new Subject<{ reg: RegistrationViewModel; langKey: LangKey }>();
@@ -79,9 +76,6 @@ export class AddUpdateDeleteRegistrationService {
     const result = await firstValueFrom(this.regobsApiRegistrationService.RegistrationInsert(data));
 
     this.logger.debug('RegistrationInsert result', DEBUG_TAG, { result, externalReferenceId: draft.uuid });
-
-    // Track observation type in plausible
-    this.analytics.trackDimension(AppCustomDimension.observationType, draft.simpleMode ? 'simple' : 'normal');
 
     this.changedRegistrations.next({ reg: result, langKey });
     return result;
