@@ -1,6 +1,6 @@
 <ion-item-sliding (ionDrag)="onDrag()">
   <ion-item class="ion-no-padding" [detail]="isIceGeoHazard()" lines="full">
-    <a [href]="warningGroup().url || getUrl(warningGroup())" target="_blank" class="warning-group-link">
+    <a [href]="warningGroup().url || getUrl(warningGroup())" target="_blank" class="warning-group-link" rel="noopener">
       <div slot="start" class="geo-icon-circle">
         <app-geo-icon [geoHazards]="[warningGroup().key.geoHazard]"></app-geo-icon>
       </div>
@@ -15,7 +15,7 @@
             <ion-col>
               @if (warningGroup().getDayWarning(day); as warning) {
                 <ion-badge [color]="'warninglevel-' + warning.warningLevel">
-                  <a [href]="getUrl(warningGroup(), day)" target="_blank">
+                  <a [href]="getUrl(warningGroup(), day)" target="_blank" rel="noopener">
                     {{ warning.warningLevel > 0 ? warning.warningLevel : "?" }}
                     @if (warning.emergencyWarning) {
                       <ion-icon name="alert"></ion-icon>
