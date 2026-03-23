@@ -1,0 +1,29 @@
+<!-- Viser bilder som ikke hører til et skjema -->
+<ion-header>
+  <ion-toolbar appHeaderColor>
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ "REGISTRATION.ORPHANED_ATTACHMENTS.TITLE" | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <app-registration-content-wrapper [draft]="draft">
+    <div class="ion-padding description">
+      {{ "REGISTRATION.ORPHANED_ATTACHMENTS.DESCRIPTION" | translate }}
+    </div>
+
+    @if (orphanedAttachments.length > 0) {
+      <app-attachment-grid
+        class="attachment-list"
+        [attachments]="orphanedAttachments"
+        (attachmentClicked)="onAttachmentClick($event)"
+      ></app-attachment-grid>
+    } @else {
+      <div class="ion-padding">
+        {{ "REGISTRATION.ORPHANED_ATTACHMENTS.EMPTY_MESSAGE" | translate }}
+      </div>
+    }
+  </app-registration-content-wrapper>
+</ion-content>

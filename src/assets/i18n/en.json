@@ -529,6 +529,20 @@
       "TAKE_NEW_PHOTO": "Take a new photo",
       "TITLE": "Images and notes"
     },
+    "ORPHANED_ATTACHMENTS": {
+      "TITLE": "Unlinked images",
+      "DESCRIPTION": "These images are not linked to a specific form. Click on an image to delete or move it to the correct form.",
+      "DELETE_CONFIRM_TITLE": "Delete image?",
+      "DELETE_CONFIRM_MESSAGE": "Are you sure you want to delete this image? This action cannot be undone.",
+      "EMPTY_MESSAGE": "No unlinked images found.",
+      "SUBTITLE_SINGULAR": "{{count}} unlinked image",
+      "SUBTITLE_PLURAL": "{{count}} unlinked images",
+      "CHOOSE_ACTION": "Choose what to do with this image:",
+      "DELETE_OPTION": "Delete image",
+      "MOVE_TO_PREFIX": "Move to",
+      "IMAGE_NUMBER": "Image {{current}} of {{total}}",
+      "WITH_COMMENT": "with comment"
+    },
     "GO_TO": "Go to observation",
     "GROUP": {
       "SUBTITLE": "Share observation with",

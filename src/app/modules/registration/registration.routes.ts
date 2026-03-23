@@ -27,6 +27,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/general-comment/general-comment.page').then((m) => m.GeneralCommentPage),
   },
   {
+    path: 'orphaned-attachments/:id',
+    loadComponent: () =>
+      import('./pages/orphaned-attachments/orphaned-attachments.page').then((m) => m.OrphanedAttachmentsPage),
+  },
+  {
     path: 'ice/ice-cover/:id',
     loadComponent: () => import('./pages/ice/ice-cover/ice-cover.page').then((m) => m.IceCoverPage),
   },

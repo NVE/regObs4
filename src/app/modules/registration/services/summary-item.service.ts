@@ -31,6 +31,7 @@ import {
 } from '../../common-registration/registration.helpers';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';
 import { KdvService, NewAttachmentService } from '../../common-registration/registration.services';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  *
@@ -99,6 +100,7 @@ export class SummaryItemService {
   private userGroupService = inject(UserGroupService);
   private navController = inject(NavController);
   private kdv = inject(KdvService);
+  private translateService = inject(TranslateService);
 
   getSummaryItems$(uuid: string): Observable<ISummaryItem[]> {
     // Observables that only emits when the properties we need has changed
@@ -140,6 +142,36 @@ export class SummaryItemService {
     };
   }
 
+  /**
+   * Returnerer et sammendragselement for bilder som ikke er knyttet til noe skjema
+   * (dvs. bilder hvor RegistrationTID ikke er satt).
+   * Dette er ofte bilder fra eksterne systemer som Elrapp/Easyroad.
+   */
+  private async getOrphanedAttachmentsItem(
+    draft: RegistrationDraft,
+    allAttachments: ExistingOrNewAttachment[]
+  ): Promise<ISummaryItem> {
+    const orphanedAttachments = allAttachments.filter((a) => a.attachment.RegistrationTID == null);
+    const count = orphanedAttachments.length;
+    let subTitle = '';
+    if (count > 0) {
+      const translationKey =
+        count === 1
+          ? 'REGISTRATION.ORPHANED_ATTACHMENTS.SUBTITLE_SINGULAR'
+          : 'REGISTRATION.ORPHANED_ATTACHMENTS.SUBTITLE_PLURAL';
+      subTitle = this.translateService.instant(translationKey, { count });
+    }
+
+    return {
+      uuid: draft.uuid,
+      href: '/registration/orphaned-attachments',
+      title: 'REGISTRATION.ORPHANED_ATTACHMENTS.TITLE',
+      subTitle,
+      hasData: count > 0,
+      attachments: orphanedAttachments,
+    };
+  }
+
   private async getSummaryItems(
     draft: RegistrationDraft,
     userGroups?: ObserverGroupDto[],
@@ -173,6 +205,9 @@ export class SummaryItemService {
         )
       );
     }
+
+    // Legg til sammendragselement for bilder som ikke er knyttet til noe skjema (dvs. bilder hvor RegistrationTID ikke er satt)
+    summaryItems.push(await this.getOrphanedAttachmentsItem(draft, attachmentsToUse));
 
     if (userGroupsToUse.length > 0) {
       summaryItems.push({
