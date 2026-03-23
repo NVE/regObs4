@@ -32,7 +32,7 @@ export enum ExposedHeightType {
       }
 
       text {
-        fill: var(--safe-text-gray);
+        fill: var(--safe-text-gray, #666);
       }
     `,
   ],
