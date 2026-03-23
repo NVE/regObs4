@@ -150,9 +150,14 @@ export class SummaryItemService {
   private async getOrphanedAttachmentsItem(
     draft: RegistrationDraft,
     allAttachments: ExistingOrNewAttachment[]
-  ): Promise<ISummaryItem> {
+  ): Promise<ISummaryItem | undefined> {
     const orphanedAttachments = allAttachments.filter((a) => a.attachment.RegistrationTID == null);
     const count = orphanedAttachments.length;
+
+    if (count === 0) {
+      return undefined;
+    }
+
     let subTitle = '';
     if (count > 0) {
       const translationKey =
@@ -207,7 +212,10 @@ export class SummaryItemService {
     }
 
     // Legg til sammendragselement for bilder som ikke er knyttet til noe skjema (dvs. bilder hvor RegistrationTID ikke er satt)
-    summaryItems.push(await this.getOrphanedAttachmentsItem(draft, attachmentsToUse));
+    const orphanedAttachmentsSummeryItem = await this.getOrphanedAttachmentsItem(draft, attachmentsToUse);
+    if (orphanedAttachmentsSummeryItem) {
+      summaryItems.push(orphanedAttachmentsSummeryItem);
+    }
 
     if (userGroupsToUse.length > 0) {
       summaryItems.push({
