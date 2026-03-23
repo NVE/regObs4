@@ -352,7 +352,7 @@
   },
   "PLANS": {
     "ADD_PLAN": "Legg til plan",
-    "ALERT_INFO": "Dette er en ny side for dine planleggingskart. Foreløpig kan du importere steder og spor fra GPX/GeoJSON-filer og vises disse i kartet. Vi planlegger mer funksjonalitet etter hvert, slik at du kan tegne dine egne steder og spor i kartet. Enn så lenge kan du bruke for eksempel https://gpx.studio/app eller https://geojson.io og så importere filene her. Send oss gjerne innspill på hvordan du syns planleggingssiden fungerer til regobs@nve.no.",
+    "ALERT_INFO": "Her kan du importere punkter og spor fra GPX/GeoJSON-filer og vise dem i kartet. Filer du importerer på web synkroniseres foreløpig ikke til appen. Planer kan du lage i f.eks. https://gpx.studio/app eller https://geojson.io og så importere filene her. Send oss gjerne innspill til hvordan du synes planleggingssiden fungerer til regobs@nve.no",
     "COMMENT": "Kommentar",
     "DATE_EDITED": "Sist lagret",
     "DELETE": "Slett",

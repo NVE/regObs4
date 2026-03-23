@@ -353,7 +353,7 @@
   },
   "PLANS": {
     "ADD_PLAN": "Add plan",
-    "ALERT_INFO": "This is a new page for your planning maps. Currently, you can import places and tracks from GPX/GeoJSON files and display them on the map. We are planning more functionality over time, so you can draw your own tracks on the map. For now, you can use for example https://gpx.studio/app or https://geojson.io and then import the files here. Please send us feedback on how you think the planning page works to regobs@nve.no.",
+    "ALERT_INFO": "Here you can import points and tracks from GPX/GeoJSON files and display them on the map. Files you import on the web are currently not synchronized to the app. You can create plans in e.g. https://gpx.studio/app or https://geojson.io and then import the files here. Please send us feedback on how you think the planning page works to regobs@nve.no",
     "COMMENT": "Comment",
     "DATE_EDITED": "Last saved",
     "DELETE": "Delete",

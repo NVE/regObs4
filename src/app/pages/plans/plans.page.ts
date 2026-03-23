@@ -35,8 +35,8 @@ import { attachOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 
-const alertDismissedKey = 'regobs-plans-alert-dismissed';
 const DEBUG_TAG = 'plans';
+let showAlert = true;
 
 @Component({
   selector: 'app-plans',
@@ -75,7 +75,7 @@ export class PlansPage {
   acceptFileTypes = Capacitor.isNativePlatform() ? '*' : this.allowedFileExtensions.join(',');
 
   isMobile = this.platform.is('mobile') || this.platform.is('android') || this.platform.is('ios');
-  showAlert = signal(!localStorage.getItem(alertDismissedKey));
+  showAlert = signal(showAlert);
 
   sortValue = signal<'name' | 'date'>('date');
   visibilityFilter = signal<'all' | 'onlyVisibleOnMap'>('all');
@@ -94,7 +94,7 @@ export class PlansPage {
   }
 
   dismissAlert() {
-    localStorage.setItem(alertDismissedKey, 'true');
+    showAlert = false;
     this.showAlert.set(false);
   }
 
