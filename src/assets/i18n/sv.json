@@ -660,14 +660,11 @@
           "TITLE": "Tester"
         },
         "EAST": "O",
-        "GENERATING_PREVIEW": "Genererar förhandsvisning ..",
         "IS_PROFILE_TO_GROUND": "Är profilen grävd till marken?",
         "NORTH": "N",
         "NORTH_EAST": "NO",
         "NORTH_WEST": "NV",
         "PREVIEW": "Förhandsvisning",
-        "PREVIEW_ERROR": "Det gick inte att generera förhandsvisning",
-        "PREVIEW_ITEM": "Se snöprofil",
         "SLOPE_ANGLE": "Lutning",
         "SLOPE_ANGLE_PLACEHOLDER": "Endast hela grader",
         "SNOW_DENSITY": {

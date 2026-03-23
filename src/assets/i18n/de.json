@@ -429,11 +429,8 @@
           "SINGLE_TEST": "Test",
           "TITLE": "Tests"
         },
-        "GENERATING_PREVIEW": "Vorschau erstellen...",
         "IS_PROFILE_TO_GROUND": "Ist das Profil bis zum Boden gegraben?",
         "PREVIEW": "Vorschau",
-        "PREVIEW_ERROR": "Die Druckvorschau konnte nicht erstellt werden",
-        "PREVIEW_ITEM": "Schneeprofil anzeigen",
         "SNOW_DENSITY": {
           "CYLINDER": "Zylinder",
           "CYLINDER_DIAMETER": "Zylinderbohrungsdurchmesser (cm)",

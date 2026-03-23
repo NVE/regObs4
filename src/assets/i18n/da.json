@@ -603,14 +603,11 @@
           "TITLE": "Tests"
         },
         "EAST": "Ø",
-        "GENERATING_PREVIEW": "Genererer forhåndsvisning...",
         "IS_PROFILE_TO_GROUND": "Går profilen til grunden?",
         "NORTH": "N",
         "NORTH_EAST": "NØ",
         "NORTH_WEST": "NV",
         "PREVIEW": "Forhåndsvisning",
-        "PREVIEW_ERROR": "Kan ikke generere forhåndsvisning",
-        "PREVIEW_ITEM": "Se sneprofil",
         "SLOPE_ANGLE": "Stejlhed",
         "SLOPE_ANGLE_PLACEHOLDER": "Kun hele grader",
         "SNOW_DENSITY": {

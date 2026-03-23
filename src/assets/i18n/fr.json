@@ -563,14 +563,11 @@
           "TITLE": "Tests"
         },
         "EAST": "E",
-        "GENERATING_PREVIEW": "Génération de l'aperçu ...",
         "IS_PROFILE_TO_GROUND": "Le profil va-t-il jusqu'au sol ?",
         "NORTH": "N",
         "NORTH_EAST": "NE",
         "NORTH_WEST": "NW",
         "PREVIEW": "Aperçu",
-        "PREVIEW_ERROR": "Impossible de créer l'aperçu du tracé",
-        "PREVIEW_ITEM": "Afficher le profil du manteau neigeux",
         "SLOPE_ANGLE": "Angle de la pente",
         "SLOPE_ANGLE_PLACEHOLDER": "En degrés, nombre entier sans décimales",
         "SNOW_DENSITY": {
