@@ -49,7 +49,7 @@ export class OrphanedAttachmentsPage extends BasePage {
   private alertController = inject(AlertController);
   private translateService = inject(TranslateService);
   private kdvService = inject(KdvService);
-  private navContoller = inject(NavController);
+  private navController = inject(NavController);
 
   override registrationTid = undefined;
 
