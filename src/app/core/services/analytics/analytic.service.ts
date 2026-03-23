@@ -33,8 +33,7 @@ export class AnalyticService {
     return payload;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private addCustomProps(eventName: string): CustomProperties {
+  private addCustomProps(_eventName: string): CustomProperties {
     return {
       appMode: this.appMode(),
       lang: this.langKey(),
