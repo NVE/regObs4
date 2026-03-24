@@ -6,6 +6,7 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { environment } from 'src/environments/environment';
+import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 
 const platform = Capacitor.getPlatform();
 
@@ -14,6 +15,7 @@ const platform = Capacitor.getPlatform();
 })
 export class AnalyticService {
   private settings = inject(UserSettingService);
+  private auth = inject(RegobsAuthService);
 
   private appMode = toSignal(this.settings.appMode$, { initialValue: AppMode.Prod });
   private langKeyNumber = toSignal(this.settings.language$);
@@ -26,6 +28,17 @@ export class AnalyticService {
   });
   private geoHazard = toSignal(this.settings.currentGeoHazard$, { initialValue: [GeoHazard.NotSpecified] });
   private geoHazardProps = computed(() => this.geoHazard().toSorted().join(','));
+  private loggedInUser = toSignal(this.auth.loggedInUser$);
+  private isLoggedIn = computed(() => {
+    const loggedInUser = this.loggedInUser();
+    if (loggedInUser == undefined) {
+      return 'init';
+    }
+    if (loggedInUser.isLoggedIn) {
+      return 'yes';
+    }
+    return 'no';
+  });
 
   private transformRequest(payload: PlausibleRequestPayload) {
     // https://plausible.io/docs/stop-tracking-utm-tags
@@ -39,6 +52,8 @@ export class AnalyticService {
       lang: this.langKey(),
       geohazard: this.geoHazardProps(),
       platform,
+      loggedIn: this.isLoggedIn(),
+      browserLang: navigator.language,
     };
   }
 
