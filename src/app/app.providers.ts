@@ -42,6 +42,7 @@ import { Observable } from 'rxjs';
 import { AppMode } from './modules/common-core/models';
 import { provideWarningService } from './core/services/warning/provide-warning-service';
 import { ObserverTripsService } from './core/services/observer-trips/observer-trips.service';
+import { GeoJSONService } from './core/services/geojson/geojson.service';
 
 export class DynamicLocaleId extends String {
   constructor(protected service: TranslateService) {
@@ -109,6 +110,11 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
       return new TranslateHttpLoader(http, '../assets/i18n/', '.json?v5cache-bust');
     },
   },
+
+  provideAppInitializer(() => {
+    const geojson = inject(GeoJSONService);
+    return geojson.init();
+  }),
 
   // Initialiser ngx-translate og usersettings etter hverandre
   provideAppInitializer(() => {
