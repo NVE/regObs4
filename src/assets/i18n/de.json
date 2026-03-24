@@ -322,6 +322,9 @@
       "SHOW_DETAILS": "Details einblenden",
       "TITLE": "Beobachtungsort"
     },
+    "ORPHANED_ATTACHMENTS": {
+      "IMAGE_NUMBER": "Bild"
+    },
     "OVERVIEW": {
       "DATE_AND_TIME": "Datum und Zeit",
       "MY_OBSERVATION": "Meine Beobachtung",
@@ -430,6 +433,7 @@
           "TITLE": "Tests"
         },
         "IS_PROFILE_TO_GROUND": "Ist das Profil bis zum Boden gegraben?",
+        "NORTH": "N",
         "PREVIEW": "Vorschau",
         "SNOW_DENSITY": {
           "CYLINDER": "Zylinder",
@@ -587,6 +591,9 @@
     "HELP_TEXT": "Sie benötigen einen Nicknamen, um Varsom Regobs verwenden zu können. Der Nickname wird in Ihren Beobachtungen angezeigt.",
     "INPUT_TEXT": "Bitte geben Sie den Nicknamen ein",
     "NICK": "Nick"
+  },
+  "SNOW_PROFILE": {
+    "GRAIN_FORM_AXIS_LABEL": "Kristallform"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {

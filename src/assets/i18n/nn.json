@@ -34,8 +34,27 @@
     "TOGGLE_OBSERVATION_EXTRA_INFO": "Slå på for å sende inn observasjonar av situasjonen der du er - enkelt og raskt. Dette er veldig nyttig informasjon for varslinga og andre brukarar. \n\nSlå av for å få alle valg for innsending av observasjonar - som før.",
     "VIEW_WARNINGS": "Sjå varsel frå varsom.no"
   },
+  "COMPASS_DIRECTION": {
+    "EAST": "Aust",
+    "EAST_SHORT": "Ø",
+    "NORTH": "Nord",
+    "NORTH_EAST": "Nord-Aust",
+    "NORTH_EAST_SHORT": "NØ",
+    "NORTH_SHORT": "N",
+    "NORTH_WEST": "Nord-Vest",
+    "NORTH_WEST_SHORT": "NV",
+    "SOUTH": "Sør",
+    "SOUTH_EAST": "Sør-Aust",
+    "SOUTH_EAST_SHORT": "SØ",
+    "SOUTH_SHORT": "S",
+    "SOUTH_WEST": "Sør-Vest",
+    "SOUTH_WEST_SHORT": "SV",
+    "WEST": "Vest",
+    "WEST_SHORT": "V"
+  },
   "COMPETENCE": {
-    "UNKNOWN": "Ukjent kompetanse"
+    "UNKNOWN": "Ukjent kompetanse",
+    "UNKNOWN_SHORT": "Ukjent"
   },
   "DATA_LOAD": {
     "DATA": "Lastar data...",
@@ -80,6 +99,13 @@
     "W": "V"
   },
   "DRAFT": "Kladd",
+  "FILTER_DESCRIPTION": {
+    "FILTER": "Filter:",
+    "GEOHAZARD_TYPE_WITH_OBSERVATIONS_SUFFIX": "observasjonar",
+    "TIME_DESCRIPTION_SUBMITTED_AFTER": "Innsend etter {{datetime}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BEFORE": "Innsend før {{datetime}}.",
+    "TIME_DESCRIPTION_SUBMITTED_BETWEEN": "Innsend mellom {{from}} og {{to}}."
+  },
   "GEOLOCATION": {
     "POSITION_ERROR": {
       "INVALID": "Kan ikkje vise posisjonen din pga. ufullstendige posisjonsdata.",
@@ -100,6 +126,12 @@
   },
   "HELP": {
     "TITLE": "Hjelp"
+  },
+  "HOME_PAGE": {
+    "OBSERVATIONS_SEARCH_ERROR": {
+      "BUTTON": "Lukk",
+      "MESSAGE": "Fekk ikkje henta observasjonar. Prøv på nytt ved å zoome/panorere, eller bruk oppfrisk-knappen i filtermenyen."
+    }
   },
   "LEGAL_TERMS": {
     "HEADER": "Om data i Varsom",
@@ -148,6 +180,7 @@
   "MENU": {
     "ABOUT_REGOBS": "Om data i Varsom",
     "AND": "og",
+    "CONTACT_DESCRIPTION": "Vi har lagt ved loggfiler. Du kan fjerne desse vedlegga dersom du ikkje ønskjer å sende inn loggar.",
     "CONTACT_REGOBS": "Kontakt oss",
     "CONTACT_REGOBS_ERROR": "Rapporter feil",
     "CONTACT_SUBJECT": "Kontakt oss frå app",
@@ -162,6 +195,7 @@
     },
     "DAYS_BACK": "Dagar tilbake",
     "DAY_BACK": "Dag tilbake",
+    "DEACTIVATE_OBSERVATIONS": "Visning av observasjoner er deaktivert",
     "END_DATE": "Sluttdato",
     "ERROR_REPORT_DESCRIPTION": "Vær vennleg og beskriv feilen. Skjermbilete kan leggast ved. ",
     "ERROR_REPORT_SUBJECT": "Feilrapport frå",
@@ -172,6 +206,7 @@
     "MAP_LEGENDS": "Teiknforklaring for kart",
     "MAP_SETTINGS": "Kartval",
     "MAP_SETTINGS_FOR": "Kartval for",
+    "NO_EMAIL_APP": "E-post kan ikkje sendast, fordi vi ikkje får kontakt med e‑post-appen på telefonen. På iPhone må du ha appen ‘Mail’.",
     "OPACITY": "Gjennomsiktigheit",
     "OTHER": "Anna",
     "SHOW": "Vis",
@@ -206,6 +241,7 @@
     "MY_SENT_OBSERVATIONS": "Mine innsendte observasjonar",
     "NO_OBSERVATIONS": "Del dine observasjonar!",
     "NO_OBSERVATIONS_TEXT": "Her ligg observasjonar du sjølv har gjort. Det er lett å dele observasjonar, bilete og vurderingar med andre. ",
+    "OFFLINE": "Vi får ikkje henta observasjonar du har sendt inn. Har du nett?",
     "SENT_SUBTITLE": "Desse observasjonane er sendt inn og lagra i Regobs. ",
     "TITLE": "Mine observasjonar"
   },
@@ -465,6 +501,10 @@
       "SOURCE": "Kjelde",
       "TITLE": "Observasjonspunkt og -tid"
     },
+    "ORPHANED_ATTACHMENTS": {
+      "IMAGE_NUMBER": "Bilete",
+      "WITH_COMMENT": "med kommentar"
+    },
     "OVERVIEW": {
       "DATE_AND_TIME": "Dato og tid",
       "MY_OBSERVATION": "Min observasjon",
@@ -582,33 +622,34 @@
       },
       "SNOW_PROFILE": {
         "COMPRESSION_TEST": {
-          "ATTACHED": "Knytta til profilet",
+          "ATTACHED": "knytta til profilen",
           "EMPTY": "Ingen",
           "INCLUDE_IN_SNOW_PROFILE": "Inkluder i snøprofil",
           "MULTIPLE_TESTS": "testar",
           "SINGLE_TEST": "test",
           "TITLE": "Testar"
         },
+        "CONFIRM_CANCEL": "Dette vil slette alle endringar.",
         "EAST": "Ø",
         "IS_PROFILE_TO_GROUND": "Går profilet til bakken?",
         "NORTH": "N",
         "NORTH_EAST": "NØ",
         "NORTH_WEST": "NV",
-        "PREVIEW": "Forhåndsvising",
-        "SLOPE_ANGLE": "Helning",
+        "PREVIEW": "Førehandsvising",
+        "SLOPE_ANGLE": "Helling",
         "SLOPE_ANGLE_PLACEHOLDER": "Kun heile gradar",
         "SNOW_DENSITY": {
           "CYLINDER": "Sylinder",
           "CYLINDER_DIAMETER": "Sylinderdiameter (cm)",
-          "CYLINDER_METHOD": "Sylingerutrekning",
+          "CYLINDER_METHOD": "Sylinderutrekning",
           "DENSITY": "Tettleik (kg/m³)",
           "EMPTY": "Ingen tettleiksprofilar",
-          "HEIGHT": "Høgde (cm)",
+          "HEIGHT": "Høgd (cm)",
           "LAYER": "Lag",
           "METHOD": "Metode",
           "MULTIPLE_LAYERS": "tettleiksprofilar",
           "ONE_LAYER": "tettleiksprofil lagt til",
-          "TARE_WEIGHT": "Vekt av posen og ev. røyr (g)",
+          "TARE_WEIGHT": "Vekt av posen og evt. røyr (g)",
           "TITLE": "Tettleik",
           "WATER_EQUIVALENT": "Vassekvivalent",
           "WEIGHT": "Vekt (g)"
@@ -640,7 +681,7 @@
           "LAYER": "Lag",
           "MAX_GRAIN_SIZE": "Maks kornstorleik (mm)",
           "MULTIPLE_LAYERS": "lagdelinger observert",
-          "NO_PROFILES_FOUND": "Ingen tidligere lagdelinger funne",
+          "NO_PROFILES_FOUND": "Ingen tidlegare lagdelingar funne",
           "ONE_LAYER": "lagdeling observert",
           "OTHER_PROFILE_DESCRIPTION": "Du kan velje å kopiere laga frå andre profilar, registrert innanfor 100 km dei siste 14 dagane.",
           "OTHER_PROFILE_ITEM_TEXT": "Hent lagdeling frå ein annan profil",
@@ -648,6 +689,7 @@
           "SHOW_MORE": "Vis fleire val",
           "SIZE": "Kornstorleik (mm)",
           "THICKNESS": "Tjukkleik (cm)",
+          "THICKNESS_VALIDATION": "Tjukna må vere meir enn 0.",
           "TITLE": "Lagdeling",
           "TOTAL_THICKNESS": "Total tjukkleik",
           "WETNESS": "Fuktigheit"
@@ -655,7 +697,7 @@
         "SUBFORMS": "Underskjema",
         "SUPERIOR": "Overordna",
         "TITLE": "Snøprofil",
-        "VALID_EXPOSITION": "Eksposisjon",
+        "VALID_EXPOSITION": "Himmelretning",
         "WEST": "V"
       },
       "SNOW_SURFACE": {
@@ -760,6 +802,20 @@
     "HELP_TEXT": "Du må legge til eit kallenamn. Kallenamnet vert vist i dine observasjonar.",
     "INPUT_TEXT": "Skriv inn kallenamn",
     "NICK": "Kallenamn"
+  },
+  "SNOW_PROFILE": {
+    "DEPTH_AXIS_LABEL": "Djupn",
+    "GRAIN_FORM_AXIS_LABEL": "Kornform",
+    "GRAIN_SIZE_AXIS_LABEL": "Kornstorleik",
+    "LABEL_GRAIN_FORM_PRIMARY_AND_SECONDARY": "Korntype: {{primary}} ({{secondary}})",
+    "LABEL_GRAIN_FORM_PRIMARY_ONLY": "Korntype: {{primary}}",
+    "LABEL_GRAIN_SIZE": "Kornstorleik: {{value}}mm",
+    "LABEL_HARDNESS": "Hardheit: {{value}}",
+    "LABEL_HARDNESS_MISSING": "Hardheit: MANGLAR VERDI",
+    "LABEL_THICKNESS": "Tjukne: {{value}}cm",
+    "LABEL_WETNESS": "Snøfuktigheit (LWC): {{value}}",
+    "TEMP_AXIS_LABEL": "Temperatur",
+    "TESTS_AXIS_LABEL": "Testar"
   },
   "START_WIZARD": {
     "CHOOSE_COUNTRY": {
