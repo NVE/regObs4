@@ -1,14 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  CUSTOM_ELEMENTS_SCHEMA,
-  ElementRef,
-  inject,
-  input,
-  OnDestroy,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input } from '@angular/core';
 import { IonChip, IonIcon, IonLabel, ModalController } from '@ionic/angular/standalone';
 import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
@@ -73,13 +63,19 @@ const DEBUG_TAG = 'ObservationComponent';
   styleUrl: './observation.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  host: {
+    // Eventen trigges når browseren mener komponenten begynner å bli relevant for brukeren (skipped=false),
+    // eller slutter å være relevant (skipped=true).
+    // For å unngå å hente/rendre snøprofiler og bildekarusell for tidlig bruker vi denne eventen for å
+    // kun rendre innholdet når det er relevant.
+    // Dette er et alternativ til IntersectionObserver som vi brukte før.
+    '(contentvisibilityautostatechange)': 'visibilityChange($event)',
+  },
 })
-export class ObservationComponent implements AfterViewInit, OnDestroy {
+export class ObservationComponent {
   private logger = inject(LoggingService);
   private translateService = inject(TranslateService);
-  private elementRef = inject(ElementRef);
   private imageCarousel = injectImageCarousel();
-  private intersectionObserver?: IntersectionObserver;
 
   modalController = inject(ModalController);
 
@@ -116,31 +112,22 @@ export class ObservationComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  visibilityChange(event: Event) {
+    const skipped = (event as ContentVisibilityAutoStateChangeEvent).skipped;
+    if (skipped === false) {
+      this.isVisible$.next(true);
+    } else {
+      this.isVisible$.next(false);
+    }
+  }
+
   // For å håndtere veldig kjapp scrolling oppover sluser vi eventene via en subject med en debounce
-  // Da vil forhåpentligvis de observasjonskortene som bare scrolles superkjapt forbi ikke rendre swiper
+  // Da vil forhåpentligvis de bildekarusellene som bare scrolles superkjapt forbi ikke rendre swiper
   // i det hele tatt.
   // Etter å ha lagt til dette fikk jeg ikke lenger sporadiske kræsj ved superhurtig scrolling,
   // men bør sikkert testes mer.
   private isVisible$ = new Subject<boolean>();
   isVisible = toSignal(this.isVisible$.pipe(debounceTime(100)), { initialValue: false });
-
-  ngAfterViewInit(): void {
-    this.intersectionObserver = new IntersectionObserver(
-      ([entry]) => {
-        this.isVisible$.next(entry.isIntersecting);
-      },
-      {
-        root: null,
-        threshold: 0.1,
-      }
-    );
-
-    this.intersectionObserver.observe(this.elementRef.nativeElement);
-  }
-
-  ngOnDestroy(): void {
-    this.intersectionObserver?.disconnect(); // Vet ikke om denne er nødvendig
-  }
 
   setFallbackImage(attachment: AttachmentViewModel) {
     if (!attachment.UrlFormats) {

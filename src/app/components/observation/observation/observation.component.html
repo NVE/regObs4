@@ -1,4 +1,6 @@
 <!-- Et observasjonskort. Viser data fra en observasjon, et miniatyrkart over posisjonen og bilder i en karusell -->
+@let reg = registration();
+
 <div class="swiper-wrapper">
   @if (isVisible()) {
     <swiper-container
@@ -43,7 +45,7 @@
 
 <div class="content">
   <app-registration-header>
-    {{ registration().ObsLocation.Title }}
+    {{ reg.ObsLocation.Title }}
   </app-registration-header>
   <div>
     <ion-chip color="primary" disabled>
@@ -53,7 +55,7 @@
         >:</ion-label
       >
       <ion-label>
-        {{ registration().DtObsTime | date: "short" }}
+        {{ reg.DtObsTime | date: "short" }}
       </ion-label>
     </ion-chip>
 
@@ -64,28 +66,26 @@
           ><b> {{ "REGISTRATION.CARD.TIME.UPDATED" | translate }}</b
           >:</ion-label
         >
-        <ion-label> {{ registration().DtChangeTime | date: "short" }}</ion-label>
+        <ion-label> {{ reg.DtChangeTime | date: "short" }}</ion-label>
       } @else {
         <ion-label
           ><b> {{ "REGISTRATION.CARD.TIME.REGISTERED" | translate }}</b
           >:</ion-label
         >
-        <ion-label> {{ registration().DtRegTime | date: "short" }}</ion-label>
+        <ion-label> {{ reg.DtRegTime | date: "short" }}</ion-label>
       }
     </ion-chip>
 
-    <app-geohazard-chip [registration]="registration()"></app-geohazard-chip>
+    <app-geohazard-chip [registration]="reg"></app-geohazard-chip>
 
     <ion-chip color="primary" disabled>
       <ion-icon name="location-outline"></ion-icon>
-      <ion-label>
-        {{ registration().ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }}
-      </ion-label>
+      <ion-label> {{ reg.ObsLocation.Height }} {{ "MAP_CENTER_INFO.ABOVE_SEA_LEVEL" | translate }} </ion-label>
     </ion-chip>
 
-    <app-observer-chip [observer]="registration().Observer"></app-observer-chip>
+    <app-observer-chip [observer]="reg.Observer"></app-observer-chip>
 
-    @if (registration().ObserverGroupName; as group) {
+    @if (reg.ObserverGroupName; as group) {
       <ion-chip color="primary" disabled>
         <ion-icon name="people-circle-outline"></ion-icon>
         <ion-label>{{ group }}</ion-label>
@@ -94,8 +94,6 @@
   </div>
 
   <!-- #region skjemaliste -->
-  @let reg = registration();
-
   @if (hasData(reg.DangerObs)) {
     <h3>{{ "REGISTRATION.DANGER_OBS.TITLE" | translate }}</h3>
     <app-summary [summaries]="getSummaries(reg, RegistrationTid.DangerObs)"></app-summary>
