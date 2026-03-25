@@ -180,7 +180,10 @@ export class HomePage extends RouterPage implements OnInit, AfterViewChecked, On
     });
 
     this.userSettingService.appMode$.subscribe(() => (this.shouldSearchResultUpdateOnEnter = true));
-    this.isFetchingObservations$ = this.isFetchingObservations.asObservable();
+    // I appen laster observasjoner ekstremt raskt om offlinedatabasen er aktiv,
+    // debounce hindrer loading-spinneren i bare "flimre" på skjermen når lastinga
+    // er veldig rask.
+    this.isFetchingObservations$ = this.isFetchingObservations.asObservable().pipe(debounceTime(100));
     this.showObservations$ = this.userSettingService.showObservations$;
 
     this.refreshRequested$ = this.updateObservationsService.refreshRequested$.pipe(
