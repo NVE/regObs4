@@ -38,6 +38,7 @@ import { SnowProfileComponent } from '../../snow-profile/snow-profile.component'
 import { CarouselItems } from '../observation-image-carousel/models';
 
 const DEBUG_TAG = 'ObservationComponent';
+const isVisibleInitialValue = CSS.supports('content-visibility: auto') ? false : true;
 
 @Component({
   selector: 'app-observation',
@@ -127,7 +128,7 @@ export class ObservationComponent {
   // Etter å ha lagt til dette fikk jeg ikke lenger sporadiske kræsj ved superhurtig scrolling,
   // men bør sikkert testes mer.
   private isVisible$ = new Subject<boolean>();
-  isVisible = toSignal(this.isVisible$.pipe(debounceTime(100)), { initialValue: false });
+  isVisible = toSignal(this.isVisible$.pipe(debounceTime(100)), { initialValue: isVisibleInitialValue });
 
   setFallbackImage(attachment: AttachmentViewModel) {
     if (!attachment.UrlFormats) {
