@@ -55,7 +55,7 @@ export class AnalyticService {
       platform,
       loggedIn: this.isLoggedIn(),
       browserLang: navigator.language,
-      v: version,
+      version,
     };
   }
 
