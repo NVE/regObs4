@@ -7,6 +7,7 @@ import { AppMode, GeoHazard } from 'src/app/modules/common-core/models';
 import { getLangKeyString } from 'src/app/modules/common-core/helpers';
 import { environment } from 'src/environments/environment';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
+import { version } from 'src/environments/version.json';
 
 const platform = Capacitor.getPlatform();
 
@@ -54,6 +55,7 @@ export class AnalyticService {
       platform,
       loggedIn: this.isLoggedIn(),
       browserLang: navigator.language,
+      v: version,
     };
   }
 
