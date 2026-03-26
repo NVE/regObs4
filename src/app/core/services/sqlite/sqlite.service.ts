@@ -356,60 +356,74 @@ export class SqliteService {
   async readRegistrationsSyncTime(appMode: AppMode, lang: LangKey) {
     return this.withConnection(async (conn) => {
       this.logger.debug('Reading sync time', DEBUG_TAG, { appMode });
-      const result = await conn.query(
-        `SELECT * FROM registration_sync_time WHERE app_mode='${appMode}' AND lang=${lang};`
-      );
+      const result = await conn.query(`SELECT * FROM registration_sync_time WHERE app_mode=? AND lang=?;`, [
+        appMode,
+        lang,
+      ]);
       this.logger.debug('Sync time', DEBUG_TAG, { result });
       return result.values?.[0]?.sync_time_ms;
     });
   }
 
-  private searchCriteriaToWhere(searchCriteria: SearchCriteria): string {
-    const where = [];
+  private searchCriteriaToWhere(searchCriteria: SearchCriteria): { clause: string; params: unknown[] } {
+    const conditions: string[] = [];
+    const params: unknown[] = [];
+
     if (searchCriteria.LangKey != null) {
-      where.push(`lang = ${searchCriteria.LangKey}`);
+      conditions.push(`lang = ?`);
+      params.push(searchCriteria.LangKey);
     }
     if (searchCriteria.RegId != null) {
-      where.push(`reg_id = ${searchCriteria.RegId}`);
+      conditions.push(`reg_id = ?`);
+      params.push(searchCriteria.RegId);
     }
     if (searchCriteria?.SelectedGeoHazards?.length) {
-      where.push(`geo_hazard IN (${searchCriteria.SelectedGeoHazards.join(',')})`);
+      const placeholders = searchCriteria.SelectedGeoHazards.map(() => '?').join(',');
+      conditions.push(`geo_hazard IN (${placeholders})`);
+      params.push(...searchCriteria.SelectedGeoHazards);
     }
     if (searchCriteria.ObserverId != null) {
-      where.push(`observer_id = ${searchCriteria.ObserverId}`);
+      conditions.push(`observer_id = ?`);
+      params.push(searchCriteria.ObserverId);
     }
     if (searchCriteria.ObserverNickName?.length) {
-      where.push(`observer_nick LIKE '%${searchCriteria.ObserverNickName}%'`);
+      conditions.push(`observer_nick LIKE ?`);
+      params.push(`%${searchCriteria.ObserverNickName}%`);
     }
     if (searchCriteria.FromDtObsTime?.length) {
-      const fromTime = moment(searchCriteria.FromDtObsTime).valueOf();
-      where.push(`obs_time >= ${fromTime}`);
+      conditions.push(`obs_time >= ?`);
+      params.push(moment(searchCriteria.FromDtObsTime).valueOf());
     }
     if (searchCriteria.FromDtChangeTime?.length) {
-      const fromTime = moment(searchCriteria.FromDtChangeTime).valueOf();
-      where.push(`change_time >= ${fromTime}`);
+      conditions.push(`change_time >= ?`);
+      params.push(moment(searchCriteria.FromDtChangeTime).valueOf());
     }
     if (searchCriteria.Extent?.BottomRight?.Latitude != null) {
-      where.push(`lat >= ${searchCriteria.Extent.BottomRight.Latitude}`);
+      conditions.push(`lat >= ?`);
+      params.push(searchCriteria.Extent.BottomRight.Latitude);
     }
     if (searchCriteria.Extent?.BottomRight?.Longitude != null) {
-      where.push(`lon <= ${searchCriteria.Extent.BottomRight.Longitude}`);
+      conditions.push(`lon <= ?`);
+      params.push(searchCriteria.Extent.BottomRight.Longitude);
     }
     if (searchCriteria.Extent?.TopLeft?.Latitude != null) {
-      where.push(`lat <= ${searchCriteria.Extent.TopLeft.Latitude}`);
+      conditions.push(`lat <= ?`);
+      params.push(searchCriteria.Extent.TopLeft.Latitude);
     }
     if (searchCriteria.Extent?.TopLeft?.Longitude != null) {
-      where.push(`lon >= ${searchCriteria.Extent.TopLeft.Longitude}`);
+      conditions.push(`lon >= ?`);
+      params.push(searchCriteria.Extent.TopLeft.Longitude);
     }
     if (searchCriteria.ObserverCompetence?.length) {
-      where.push(`observer_competence IN (${searchCriteria.ObserverCompetence.join(',')})`);
+      const placeholders = searchCriteria.ObserverCompetence.map(() => '?').join(',');
+      conditions.push(`observer_competence IN (${placeholders})`);
+      params.push(...searchCriteria.ObserverCompetence);
     }
 
-    if (where.length) {
-      return where.join(' AND ');
-    } else {
-      return '1 = 1';
-    }
+    return {
+      clause: conditions.length ? conditions.join(' AND ') : '1 = 1',
+      params,
+    };
   }
 
   private getOrderBy(searchCriteria: SearchCriteria): string {
@@ -421,30 +435,30 @@ export class SqliteService {
       throw new Error('No connection created');
     }
     const twoWeeksAgo = moment().subtract(14, 'days').valueOf();
-    const statement = `DELETE FROM registration WHERE reg_time < ${twoWeeksAgo};`;
+    const statement = `DELETE FROM registration WHERE reg_time < ?;`;
     this.logger.debug('Cleanup registrations', DEBUG_TAG, { statement });
-    const result = await this.conn.execute(statement);
+    const result = await this.conn.run(statement, [twoWeeksAgo]);
     this.logger.debug('DELETE result', DEBUG_TAG, { result });
   }
 
-  private parseLimit(c: SearchCriteria) {
+  private parseLimit(c: SearchCriteria): { clause: string; params: unknown[] } {
     if (c.NumberOfRecords && c.Offset) {
-      return `LIMIT ${c.NumberOfRecords} OFFSET ${c.Offset}`;
+      return { clause: 'LIMIT ? OFFSET ?', params: [c.NumberOfRecords, c.Offset] };
     } else if (c.NumberOfRecords) {
-      return `LIMIT ${c.NumberOfRecords}`;
+      return { clause: 'LIMIT ?', params: [c.NumberOfRecords] };
     }
-    return '';
+    return { clause: '', params: [] };
   }
 
   async selectRegistrations(searchCriteria: SearchCriteria, appMode: AppMode): Promise<RegistrationViewModel[]> {
     return this.withConnection(async (conn) => {
       const where = this.searchCriteriaToWhere(searchCriteria);
       const orderBy = this.getOrderBy(searchCriteria);
-      const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY ${orderBy} DESC ${this.parseLimit(
-        searchCriteria
-      )};`;
+      const limit = this.parseLimit(searchCriteria);
+      const statement = `SELECT data FROM registration WHERE ${where.clause} AND app_mode=? ORDER BY ${orderBy} DESC ${limit.clause};`;
+      const params = [...where.params, appMode, ...limit.params];
       this.logger.debug('Query', DEBUG_TAG, { statement, searchCriteria });
-      const result = await conn.query(statement);
+      const result = await conn.query(statement, params);
       // The data property contains the json as a string
       const registrations = (result?.values || []).map((value) => JSON.parse(value.data));
       this.logger.debug('Query result', DEBUG_TAG, { n: registrations.length });
@@ -455,9 +469,10 @@ export class SqliteService {
   async getRegistrationCount(searchCriteria: SearchCriteria, appMode: AppMode): Promise<number> {
     return this.withConnection(async (conn) => {
       const where = this.searchCriteriaToWhere(searchCriteria);
-      const statement = `SELECT COUNT(*) AS reg_count FROM registration WHERE ${where} AND app_mode='${appMode}'`;
+      const statement = `SELECT COUNT(*) AS reg_count FROM registration WHERE ${where.clause} AND app_mode=?`;
+      const params = [...where.params, appMode];
       this.logger.debug('Count', DEBUG_TAG, { statement, searchCriteria });
-      const result = await conn.query(statement);
+      const result = await conn.query(statement, params);
       this.logger.debug('Count result', DEBUG_TAG, { result });
       return result.values?.[0].reg_count || 0;
     });
@@ -468,9 +483,9 @@ export class SqliteService {
    */
   async loadRegistration(regId: number, appMode: AppMode): Promise<RegistrationViewModel | null> {
     return this.withConnection(async (conn) => {
-      const statement = `SELECT data FROM registration WHERE reg_id = ${regId} AND app_mode='${appMode}'`;
+      const statement = `SELECT data FROM registration WHERE reg_id = ? AND app_mode=?`;
       this.logger.debug('Query', DEBUG_TAG, { statement });
-      const result = await conn.query(statement);
+      const result = await conn.query(statement, [regId, appMode]);
       if (result?.values && result.values.length > 0) {
         // The data property contains the json as a string
         const registration = JSON.parse(result.values[0].data);
