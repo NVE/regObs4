@@ -131,15 +131,15 @@ export class OfflineCapableSearchService extends SearchService {
       });
 
     // Save submitted or changed registrations to database
-    combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.changedRegistrations$])
-      .pipe(takeUntil(this.sqlite.hasCrashed$))
-      .subscribe(([appMode, { reg, langKey }]) => {
+    addUpdateDeleteRegistrationService.changedRegistrations$
+      .pipe(withLatestFrom(this.userSettings.appMode$), takeUntil(this.sqlite.hasCrashed$))
+      .subscribe(([{ reg, langKey }, appMode]) => {
         this.sqlite.insertRegistrations([reg], appMode, langKey);
       });
 
-    combineLatest([this.userSettings.appMode$, addUpdateDeleteRegistrationService.deletedRegistrationIds$])
-      .pipe(takeUntil(this.sqlite.hasCrashed$))
-      .subscribe(([appMode, regId]) => {
+    addUpdateDeleteRegistrationService.deletedRegistrationIds$
+      .pipe(withLatestFrom(this.userSettings.appMode$), takeUntil(this.sqlite.hasCrashed$))
+      .subscribe(([regId, appMode]) => {
         this.sqlite.deleteRegistrations([regId], appMode);
       });
 
