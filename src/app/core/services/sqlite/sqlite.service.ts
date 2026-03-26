@@ -4,7 +4,6 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import {
   CapacitorSQLite,
   capSQLiteChanges,
-  capSQLiteResult,
   capSQLiteVersionUpgrade,
   SQLiteConnection,
   SQLiteDBConnection,
@@ -14,20 +13,14 @@ import moment from 'moment';
 import { SearchCriteria } from '../../models/search-criteria';
 import {
   BehaviorSubject,
-  catchError,
   concatMap,
-  debounceTime,
-  exhaustMap,
   filter,
   firstValueFrom,
   ReplaySubject,
   Subject,
-  switchMap,
   takeUntil,
   tap,
-  throwError,
   timeout,
-  timer,
 } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
 import { Platform } from '@ionic/angular/standalone';
@@ -151,6 +144,7 @@ const UPGRADE_STATEMENTS: capSQLiteVersionUpgrade[] = [
 
 const READONLY = false;
 const CONNECTION_LOCK = 'sqlite-connection';
+const DB_OPERATION_LOCK = 'sqlite-db-operation';
 
 @Injectable({
   providedIn: 'root',
@@ -166,47 +160,6 @@ export class SqliteService {
   private conn?: SQLiteDBConnection;
 
   private ready = new ReplaySubject<boolean>(1);
-
-  private isReady$ = this.ready.asObservable().pipe(
-    filter((ready) => ready === true),
-    switchMap(() => timer(0, 500)),
-    exhaustMap(() => this.isDbOpenAndReady()),
-    filter((isReady) => isReady)
-  );
-
-  private async isDbOpenAndReady() {
-    let ready = true;
-    let err = null;
-    let level = LogLevel.Info;
-    let isConnection: capSQLiteResult | undefined;
-    let checkConnectionsConsistency: capSQLiteResult | undefined;
-    let isDbOpen: capSQLiteResult | undefined;
-
-    try {
-      isConnection = await this.sqlite?.isConnection(DATABASE_NAME, READONLY);
-      ready = !!isConnection?.result;
-
-      if (ready) {
-        checkConnectionsConsistency = await this.sqlite?.checkConnectionsConsistency();
-        isDbOpen = await this.conn?.isDBOpen();
-        ready = !!isDbOpen?.result;
-      }
-    } catch (error) {
-      err = error;
-      ready = false;
-      level = LogLevel.Error;
-    }
-
-    this.logger.log('isDbOpenAndReady', err, level, DEBUG_TAG, {
-      ready,
-      isConnection,
-      checkConnectionsConsistency,
-      isDbOpen,
-    });
-    return ready;
-  }
-
-  private requestReset = new Subject<void>();
 
   private _hasCrashed = new BehaviorSubject(false);
 
@@ -225,23 +178,18 @@ export class SqliteService {
 
   hasCrashed$ = this._hasCrashed.asObservable().pipe(filter((x) => x === true));
 
+  /**
+   * Wait for the DB connection to be ready.
+   * After init(), this resolves immediately. During pause/resume cycles,
+   * it waits for the connection to be reopened.
+   */
   private isReady(): Promise<boolean> {
     this.checkHasCrashed();
 
     return firstValueFrom(
-      this.isReady$.pipe(
-        timeout(30_000),
-        catchError((err) => {
-          this.logger.error(err, DEBUG_TAG, 'Waiting for sqlite db to be ready timed out. Will try reset.');
-          this.requestReset.next();
-          return this.isReady$.pipe(
-            timeout(60_000),
-            catchError((err) => {
-              this.logger.error(err, DEBUG_TAG, 'Waiting for sqlite db to be ready timed out after reset');
-              return throwError(() => err);
-            })
-          );
-        })
+      this.ready.asObservable().pipe(
+        filter((ready) => ready === true),
+        timeout(30_000)
       )
     );
   }
@@ -251,13 +199,16 @@ export class SqliteService {
   constructor() {
     this.logger.debug('Creating', DEBUG_TAG);
 
-    // Close / open connection when app goes to/from background
-    // Use a concatmap to avoid opening the connection while it is being closed.
+    // Close / open connection when app goes to/from background.
+    // concatMap ensures close finishes before open starts.
+    // CONNECTION_LOCK prevents interference with resetConnection.
     this.pauseResumeEvent
       .pipe(
         takeUntil(this.hasCrashed$),
         tap((state) => this.logger.debug('App state changed', DEBUG_TAG, { state })),
-        concatMap((state) => (state === 'pause' ? this.closeConn() : this.openConn()))
+        concatMap((state) =>
+          navigator.locks.request(CONNECTION_LOCK, () => (state === 'pause' ? this.closeConn() : this.openConn()))
+        )
       )
       .subscribe({
         error: () => {
@@ -266,26 +217,6 @@ export class SqliteService {
       });
     this.platform.pause.subscribe(() => this.pauseResumeEvent.next('pause'));
     this.platform.resume.subscribe(() => this.pauseResumeEvent.next('resume'));
-    this.requestReset
-      .pipe(
-        debounceTime(2000),
-        takeUntil(this.hasCrashed$),
-        exhaustMap(() => this.resetConnection())
-      )
-      .subscribe();
-  }
-
-  private async resetConnection() {
-    try {
-      this.logger.log('Reset', null, LogLevel.Info, DEBUG_TAG);
-      await this.closeConn();
-      await this.openConn();
-      this.logger.log('Reset done', null, LogLevel.Info, DEBUG_TAG);
-    } catch (error) {
-      this.logger.log('Failed to reset db', error, LogLevel.Warning, DEBUG_TAG, { error });
-      this._hasCrashed.next(true);
-      throw error;
-    }
   }
 
   private async openConn() {
@@ -338,30 +269,49 @@ export class SqliteService {
     // This issue comment tries to explain the difference between createConnection and open
     // https://github.com/capacitor-community/sqlite/issues/157#issuecomment-895877446
     // https://github.com/jepiqueau/angular-sqlite-app-starter/blob/4e46dcef4d7c7033b1df41c7fe2094b6916e3133/src/app/services/database.service.ts
-    await navigator.locks.request(CONNECTION_LOCK, openConn);
+    await openConn();
   }
 
   private async closeConn() {
     this.logger.log('Closing connection', null, LogLevel.Info, DEBUG_TAG);
     this.ready.next(false);
 
-    try {
-      await this.sqlite?.closeConnection(DATABASE_NAME, false);
-      this.logger.log('Connection closed', null, LogLevel.Info, DEBUG_TAG);
-    } catch (error) {
-      const connectionMaybeAlreadyClosed = (error as Error)?.message?.includes(
-        'No available connection for database regobs-v2'
-      );
+    // Exclusive lock waits for all ongoing DB operations (shared locks) to finish
+    await navigator.locks.request(DB_OPERATION_LOCK, { mode: 'exclusive' }, async () => {
+      try {
+        await this.sqlite?.closeConnection(DATABASE_NAME, false);
+        this.logger.log('Connection closed', null, LogLevel.Info, DEBUG_TAG);
+      } catch (error) {
+        const connectionMaybeAlreadyClosed = (error as Error)?.message?.includes(
+          'No available connection for database regobs-v2'
+        );
 
-      if (!connectionMaybeAlreadyClosed) {
-        this.logger.error(error, DEBUG_TAG, 'Failed to close connection');
+        if (!connectionMaybeAlreadyClosed) {
+          this.logger.error(error, DEBUG_TAG, 'Failed to close connection');
+        }
       }
-    }
+    });
   }
 
   private async runUpgradeStatements() {
     this.logger.debug('Running upgrade statements');
     await this.sqlite?.addUpgradeStatement(DATABASE_NAME, UPGRADE_STATEMENTS);
+  }
+
+  /**
+   * Run a DB operation while holding a shared lock.
+   * This prevents closeConn (which takes an exclusive lock) from closing
+   * the connection while an operation is in progress.
+   */
+  private async withConnection<T>(operation: (conn: SQLiteDBConnection) => Promise<T>): Promise<T> {
+    await this.isReady();
+
+    return navigator.locks.request(DB_OPERATION_LOCK, { mode: 'shared' }, async () => {
+      if (!this.conn) {
+        throw new Error('No connection created');
+      }
+      return operation(this.conn);
+    });
   }
 
   private async truncateRegistrations() {
@@ -386,34 +336,28 @@ export class SqliteService {
       this._hasCrashed.next(true);
       throw error;
     }
-
-    this.ready.next(true);
   }
 
   async updateRegistrationsSyncTime(updateTimeMs: number, appMode: AppMode, lang: LangKey) {
-    await this.isReady();
-    if (!this.conn) {
-      throw new Error('No connection created');
-    }
-    this.logger.debug(`Update sync time`, DEBUG_TAG, { updateTimeMs, appMode });
-    const result = await this.conn.run(
-      `INSERT OR REPLACE INTO registration_sync_time (sync_time_ms,app_mode,lang) VALUES (?,?,?);`,
-      [updateTimeMs, appMode, lang]
-    );
-    this.logger.debug(`Sync time updated`, DEBUG_TAG, { result });
+    return this.withConnection(async (conn) => {
+      this.logger.debug(`Update sync time`, DEBUG_TAG, { updateTimeMs, appMode });
+      const result = await conn.run(
+        `INSERT OR REPLACE INTO registration_sync_time (sync_time_ms,app_mode,lang) VALUES (?,?,?);`,
+        [updateTimeMs, appMode, lang]
+      );
+      this.logger.debug(`Sync time updated`, DEBUG_TAG, { result });
+    });
   }
 
   async readRegistrationsSyncTime(appMode: AppMode, lang: LangKey) {
-    await this.isReady();
-    if (!this.conn) {
-      throw new Error('No connection created');
-    }
-    this.logger.debug('Reading sync time', DEBUG_TAG, { appMode });
-    const result = await this.conn.query(
-      `SELECT * FROM registration_sync_time WHERE app_mode='${appMode}' AND lang=${lang};`
-    );
-    this.logger.debug('Sync time', DEBUG_TAG, { result });
-    return result.values?.[0]?.sync_time_ms;
+    return this.withConnection(async (conn) => {
+      this.logger.debug('Reading sync time', DEBUG_TAG, { appMode });
+      const result = await conn.query(
+        `SELECT * FROM registration_sync_time WHERE app_mode='${appMode}' AND lang=${lang};`
+      );
+      this.logger.debug('Sync time', DEBUG_TAG, { result });
+      return result.values?.[0]?.sync_time_ms;
+    });
   }
 
   private searchCriteriaToWhere(searchCriteria: SearchCriteria): string {
@@ -489,60 +433,54 @@ export class SqliteService {
   }
 
   async selectRegistrations(searchCriteria: SearchCriteria, appMode: AppMode): Promise<RegistrationViewModel[]> {
-    await this.isReady();
-    if (!this.conn) {
-      throw new Error('No connection created');
-    }
-    const where = this.searchCriteriaToWhere(searchCriteria);
-    const orderBy = this.getOrderBy(searchCriteria);
-    const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY ${orderBy} DESC ${this.parseLimit(
-      searchCriteria
-    )};`;
-    this.logger.debug('Query', DEBUG_TAG, { statement, searchCriteria });
-    const result = await this.conn.query(statement);
-    // The data property contains the json as a string
-    const registrations = (result?.values || []).map((value) => JSON.parse(value.data));
-    this.logger.debug('Query result', DEBUG_TAG, { n: registrations.length });
-    return registrations;
+    return this.withConnection(async (conn) => {
+      const where = this.searchCriteriaToWhere(searchCriteria);
+      const orderBy = this.getOrderBy(searchCriteria);
+      const statement = `SELECT data FROM registration WHERE ${where} AND app_mode='${appMode}' ORDER BY ${orderBy} DESC ${this.parseLimit(
+        searchCriteria
+      )};`;
+      this.logger.debug('Query', DEBUG_TAG, { statement, searchCriteria });
+      const result = await conn.query(statement);
+      // The data property contains the json as a string
+      const registrations = (result?.values || []).map((value) => JSON.parse(value.data));
+      this.logger.debug('Query result', DEBUG_TAG, { n: registrations.length });
+      return registrations;
+    });
   }
 
   async getRegistrationCount(searchCriteria: SearchCriteria, appMode: AppMode): Promise<number> {
-    await this.isReady();
-    if (!this.conn) {
-      throw new Error('No connection created');
-    }
-    const where = this.searchCriteriaToWhere(searchCriteria);
-    const statement = `SELECT COUNT(*) AS reg_count FROM registration WHERE ${where} AND app_mode='${appMode}'`;
-    this.logger.debug('Count', DEBUG_TAG, { statement, searchCriteria });
-    const result = await this.conn.query(statement);
-    this.logger.debug('Count result', DEBUG_TAG, { result });
-    return result.values?.[0].reg_count || 0;
+    return this.withConnection(async (conn) => {
+      const where = this.searchCriteriaToWhere(searchCriteria);
+      const statement = `SELECT COUNT(*) AS reg_count FROM registration WHERE ${where} AND app_mode='${appMode}'`;
+      this.logger.debug('Count', DEBUG_TAG, { statement, searchCriteria });
+      const result = await conn.query(statement);
+      this.logger.debug('Count result', DEBUG_TAG, { result });
+      return result.values?.[0].reg_count || 0;
+    });
   }
 
   /**
    * Load a single registration or null if not found
    */
   async loadRegistration(regId: number, appMode: AppMode): Promise<RegistrationViewModel | null> {
-    await this.isReady();
-    if (!this.conn) {
-      throw new Error('No connection created');
-    }
-    const statement = `SELECT data FROM registration WHERE reg_id = ${regId} AND app_mode='${appMode}'`;
-    this.logger.debug('Query', DEBUG_TAG, { statement });
-    const result = await this.conn.query(statement);
-    if (result?.values && result.values.length > 0) {
-      // The data property contains the json as a string
-      const registration = JSON.parse(result.values[0].data);
-      this.logger.debug('Query result', DEBUG_TAG, { registration });
-      return registration;
-    }
-    this.logger.log(
-      `Registration with id=${regId} and app_mode='${appMode}' not found`,
-      null,
-      LogLevel.Warning,
-      DEBUG_TAG
-    );
-    return null;
+    return this.withConnection(async (conn) => {
+      const statement = `SELECT data FROM registration WHERE reg_id = ${regId} AND app_mode='${appMode}'`;
+      this.logger.debug('Query', DEBUG_TAG, { statement });
+      const result = await conn.query(statement);
+      if (result?.values && result.values.length > 0) {
+        // The data property contains the json as a string
+        const registration = JSON.parse(result.values[0].data);
+        this.logger.debug('Query result', DEBUG_TAG, { registration });
+        return registration;
+      }
+      this.logger.log(
+        `Registration with id=${regId} and app_mode='${appMode}' not found`,
+        null,
+        LogLevel.Warning,
+        DEBUG_TAG
+      );
+      return null;
+    });
   }
 
   async insertRegistrations(registrations: RegistrationViewModel[], appMode: AppMode, lang: LangKey) {
@@ -579,39 +517,36 @@ export class SqliteService {
       r.Observer.CompetenceLevelTID,
     ];
 
-    await this.isReady();
-    if (!this.conn) {
-      throw new Error('No connection created');
-    }
+    return this.withConnection(async (conn) => {
+      let result: capSQLiteChanges | undefined;
+      if (registrations.length) {
+        this.logger.debug(`Inserting registrations`, DEBUG_TAG, { n: registrations.length });
+        const cols = columns.join(',');
+        const vals = columns.map(() => '?').join(',');
+        const sql = `INSERT OR REPLACE INTO registration (${cols}) VALUES (${vals});`;
 
-    let result: capSQLiteChanges | undefined;
-    if (registrations.length) {
-      this.logger.debug(`Inserting registrations`, DEBUG_TAG, { n: registrations.length });
-      const cols = columns.join(',');
-      const vals = columns.map(() => '?').join(',');
-      const sql = `INSERT OR REPLACE INTO registration (${cols}) VALUES (${vals});`;
+        const values = registrations.map((r) => regToValues(r));
 
-      const values = registrations.map((r) => regToValues(r));
+        try {
+          result = await conn.executeSet([
+            {
+              statement: sql,
+              values,
+            },
+          ]);
+        } catch (error) {
+          this.logger.error(error, DEBUG_TAG, `Execute error`, { sql });
+          throw error;
+        }
 
-      try {
-        result = await this.conn.executeSet([
-          {
-            statement: sql,
-            values,
-          },
-        ]);
-      } catch (error) {
-        this.logger.error(error, DEBUG_TAG, `Execute error`, { sql });
-        throw error;
+        this.logger.debug(`Execute result`, DEBUG_TAG, { result });
+        this.hasChanges.next(appMode);
+      } else {
+        this.logger.debug(`Nothing to insert`, DEBUG_TAG);
       }
 
-      this.logger.debug(`Execute result`, DEBUG_TAG, { result });
-      this.hasChanges.next(appMode);
-    } else {
-      this.logger.debug(`Nothing to insert`, DEBUG_TAG);
-    }
-
-    return result;
+      return result;
+    });
   }
 
   /**
@@ -621,19 +556,17 @@ export class SqliteService {
     if (!regIds.length) {
       return;
     }
-    await this.isReady();
-    if (!this.conn) {
-      throw new Error('No connection created');
-    }
-    const placeholders = regIds.map(() => '?').join(', ');
-    const statement = `DELETE FROM registration WHERE reg_id IN (${placeholders}) AND app_mode=?;`;
-    let result: capSQLiteChanges | undefined;
-    try {
-      result = await this.conn.run(statement, [...regIds, appMode]);
-    } catch (error) {
-      this.logger.error(error, DEBUG_TAG, 'Failed to delete registrations', { result, statement });
-      throw error;
-    }
-    this.logger.debug('DELETE result', DEBUG_TAG, { result, statement });
+    return this.withConnection(async (conn) => {
+      const placeholders = regIds.map(() => '?').join(', ');
+      const statement = `DELETE FROM registration WHERE reg_id IN (${placeholders}) AND app_mode=?;`;
+      let result: capSQLiteChanges | undefined;
+      try {
+        result = await conn.run(statement, [...regIds, appMode]);
+      } catch (error) {
+        this.logger.error(error, DEBUG_TAG, 'Failed to delete registrations', { result, statement });
+        throw error;
+      }
+      this.logger.debug('DELETE result', DEBUG_TAG, { result, statement });
+    });
   }
 }
