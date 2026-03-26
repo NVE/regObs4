@@ -39,16 +39,10 @@ const dateToMs = (value?: string): number => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const toJson = (o: any) => {
-  // TODO: Typescript compiler cant find replaceAll on string, how to fix?
-  // Single quotes must be escaped: ' => ''
-
-  // JSON.stringify escaper " i tekst-verdier med \. SQLite fjerner \ ved lagring , slik at når vi parser JSON-stringen etterpå,
-  // får vi denne feilmeldinga: "SyntaxError: Expected ',' or '}' after property value in JSON at position x"
-  // Eksempel på verdi som vil feile: "Description": "Bruk av \"hermetegn\"". => "Description": "Bruk av "hermetegn""
-  // Derfor erstatter vi \" med _.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (<any>JSON.stringify(o)).replaceAll("'", "''").replaceAll('\\"', '_');
+const toJson = (o: any): string => {
+  // Data is inserted via parameterized queries (?-placeholders),
+  // so no manual escaping is needed — the SQLite plugin handles it.
+  return JSON.stringify(o);
 };
 
 const DEBUG_TAG = 'OfflineCapableSearchService - Sqlite';
@@ -115,6 +109,42 @@ const UPGRADE_STATEMENTS: capSQLiteVersionUpgrade[] = [
       'ALTER TABLE registration ADD COLUMN observer_competence INTEGER;',
       // Remove sync time to force a new sync with observer_competence
       'DELETE FROM registration_sync_time;',
+    ],
+  },
+  {
+    toVersion: 6,
+    statements: [
+      // Fix: registration PK must include app_mode to separate environments.
+      // SQLite does not support ALTER TABLE to change PK, so we recreate the tables.
+      'DROP TABLE IF EXISTS registration;',
+      'DROP TABLE IF EXISTS registration_sync_time;',
+
+      `CREATE TABLE IF NOT EXISTS registration (
+        reg_id INTEGER NOT NULL,
+        geo_hazard INTEGER NOT NULL,
+        observer_id INTEGER NOT NULL,
+        observer_nick TEXT,
+        data JSON NOT NULL,
+        obs_time INTEGER NOT NULL,
+        reg_time INTEGER NOT NULL,
+        change_time INTEGER NOT NULL,
+        app_mode TEXT NOT NULL,
+        lat REAL,
+        lon REAL,
+        lang INTEGER,
+        observer_competence INTEGER,
+        PRIMARY KEY (reg_id, app_mode));`,
+
+      'CREATE INDEX IF NOT EXISTS registration_index_nick ON registration (observer_nick);',
+      'CREATE INDEX IF NOT EXISTS registration_index_obs_time ON registration (obs_time);',
+      'CREATE INDEX IF NOT EXISTS registration_index_reg_time ON registration (reg_time);',
+      'CREATE INDEX IF NOT EXISTS registration_index_change_time ON registration (change_time);',
+
+      `CREATE TABLE IF NOT EXISTS registration_sync_time (
+        sync_time_ms INTEGER NOT NULL,
+        app_mode TEXT NOT NULL,
+        lang INTEGER NOT NULL,
+        PRIMARY KEY (app_mode, lang));`,
     ],
   },
 ];
@@ -261,7 +291,7 @@ export class SqliteService {
   private async openConn() {
     const encrypted = false;
     // Remember to update version if you added changes to tables
-    const version = 5;
+    const version = 6;
 
     const openConn = async () => {
       if (this.sqlite == null) {
@@ -451,7 +481,7 @@ export class SqliteService {
 
   private parseLimit(c: SearchCriteria) {
     if (c.NumberOfRecords && c.Offset) {
-      return `LIMIT ${c.NumberOfRecords}, ${c.Offset}`;
+      return `LIMIT ${c.NumberOfRecords} OFFSET ${c.Offset}`;
     } else if (c.NumberOfRecords) {
       return `LIMIT ${c.NumberOfRecords}`;
     }
@@ -588,14 +618,18 @@ export class SqliteService {
    * Delete one or more registrations
    */
   async deleteRegistrations(regIds: number[], appMode: AppMode) {
+    if (!regIds.length) {
+      return;
+    }
     await this.isReady();
     if (!this.conn) {
       throw new Error('No connection created');
     }
-    const statement = `DELETE FROM registration WHERE reg_id IN (${regIds.join(', ')}) AND app_mode='${appMode}';`;
+    const placeholders = regIds.map(() => '?').join(', ');
+    const statement = `DELETE FROM registration WHERE reg_id IN (${placeholders}) AND app_mode=?;`;
     let result: capSQLiteChanges | undefined;
     try {
-      result = await this.conn.execute(statement);
+      result = await this.conn.run(statement, [...regIds, appMode]);
     } catch (error) {
       this.logger.error(error, DEBUG_TAG, 'Failed to delete registrations', { result, statement });
       throw error;
