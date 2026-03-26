@@ -201,7 +201,7 @@ export class SqliteService {
 
     // Close / open connection when app goes to/from background.
     // concatMap ensures close finishes before open starts.
-    // CONNECTION_LOCK prevents interference with resetConnection.
+    // CONNECTION_LOCK ensures connection open/close operations do not run concurrently.
     this.pauseResumeEvent
       .pipe(
         takeUntil(this.hasCrashed$),
@@ -304,6 +304,10 @@ export class SqliteService {
    * the connection while an operation is in progress.
    */
   private async withConnection<T>(operation: (conn: SQLiteDBConnection) => Promise<T>): Promise<T> {
+    if (!this.sqlite) {
+      throw new Error('SQLite not initialized. Call init() before using the database.');
+    }
+
     await this.isReady();
 
     return navigator.locks.request(DB_OPERATION_LOCK, { mode: 'shared' }, async () => {
