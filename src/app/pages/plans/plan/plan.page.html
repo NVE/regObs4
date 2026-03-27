@@ -59,7 +59,7 @@
         </nve-button>
       }
 
-      <nve-button variant="neutral" size="small" type="button" (click)="goToExtent()">
+      <nve-button variant="neutral" size="small" type="button" (click)="goToExtent()" [disabled]="!hasBounds()">
         {{ "PLANS.GO_TO_MAP_EXTENT" | translate }}
       </nve-button>
 
