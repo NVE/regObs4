@@ -87,6 +87,15 @@
         <!-- Kart, full bredde -->
         <app-observation-location-map class="map" [registration]="reg"></app-observation-location-map>
 
+        @if (iskartUrl(); as url) {
+          <p class="iskart-url">
+            <a [href]="url" target="_blank">
+              {{ "ISKART.GO_TO_MAP_EXTENT" | translate }}
+              <ion-icon name="open-outline"></ion-icon>
+            </a>
+          </p>
+        }
+
         <!-- #region Registration Views -->
 
         @if (hasData(reg.DangerObs, RegistrationTid.DangerObs)) {
@@ -373,7 +382,8 @@
             }
             @if (reg.IceThickness) {
               <app-ice-thickness-view
-                [regId]="reg.RegId"
+                [locationId]="reg.ObsLocation.ObsLocationID"
+                [obsDate]="reg.DtObsTime"
                 [data]="reg.IceThickness"
                 [summaries]="getSummaries(reg, tid)"
               ></app-ice-thickness-view>

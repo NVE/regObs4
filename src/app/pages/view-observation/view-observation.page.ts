@@ -62,7 +62,6 @@ import { GeohazardChipComponent } from 'src/app/components/observation/geohazard
 import { IceThicknessViewComponent } from 'src/app/components/observation/registrations/ice-thickness-view/ice-thickness-view.component';
 import { AvalancheProblemsViewComponent } from 'src/app/components/observation/registrations/avalanche-problem-view/avalanche-problems-view.component';
 import { AvalancheEvaluationViewComponent } from 'src/app/components/observation/registrations/avalanche-evaluation-view/avalanche-evaluation-view.component';
-import { PlotService } from 'src/app/core/services/plot.service';
 import { ObservationActionsComponent } from 'src/app/components/observation/observation-actions/observation-actions.component';
 import { ObservationLocationMapComponent } from 'src/app/components/observation/observation-location-map/observation-location-map.component';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
@@ -70,6 +69,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { SnowProfileComponent } from 'src/app/components/snow-profile/snow-profile.component';
 import { CarouselItems } from 'src/app/components/observation/observation-image-carousel/models';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 const DEBUG_TAG = 'ViewObservationPage';
 
@@ -126,7 +126,6 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   private authService = inject(RegobsAuthService);
   private router = inject(Router);
   private imageCarousel = injectImageCarousel();
-  private plotService = inject(PlotService);
   private kdvService = inject(KdvService);
   private translateService = inject(TranslateService);
   private logger = inject(LoggingService);
@@ -156,6 +155,21 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
           throw new Error('Feil ved henting av observasjon', { cause: err });
         })
       ),
+  });
+
+  iskartUrl = computed(() => {
+    if (!this.registration.hasValue()) {
+      return undefined;
+    }
+    const reg = this.registration.value();
+    if (!reg) {
+      return undefined;
+    }
+    if (!(reg.GeoHazardTID === GeoHazard.Ice)) {
+      return undefined;
+    }
+    const { Latitude, Longitude } = reg.ObsLocation;
+    return `https://iskart.no?LAT=${Latitude}&LON=${Longitude}`;
   });
 
   errorMesage = computed(() => {

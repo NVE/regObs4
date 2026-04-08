@@ -136,6 +136,10 @@
       "MESSAGE": "Failed to fetch observations. Please try again by pan/zoom or use refresh button"
     }
   },
+  "ISKART": {
+    "GO_TO_MAP_EXTENT": "Go to map extent on iskart.no",
+    "VIEW_ICE_THICKNESS": "View ice thickness on iskart.no"
+  },
   "LEGAL_TERMS": {
     "HEADER": "About Varsom data",
     "LINE_1": "Use the warnings, data and maps at your own risk. Errors and omissions may be present.",
