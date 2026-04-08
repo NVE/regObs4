@@ -1,15 +1,6 @@
-import {
-  ChangeDetectorRef,
-  ChangeDetectionStrategy,
-  Component,
-  CUSTOM_ELEMENTS_SCHEMA,
-  inject,
-  input,
-  signal,
-  computed,
-} from '@angular/core';
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, inject, input, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IonIcon } from '@ionic/angular/standalone';
+import { IonButton, IonIcon, IonSpinner } from '@ionic/angular/standalone';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -34,11 +25,10 @@ const FETCH_OBS_TIMEOUT_MS = 5000;
 
 @Component({
   selector: 'app-registration-edit-button',
-  imports: [IonIcon, TranslatePipe],
+  imports: [IonIcon, TranslatePipe, IonButton, IonSpinner],
   templateUrl: './registration-edit-button.component.html',
   styleUrl: './registration-edit-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 /**
  * Knapp for å redigere en observasjon.
