@@ -1,11 +1,11 @@
 # Regobs web bygg og release pipeline.
 trigger:
-  - develop
-
-pr:
+  batch: true
   branches:
-    exclude:
-      - '*'
+    include:
+      - develop
+
+pr: none
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
