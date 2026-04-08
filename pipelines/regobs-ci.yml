@@ -1,4 +1,5 @@
 # Regobs ci script. Kjører tester og publiserer test rapport.
+trigger: none
 pr:
   - develop
 
