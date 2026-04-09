@@ -6,7 +6,7 @@ pr: none
 
 # Kjør pipeline hver natt
 schedules:
-  - cron: '35 * * * *'
+  - cron: '0 0 * * *'
     displayName: Release hver natt
     branches:
       include:
