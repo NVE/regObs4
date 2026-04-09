@@ -199,7 +199,6 @@
     @let tid = RegistrationTid.IceThickness;
     <h3>{{ getSummaryHeader(reg, tid) }}</h3>
     <app-ice-thickness-view
-      [regId]="reg.RegId"
       [locationId]="reg.ObsLocation.ObsLocationID"
       [obsDate]="reg.DtObsTime"
       [data]="reg.IceThickness"

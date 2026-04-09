@@ -40,6 +40,7 @@ import {
   calendarNumberOutline,
   chatbubbleEllipses,
   locationOutline,
+  openOutline,
   peopleCircleOutline,
   personCircleOutline,
 } from 'ionicons/icons';
@@ -217,6 +218,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
       personCircleOutline,
       peopleCircleOutline,
       chatbubbleEllipses,
+      openOutline,
     });
   }
 
