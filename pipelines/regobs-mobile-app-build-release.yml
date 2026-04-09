@@ -1,7 +1,18 @@
 # Bygger og deployer Regobs mobil app til App Store og Google Play
 
-trigger:
-  - release/*
+# Ikke start denne pipelinen på vanlige branch triggers eller PR trigger
+trigger: none
+pr: none
+
+# Kjør pipeline hver natt
+schedules:
+  - cron: '35 * * * *'
+    displayName: Release hver natt
+    branches:
+      include:
+        - develop
+    always: false # Ikke kjør om ikke det er endringer på develop
+    batch: true # Ikke start basert på cron om pipeline allerede kjører
 
 variables:
   - group: regobs
