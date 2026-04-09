@@ -86,11 +86,6 @@ export const settings: ISettings = {
         DEMO: 'https://demo.regobs.no',
         TEST: 'https://test.regobs.no',
       },
-      plotUrl: {
-        PROD: 'https://plot.regobs.no/v1',
-        DEMO: 'https://demo-plot.regobs.no/v1',
-        TEST: 'https://test-plot.regobs.no/v1',
-      },
       createUserUrl: '/Account/Register?c=Home',
       passwordRecoveryUrl: '/Account/PasswordRecovery?c=Home',
       changePasswordUrl: '/Account/ChangePassword?email={email}&c=Home',

@@ -135,6 +135,10 @@
       "MESSAGE": "Fikk ikke hentet observasjoner. Prøv på nytt ved å zoome/panorere eller bruk oppfrisk-knappen i filter-menyen"
     }
   },
+  "ISKART": {
+    "GO_TO_MAP_EXTENT": "Gå til kartutsnitt på iskart.no",
+    "VIEW_ICE_THICKNESS": "Se figur av islagene og prognoser på iskart.no"
+  },
   "LEGAL_TERMS": {
     "HEADER": "Om data og tilgjengelighet",
     "LINE_1": "Bruk varslene, observasjonene og kartene på eget ansvar. Det kan forekomme feil og mangler.",

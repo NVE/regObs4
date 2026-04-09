@@ -1,3 +1,9 @@
-<!-- Visning av istykkelse -->
-<app-ice-plot [url]="plotUrl()"></app-ice-plot>
 <app-summary [summaries]="summaries()"></app-summary>
+@if (iskartUrl(); as url) {
+  <p>
+    <a [href]="url" target="_blank">
+      {{ "ISKART.VIEW_ICE_THICKNESS" | translate }}
+      <ion-icon name="open-outline"></ion-icon>
+    </a>
+  </p>
+}
