@@ -42,6 +42,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { delay, filter } from 'rxjs';
 import { getGeoJsonFeatureStyle, createGeoJsonPointMarker } from '../geojson-styles';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { FeatureCollection } from 'geojson';
 
 const DEBUG_TAG = 'PlanPage';
 
@@ -138,30 +139,38 @@ export class PlanPage {
   }
 
   private async calculateAndCenterMap(map: L.Map) {
-    const geoJSON = await this.geoJSON.get(this.id());
-    if (!geoJSON) {
-      this.logger.error(null, DEBUG_TAG, 'Could not load geojson', { id: this.id() });
-      return;
-    }
-
-    const geoJsonLayer = L.geoJSON(geoJSON, {
-      style: getGeoJsonFeatureStyle,
-      pointToLayer: (_, latlng) => createGeoJsonPointMarker(latlng),
-    });
-
-    const bounds = geoJsonLayer.getBounds();
-    if (bounds && bounds.isValid()) {
-      this.bounds.set(bounds);
-      geoJsonLayer.addTo(map);
-      map.fitBounds(bounds, { padding: [5, 5] });
-    } else {
-      let bbString;
-      try {
-        bbString = bounds.toBBoxString();
-      } catch (error) {
-        // Pass - Dette virker sikkert ikke om bounds ikke er gyldig ?
+    let geoJSON: FeatureCollection | undefined;
+    // Denne async-funksjonen kalles fra onMapReady uten feilhåndtering,
+    // så vi catcher og logger feil her
+    try {
+      geoJSON = await this.geoJSON.get(this.id());
+      if (!geoJSON) {
+        this.logger.error(null, DEBUG_TAG, 'Could not load geojson', { id: this.id() });
+        return;
       }
-      this.logger.error(null, DEBUG_TAG, 'Invalid bounds', { id: this.id(), bbString });
+
+      const geoJsonLayer = L.geoJSON(geoJSON, {
+        style: getGeoJsonFeatureStyle,
+        pointToLayer: (_, latlng) => createGeoJsonPointMarker(latlng),
+      });
+
+      const bounds = geoJsonLayer.getBounds();
+      if (bounds && bounds.isValid()) {
+        this.bounds.set(bounds);
+        geoJsonLayer.addTo(map);
+        map.fitBounds(bounds, { padding: [5, 5] });
+      } else {
+        let bbString: string | undefined;
+        try {
+          bbString = bounds.toBBoxString();
+        } catch (error) {
+          // Pass - Dette virker sikkert ikke om bounds ikke er gyldig, men hvis det funker får vi bounds på
+          // tekstformat vi kan logge
+        }
+        this.logger.error(null, DEBUG_TAG, 'Invalid bounds', { id: this.id(), bbString, geoJSON });
+      }
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Error in calculateAndCenterMap', { id: this.id(), geoJSON });
     }
   }
 
