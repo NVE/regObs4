@@ -1,3 +1,10 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: env(safe-area-inset-top);
+}
+
 swiper-container {
   flex: 1;
   width: 100%;
@@ -41,7 +48,7 @@ ion-fab-button {
   --background: #fff;
   --color: var(--ion-color-primary);
   position: fixed;
-  top: 1rem;
+  top: calc(1rem + env(safe-area-inset-top));
   right: 1rem;
   z-index: 1000;
   will-change: transform;
