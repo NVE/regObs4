@@ -54,7 +54,7 @@ const SYNC_DEBOUNCE_MS = 500;
 const SYNC_INTERVAL = 120000;
 
 const OUT_OF_SYNC_MS = 259_200_000; // ms = 3 days
-const SYNC_TIMEOUT = 8_000; // 10 seconds
+const SYNC_TIMEOUT = 8_000; // 8 seconds
 
 /**
  * Search for observations in the offline database instead of searching online through the Regobs API.
@@ -220,7 +220,9 @@ export class OfflineCapableSearchService extends SearchService {
 
   private logBeforeOnlineFallback(error: Error, methodName: keyof SearchService, criteria: SearchCriteriaRequestDto) {
     let logLevel: LogLevel;
-    if (error && error instanceof TimeoutError) {
+    if (error instanceof OutOfSyncError) {
+      logLevel = LogLevel.Warning;
+    } else if (error instanceof TimeoutError) {
       logLevel = LogLevel.Warning;
     } else {
       logLevel = LogLevel.Error;
@@ -410,6 +412,11 @@ export class OfflineCapableSearchService extends SearchService {
   }
 
   private async checkIfOutOfSync(appMode: AppMode) {
+    const hasNetwork = await firstValueFrom(this.network.connected$);
+    if (!hasNetwork) {
+      return;
+    }
+
     const langKey = await firstValueFrom(this.userSettings.language$);
     // Read last sync time directly from db, to avoid getting a cached value from lastSyncTime$
     // lastSyncTime$ can give us a wrong cached value if we change language or appMode without network coverage,
@@ -419,7 +426,7 @@ export class OfflineCapableSearchService extends SearchService {
       // Let user know that offline db is out of sync
       // By throwing an error here, we force an online request in catchError,
       // or if online request also fails, the user gets a "Could not fetch observations" message
-      throw new Error('Out of sync');
+      throw new OutOfSyncError();
     }
   }
 
@@ -459,6 +466,12 @@ function toAtAGlanceViewModel(reg: RegistrationViewModel): AtAGlanceViewModel {
     RegId: reg.RegId,
     Title: reg.ObsLocation?.Title,
   };
+}
+
+class OutOfSyncError extends Error {
+  constructor() {
+    super('Out of sync');
+  }
 }
 
 function isOutOfSync(syncTime: number) {
