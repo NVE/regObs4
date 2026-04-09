@@ -1,6 +1,4 @@
 # Regobs ci script. Kjører tester og publiserer test rapport.
-# Trigges kun for PRer mot develop.
-trigger: none
 pr:
   - develop
 
