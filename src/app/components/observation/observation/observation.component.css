@@ -1,4 +1,14 @@
 :host {
+  /*
+    NB! Brukes sammen med contentvisibilityautostatechange-event og visibilityChange-metoden i komponenten.
+    Fjern derfor ikke disse linjene uten å justere på koden i komponenten.
+
+    500px fungerer som en slags default høyde på obskort før layout/paint mtp scrollbar,
+    virker som 500px fungerer greit (scrollbar hopper ikke etter at browser vet faktisk høyde).
+  */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+
   display: block;
   max-width: var(--desktop-max-width);
   margin: 0 auto;
