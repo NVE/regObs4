@@ -59,21 +59,23 @@ describe('GeoJSONService', () => {
   });
 
   describe('init', () => {
-    it('should load metadata from database on initialization', fakeAsync(() => {
+    it('should load metadata from database on initialization', fakeAsync(async () => {
       const existingMetadata: GeoJSONItem[] = [mockMetadataItem];
       databaseService.get.and.returnValue(Promise.resolve(existingMetadata));
 
       service = TestBed.inject(GeoJSONService);
+      await service.init();
       tick();
 
       expect(databaseService.get).toHaveBeenCalledWith('geojson-metadata');
       expect(service.metadata()).toEqual(existingMetadata);
     }));
 
-    it('should initialize with empty metadata if none exists', fakeAsync(() => {
+    it('should initialize with empty metadata if none exists', fakeAsync(async () => {
       databaseService.get.and.returnValue(Promise.resolve(null));
 
       service = TestBed.inject(GeoJSONService);
+      await service.init();
       tick();
 
       expect(service.metadata()).toEqual([]);
@@ -81,8 +83,9 @@ describe('GeoJSONService', () => {
   });
 
   describe('save', () => {
-    beforeEach(fakeAsync(() => {
+    beforeEach(fakeAsync(async () => {
       service = TestBed.inject(GeoJSONService);
+      await service.init();
       tick(); // Complete initialization
       tick(); // Allow effect to run
       databaseService.set.calls.reset();
@@ -126,8 +129,9 @@ describe('GeoJSONService', () => {
   });
 
   describe('get', () => {
-    beforeEach(fakeAsync(() => {
+    beforeEach(fakeAsync(async () => {
       service = TestBed.inject(GeoJSONService);
+      await service.init();
       tick();
     }));
 
@@ -144,8 +148,9 @@ describe('GeoJSONService', () => {
   });
 
   describe('remove', () => {
-    beforeEach(fakeAsync(() => {
+    beforeEach(fakeAsync(async () => {
       service = TestBed.inject(GeoJSONService);
+      await service.init();
       tick();
       // Add an item first
       service.save(mockMetadataItem, mockGeoJSON);
@@ -181,8 +186,9 @@ describe('GeoJSONService', () => {
   });
 
   describe('changedMetadataItem$', () => {
-    beforeEach(fakeAsync(() => {
+    beforeEach(fakeAsync(async () => {
       service = TestBed.inject(GeoJSONService);
+      await service.init();
       tick();
     }));
 

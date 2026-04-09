@@ -29,8 +29,6 @@ export class GeoJSONService {
   removedMetadataItemId$ = this.removedMetadataItemId.asObservable();
 
   constructor() {
-    this.init();
-
     effect(() => {
       const metadata = this.metadata();
       if (!this.initialized) return;
@@ -38,13 +36,23 @@ export class GeoJSONService {
     });
   }
 
-  private async init() {
-    this.logger.debug('Init', DEBUG_TAG);
-    const items = await this.getMetadata();
-    if (items && items.length > 0) {
-      this.metadata_.set(items);
+  async init() {
+    if (this.initialized) {
+      return;
     }
-    setTimeout(() => (this.initialized = true)); // For å unngå en første unødvendig lagring i effecten
+
+    this.logger.debug('Init', DEBUG_TAG);
+
+    // Try/catch her sikrer at appen starter selv om init feiler
+    try {
+      const items = await this.getMetadata();
+      if (items && items.length > 0) {
+        this.metadata_.set(items);
+      }
+      setTimeout(() => (this.initialized = true)); // For å unngå en første unødvendig lagring i effecten
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Init error');
+    }
   }
 
   private async saveMetadata(items: GeoJSONItem[]) {
