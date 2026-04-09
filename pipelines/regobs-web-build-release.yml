@@ -1,13 +1,11 @@
 # Regobs web bygg og release pipeline.
 trigger:
-  # batch Hindrer at hver eneste commit skal bygges og rulles ut, om vi feks
-  # tar inn 3 dependabot-PRer raskt.
-  batch: true
-  branches:
-    include:
-      - develop
+  - develop
 
-pr: none
+pr:
+  branches:
+    exclude:
+      - '*'
 
 name: $(Date:yyyyMMdd)$(Rev:.r)
 
