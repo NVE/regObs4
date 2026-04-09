@@ -41,6 +41,10 @@ import { MapService } from 'src/app/modules/map/services/map/map.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { delay, filter } from 'rxjs';
 import { getGeoJsonFeatureStyle, createGeoJsonPointMarker } from '../geojson-styles';
+import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { FeatureCollection } from 'geojson';
+
+const DEBUG_TAG = 'PlanPage';
 
 @Component({
   selector: 'app-plan.page',
@@ -72,6 +76,8 @@ export class PlanPage {
   private mapLayersService = inject(MapLayersService);
   router = inject(Router);
   private mapService = inject(MapService);
+  private logger = inject(LoggingService);
+
   id = input.required<string>();
 
   itemMetadata = computed<GeoJSONItem>(
@@ -84,7 +90,8 @@ export class PlanPage {
   isEditMode = signal(false);
   isEditable = computed(() => !this.isEditMode());
 
-  bounds?: L.LatLngBounds;
+  private bounds = signal<L.LatLngBounds | undefined>(undefined);
+  hasBounds = computed(() => this.bounds() !== undefined);
 
   mapOptions = computed(() => {
     const mapConfig = this.mapLayersService.mapConfig();
@@ -131,17 +138,40 @@ export class PlanPage {
       });
   }
 
-  async calculateAndCenterMap(map: L.Map) {
-    const geoJSON = await this.geoJSON.get(this.id());
-    if (!geoJSON) return;
+  private async calculateAndCenterMap(map: L.Map) {
+    let geoJSON: FeatureCollection | undefined;
+    // Denne async-funksjonen kalles fra onMapReady uten feilhåndtering,
+    // så vi catcher og logger feil her
+    try {
+      geoJSON = await this.geoJSON.get(this.id());
+      if (!geoJSON) {
+        this.logger.error(null, DEBUG_TAG, 'Could not load geojson', { id: this.id() });
+        return;
+      }
 
-    const geoJsonLayer = L.geoJSON(geoJSON, {
-      style: getGeoJsonFeatureStyle,
-      pointToLayer: (_, latlng) => createGeoJsonPointMarker(latlng),
-    });
-    this.bounds = geoJsonLayer.getBounds();
-    geoJsonLayer.addTo(map);
-    map.fitBounds(this.bounds, { padding: [5, 5] });
+      const geoJsonLayer = L.geoJSON(geoJSON, {
+        style: getGeoJsonFeatureStyle,
+        pointToLayer: (_, latlng) => createGeoJsonPointMarker(latlng),
+      });
+
+      const bounds = geoJsonLayer.getBounds();
+      if (bounds && bounds.isValid()) {
+        this.bounds.set(bounds);
+        geoJsonLayer.addTo(map);
+        map.fitBounds(bounds, { padding: [5, 5] });
+      } else {
+        let bbString: string | undefined;
+        try {
+          bbString = bounds.toBBoxString();
+        } catch (error) {
+          // Pass - Dette virker sikkert ikke om bounds ikke er gyldig, men hvis det funker får vi bounds på
+          // tekstformat vi kan logge
+        }
+        this.logger.error(null, DEBUG_TAG, 'Invalid bounds', { id: this.id(), bbString, geoJSON });
+      }
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Error in calculateAndCenterMap', { id: this.id(), geoJSON });
+    }
   }
 
   onMapReady(map: L.Map) {
@@ -185,8 +215,12 @@ export class PlanPage {
   }
 
   goToExtent() {
-    if (!this.bounds) return;
-    this.mapService.requestMapViewChange({ bounds: this.bounds, center: this.bounds.getCenter() });
+    const bounds = this.bounds();
+    if (!bounds) {
+      return;
+    }
+
+    this.mapService.requestMapViewChange({ bounds, center: bounds.getCenter() });
     // La kartet få mulighet til å lytte og oppdatere kartutsnittet før vi navigerer
     setTimeout(() => {
       this.router.navigate(['/']);
