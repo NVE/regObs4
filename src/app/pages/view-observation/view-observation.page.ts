@@ -70,7 +70,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
 import { SnowProfileComponent } from 'src/app/components/snow-profile/snow-profile.component';
 import { CarouselItems } from 'src/app/components/observation/observation-image-carousel/models';
-import { GeoHazard } from 'src/app/modules/common-core/models';
+import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 
 const DEBUG_TAG = 'ViewObservationPage';
 
@@ -133,7 +133,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
 
   readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
 
-  readonly langKey = toSignal(this.userSettingService.language$, { initialValue: 1 });
+  readonly langKey = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
   userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
 
   /**
@@ -158,6 +158,15 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
       ),
   });
 
+  private isKartLangKey = computed(() => {
+    const lang = this.langKey();
+    const isNorwegian = lang === LangKey.nb || lang === LangKey.nn;
+    if (isNorwegian) {
+      return 0;
+    }
+    return 1;
+  });
+
   iskartUrl = computed(() => {
     if (!this.registration.hasValue()) {
       return undefined;
@@ -170,7 +179,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
       return undefined;
     }
     const { Latitude, Longitude } = reg.ObsLocation;
-    return `https://iskart.no?LAT=${Latitude};LON=${Longitude};ZOOM=15`;
+    return `https://iskart.no?LAT=${Latitude};LON=${Longitude};ZOOM=15;LANGUAGE=${this.isKartLangKey()}`;
   });
 
   errorMesage = computed(() => {
