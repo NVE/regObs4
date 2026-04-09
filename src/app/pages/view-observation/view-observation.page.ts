@@ -169,7 +169,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
       return undefined;
     }
     const { Latitude, Longitude } = reg.ObsLocation;
-    return `https://iskart.no?LAT=${Latitude}&LON=${Longitude}`;
+    return `https://iskart.no?LAT=${Latitude};LON=${Longitude};ZOOM=13`;
   });
 
   errorMesage = computed(() => {
