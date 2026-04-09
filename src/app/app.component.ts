@@ -1,5 +1,5 @@
-import { Component, Injector, inject, ChangeDetectionStrategy } from '@angular/core';
-import { IonApp, IonMenu, IonRouterOutlet, Platform, isPlatform } from '@ionic/angular/standalone';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { IonApp, IonMenu, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
@@ -14,7 +14,6 @@ import { AuthService } from 'ionic-appauth';
 import { DraftToRegistrationService } from './core/services/draft/draft-to-registration.service';
 import { BreakpointService } from './core/services/breakpoint.service';
 import { Keyboard } from '@capacitor/keyboard';
-import { SqliteService } from './core/services/sqlite/sqlite.service';
 import { SideMenuComponent } from './modules/side-menu/components/side-menu.component';
 import { AsyncPipe } from '@angular/common';
 import { GpsDebugComponent } from './modules/gps-debug/components/gps-debug/gps-debug.component';
@@ -68,7 +67,6 @@ export class AppComponent {
   private auth = inject(AuthService);
   private draftToRegService = inject(DraftToRegistrationService);
   private breakpointService = inject(BreakpointService);
-  private injector = inject(Injector);
   isNative = Capacitor.isNativePlatform();
 
   swipeBackEnabled$: Observable<boolean>;
@@ -124,14 +122,6 @@ export class AppComponent {
     }
   }
 
-  private initSqliteIfNative() {
-    if (isPlatform('hybrid')) {
-      const sqliteService = this.injector.get<SqliteService>(SqliteService);
-      return sqliteService.init();
-    }
-    return Promise.resolve();
-  }
-
   private initServices(userSettings: UserSetting): Promise<unknown>[] {
     const nonPromiseServices = [
       () => this.shortcutService.init(),
@@ -148,6 +138,6 @@ export class AppComponent {
       }
     }
 
-    return [this.dbHelperService.init(), this.auth.init(), this.initSqliteIfNative()];
+    return [this.dbHelperService.init(), this.auth.init()];
   }
 }

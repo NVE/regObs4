@@ -23,6 +23,7 @@ import { BackgroundGeolocationService } from './core/services/background-geoloca
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';
 import { OfflineMapService } from './core/services/offline-map/offline-map.service';
 import { OfflineCapableSearchService } from './core/services/search-registration/offline-capable-search-service';
+import { SqliteService } from './core/services/sqlite/sqlite.service';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 // import {
 //   FOR_ROOT_OPTIONS_TOKEN as COMMON_REGISTRATION_FOR_ROOT_OPTIONS_TOKEN,
@@ -141,6 +142,13 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
   provideAppInitializer(() => {
     const observerTripsService = inject(ObserverTripsService);
     observerTripsService.init();
+  }),
+
+  provideAppInitializer(() => {
+    if (isPlatform('hybrid')) {
+      return inject(SqliteService).init();
+    }
+    return Promise.resolve();
   }),
 
   // @varsom-regobs-common providers
