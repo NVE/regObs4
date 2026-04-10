@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { combineLatest, debounceTime, firstValueFrom } from 'rxjs';
+import { debounceTime, distinctUntilKeyChanged, firstValueFrom, skipWhile, switchMap, take } from 'rxjs';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { TripService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -33,15 +33,27 @@ export class ObserverTripsService {
 
   init() {
     this.logger.debug('Initialize observer trips service', DEBUG_TAG);
-    combineLatest([this.authService.loggedInUser$, this.network.connected$])
-      .pipe(debounceTime(4000))
-      .subscribe(([user, connected]) => {
-        if (user.isLoggedIn && connected) {
-          this.fetchData();
-        } else if (!user.isLoggedIn) {
-          this.removeData();
-        }
-      });
+    this.authService.loggedInUser$
+      .pipe(
+        distinctUntilKeyChanged('isLoggedIn'),
+        debounceTime(5000),
+        switchMap((user) => {
+          // Bruker er ikke logget inn - slett eventuelle data som finnes
+          if (!user.isLoggedIn) {
+            return this.removeData();
+          }
+
+          // Bruker er logget inn, vent på nettverk og hent obsturer
+          return this.network.connected$.pipe(
+            // Vent på at vi har nettverk
+            skipWhile((connected) => !connected),
+            take(1),
+            // Hent obsturer
+            switchMap(() => this.fetchData())
+          );
+        })
+      )
+      .subscribe();
   }
 
   private async persistData(data: FeatureCollection): Promise<void> {
@@ -59,7 +71,12 @@ export class ObserverTripsService {
   }
 
   private async removeData() {
-    await this.geojson.remove(observerTripsGeoJsonId);
+    // Feilhåndtering for å hindre at subscription i init stopper om sletting skulle feile
+    try {
+      await this.geojson.remove(observerTripsGeoJsonId);
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Could not remove observer trips data');
+    }
   }
 
   private async fetchData(): Promise<void> {
