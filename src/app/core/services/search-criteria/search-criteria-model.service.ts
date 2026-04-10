@@ -27,6 +27,7 @@ const GEOHAZARDMAP: { [property in GeoHazard]: CompetenceLevelKey } = {
   [GeoHazard.EventOnGlacier]: 'EventOnGlacier',
   [GeoHazard.Jøkulhlaup]: 'Jøkulhaup',
   [GeoHazard.Drought]: 'Drought',
+  [GeoHazard.Weather]: 'Weather',
   [GeoHazard.Unknown]: 'Unknown',
 };
 

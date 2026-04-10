@@ -42,7 +42,7 @@ export interface RegistrationEditModel {
   /**
    * Sett naturfare. Tabellen brukes av alle naturfarer (snø, jord, vann, is). The GeoHazardKD unique identifier
    */
-  GeoHazardTID: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 200 | 999;
+  GeoHazardTID: 0 | 10 | 20 | 30 | 40 | 50 | 60 | 70 | 100 | 110 | 120 | 200 | 999;
   IceCoverObs?: IceCoverEditModel;
   IceThickness?: IceThicknessEditModel;
   Incident?: IncidentEditModel;
