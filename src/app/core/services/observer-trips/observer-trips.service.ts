@@ -71,7 +71,12 @@ export class ObserverTripsService {
   }
 
   private async removeData() {
-    await this.geojson.remove(observerTripsGeoJsonId);
+    // Feilhåndtering for å hindre at subscription i init stopper om sletting skulle feile
+    try {
+      await this.geojson.remove(observerTripsGeoJsonId);
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Could not remove observer trips data');
+    }
   }
 
   private async fetchData(): Promise<void> {
