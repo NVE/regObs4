@@ -9,6 +9,7 @@ export enum GeoHazard {
   Ice = 70,
   EventOnGlacier = 100,
   Jøkulhlaup = 110,
+  Weather = 120,
   Drought = 200,
   Unknown = 999,
 }
