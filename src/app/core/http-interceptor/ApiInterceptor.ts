@@ -105,24 +105,49 @@ export class ApiInterceptor implements HttpInterceptor {
     );
   }
 
+  private lastRefreshTime: number | undefined;
+
+  private hasRefreshedRecently() {
+    if (!this.lastRefreshTime) {
+      return false;
+    }
+    const timeSinceLastRefresh = Date.now() - this.lastRefreshTime;
+    const recentRefreshTime = 30_000; // 30 sekunder
+    return timeSinceLastRefresh < recentRefreshTime;
+  }
+
   private handleResponseError(
     error: unknown,
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     if (error instanceof HttpErrorResponse && error.status === 401) {
+      // Dette kallet kan returnere 401 uansett om bruker er logget inn.
+      // Kun observatører har tilgang.
+      if (request.url.includes('/Trip/ObserverTrips')) {
+        throw error;
+      }
+
+      if (this.hasRefreshedRecently()) {
+        this.loggerService.debug('Skipping token refresh, already refreshed recently', DEBUG_TAG, {
+          url: request.url,
+        });
+        throw error;
+      }
+
       // Vi er ikke autorisert, trolig fordi tokenet ikke er gyldig
       this.loggerService.debug('Got 401 from API, trying to refresh token and repeat API-call...', DEBUG_TAG, {
         url: request.url,
         method: request.method,
       });
       return from(this.regobsAuthService.refreshToken()).pipe(
-        tap(() =>
+        tap(() => {
+          this.lastRefreshTime = Date.now();
           this.loggerService.debug('Token refreshed', DEBUG_TAG, {
             url: request.url,
             method: request.method,
-          })
-        ),
+          });
+        }),
         catchError((err) => {
           this.loggerService.debug('Token refresh failed', DEBUG_TAG, { err, url: request.url });
           throw error; // Rethrow original 401 error
