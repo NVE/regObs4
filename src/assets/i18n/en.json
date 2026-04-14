@@ -125,7 +125,8 @@
     "DIRT": "Soil",
     "ICE": "Ice",
     "SNOW": "Snow",
-    "WATER": "Water"
+    "WATER": "Water",
+    "WEATHER": "Weather"
   },
   "HELP": {
     "TITLE": "Help"
@@ -863,10 +864,15 @@
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Air temperature (C)",
+        "AIR_TEMPERATURE_CAPTION": "Temperature",
         "AIR_TEMPERATURE_PLACEHOLDER": "Can be given with two decimals",
         "CLOUD_COVER": "Cloud cover (%)",
+        "CLOUD_COVER_CAPTION": "Cloud cover",
+        "CLOUD_COVER_VALUE": "{{value}} % clouds",
+        "COMMENT_CAPTION": "Description",
         "COMMENT_HEADER": "Describe weather",
         "COMMENT_PLACEHOLDER": "How has the weather been the last 24 hours? Example: Has there been snowfall? Temperature changes? At what altitude has the freezing point been?",
+        "FORECAST_CORRECT_CAPTION": "Assessment of the forecasted weather on varsom.no",
         "FROM_EAST": "E - from east",
         "FROM_NORTH": "N - from north",
         "FROM_NORTH_EAST": "NE - from north-east",
@@ -879,8 +885,11 @@
         "ONLY_FULL_PERCENTAGE": "Percentage without decimals",
         "PRECIPITATION": "Precipitation",
         "TITLE": "Weather",
+        "WEATHER_PHENOMENON": "Weather phenomenon",
         "WIND_DIRECTION": "Wind direction",
-        "WIND_SPEED": "Wind speed (m/s)"
+        "WIND_SPEED": "Wind speed (m/s)",
+        "WIND_SPEED_AND_DIRECTION_CAPTION": "Wind",
+        "WIND_SPEED_AND_DIRECTION_VALUE": "{{speed}} m/s from {{direction}}"
       }
     },
     "SUMMARY": "Summary",

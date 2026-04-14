@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+app-key-value {
+  display: block;
+}
+
+.wind-arrow {
+  display: inline-block;
+  font-size: 1.2rem;
+  line-height: 1;
+  margin-left: 0.5rem;
+}

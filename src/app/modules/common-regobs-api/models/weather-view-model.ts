@@ -8,4 +8,8 @@ export interface WeatherViewModel {
   WindDirection?: number;
   WindDirectionName?: string;
   WindSpeed?: number;
+  ForecastCorrectTID?: number;
+  ForecastCorrectName?: string;
+  WeatherPhenomenonTID?: number;
+  WeatherPhenomenonName?: string;
 }

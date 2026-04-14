@@ -124,7 +124,8 @@
     "DIRT": "Jord",
     "ICE": "Is",
     "SNOW": "Snø",
-    "WATER": "Vann"
+    "WATER": "Vann",
+    "WEATHER": "Vær"
   },
   "HELP": {
     "TITLE": "Hjelp"
@@ -862,10 +863,15 @@
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Lufttemperatur (C)",
+        "AIR_TEMPERATURE_CAPTION": "Temperatur",
         "AIR_TEMPERATURE_PLACEHOLDER": "Kan gis med to desimal",
         "CLOUD_COVER": "Skydekke (%)",
+        "CLOUD_COVER_CAPTION": "Skydekke",
+        "CLOUD_COVER_VALUE": "{{value}} % skyer",
+        "COMMENT_CAPTION": "Beskrivelse",
         "COMMENT_HEADER": "Beskriv været",
         "COMMENT_PLACEHOLDER": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",
+        "FORECAST_CORRECT_CAPTION": "Vurdering av varslet vær på varsom.no",
         "FROM_EAST": "Ø - fra øst",
         "FROM_NORTH": "N - fra nord",
         "FROM_NORTH_EAST": "NØ - fra nordøst",
@@ -878,8 +884,11 @@
         "ONLY_FULL_PERCENTAGE": "Kun hele prosent",
         "PRECIPITATION": "Nedbørstype",
         "TITLE": "Vær",
+        "WEATHER_PHENOMENON": "Værfenomen",
         "WIND_DIRECTION": "Vindretning",
-        "WIND_SPEED": "Vindhastighet (m/s)"
+        "WIND_SPEED": "Vindhastighet (m/s)",
+        "WIND_SPEED_AND_DIRECTION_CAPTION": "Vind",
+        "WIND_SPEED_AND_DIRECTION_VALUE": "{{speed}} m/s fra {{direction}}"
       }
     },
     "SUMMARY": "Oppsummering",
