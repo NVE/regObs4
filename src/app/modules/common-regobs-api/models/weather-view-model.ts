@@ -12,4 +12,5 @@ export interface WeatherViewModel {
   ForecastCorrectName?: string;
   WeatherPhenomenonTID?: number;
   WeatherPhenomenonName?: string;
+  Consequence?: string;
 }
