@@ -9,11 +9,13 @@ import { NveTextareaComponent } from 'src/app/components/designsystem/nve-textar
 import { form, FormField } from '@angular/forms/signals';
 import { WeatherEditModel } from 'src/app/modules/common-regobs-api';
 import { SendButtonComponent } from '../../components/send-button/send-button.component';
+import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 
 interface WeatherForm {
   phenomenon: number | null;
   description: string;
   forecastCorrect: number | null;
+  consequence: string;
 }
 
 // TODO: Bør skilles tydeligere fra weather.page.ts ? Som er standard vær-skjema for snø?
@@ -34,19 +36,15 @@ export class WeatherComponent {
   private drafts = inject(DraftRepositoryService);
   private dateHelper = inject(DateHelperService);
 
-  readonly id = input.required<'string'>();
-  readonly draft = this.drafts.getDraftSignal(this.id);
-
-  private readonly formModel = linkedSignal({
-    source: () => this.draft()?.registration.WeatherObservation ?? {},
-    computation: (source) => {
-      return {
-        phenomenon: source.WeatherPhenomenonTID ?? null,
-        description: source.Comment ?? '',
-        forecastCorrect: source.ForecastCorrectTID ?? null,
-      };
-    },
-    equal: (a, b) => Object.entries(a).every(([key, value]) => b[key as keyof typeof b] === value),
+  readonly draft = input.required<RegistrationDraft>();
+  private readonly formModel = linkedSignal(() => {
+    const draft = this.draft().registration.WeatherObservation ?? {};
+    return {
+      phenomenon: draft.WeatherPhenomenonTID ?? null,
+      description: draft.Comment ?? '',
+      forecastCorrect: draft.ForecastCorrectTID ?? null,
+      consequence: draft.Consequence ?? '',
+    };
   });
 
   protected readonly weatherForm = form(this.formModel, (schemaPath) => {
@@ -69,31 +67,28 @@ export class WeatherComponent {
     return {
       Comment: formModel.description || undefined,
       WeatherPhenomenonTID: formModel.phenomenon ?? undefined,
+      Consequence: formModel.consequence || undefined,
+      ForecastCorrectTID: formModel.forecastCorrect ?? undefined,
     };
   }
 
-  private saveDraft(formModel: WeatherForm) {
-    console.log('model updated - saving draft');
+  readonly updatedDraft = computed(() => {
     const draft = this.draft();
-    if (!draft) {
-      return;
-    }
-
-    this.drafts.save({
+    const formModel = this.formModel();
+    return {
       ...draft,
       registration: {
         ...draft.registration,
         WeatherObservation: this.formModelToApiModel(formModel),
       },
-    });
-  }
+    };
+  });
 
   constructor() {
     effect(() => {
-      const formModel = this.formModel();
-      console.log('model updated', formModel);
+      const draft = this.updatedDraft();
       untracked(() => {
-        this.saveDraft(formModel);
+        this.drafts.save(draft);
       });
     });
   }

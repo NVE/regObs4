@@ -4,6 +4,7 @@ import { canDeactivateBasePageComponent } from './pages/can-deactivate-route.gua
 import { inject } from '@angular/core';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { GeoHazard } from '../common-core/models';
+import { draftResolver } from 'src/app/core/services/draft/draft.resolver';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,9 @@ export const routes: Routes = [
     path: 'edit-weather/:id',
     loadComponent: () => import('./pages/weather/weather.component').then((m) => m.WeatherComponent),
     canDeactivate: [saveAsDraftGuard],
+    resolve: {
+      draft: draftResolver,
+    },
   },
   {
     path: 'edit-legacy/:id',
