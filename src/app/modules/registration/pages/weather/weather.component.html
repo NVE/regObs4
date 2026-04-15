@@ -1,0 +1,20 @@
+<div class="form">
+  <app-nve-link-card
+    [label]="'REGISTRATION.OBS_LOCATION.TITLE' | translate"
+    [href]="'/registration/obs-location/' + id()"
+    [additionalText]="obsLocationSubTitle()"
+  ></app-nve-link-card>
+  <app-kdv-nve-select
+    label="Værfenomen"
+    kdvKey="Weather_WeatherPhenomenonKDV"
+    [formField]="weatherForm.phenomenon"
+  ></app-kdv-nve-select>
+  <app-nve-textarea
+    label="Beskrivelse"
+    desc="Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?"
+    [formField]="weatherForm.description"
+  ></app-nve-textarea>
+</div>
+@if (draft(); as draft) {
+  <app-send-button [draft]="draft"></app-send-button>
+}

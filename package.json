@@ -107,7 +107,7 @@
     "moment-timezone": "^0.5.40",
     "ngx-file-drop": "^16.0.0",
     "ngx-markdown": "^21.1.0",
-    "nve-designsystem": "^3.10.1",
+    "nve-designsystem": "^4.0.0",
     "observable-webworker": "^3.4.0",
     "rxjs": "^7.8.1",
     "source-sans-pro": "^3.6.0",
