@@ -887,9 +887,9 @@
         "TITLE": "Weather",
         "WEATHER_PHENOMENON": "Weather phenomenon",
         "WIND_DIRECTION": "Wind direction",
+        "WIND_DIRECTION_VALUE": "from {{direction}}",
         "WIND_SPEED": "Wind speed (m/s)",
-        "WIND_SPEED_AND_DIRECTION_CAPTION": "Wind",
-        "WIND_SPEED_AND_DIRECTION_VALUE": "{{speed}} m/s from {{direction}}"
+        "WIND_SPEED_AND_DIRECTION_CAPTION": "Wind"
       }
     },
     "SUMMARY": "Summary",

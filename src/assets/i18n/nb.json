@@ -886,9 +886,9 @@
         "TITLE": "Vær",
         "WEATHER_PHENOMENON": "Værfenomen",
         "WIND_DIRECTION": "Vindretning",
+        "WIND_DIRECTION_VALUE": "fra {{direction}}",
         "WIND_SPEED": "Vindhastighet (m/s)",
-        "WIND_SPEED_AND_DIRECTION_CAPTION": "Vind",
-        "WIND_SPEED_AND_DIRECTION_VALUE": "{{speed}} m/s fra {{direction}}"
+        "WIND_SPEED_AND_DIRECTION_CAPTION": "Vind"
       }
     },
     "SUMMARY": "Oppsummering",
