@@ -13,7 +13,8 @@
     "NEW_ICE_OBSERVATION": "Ny isobservasjon",
     "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
     "NEW_SOIL_OBSERVATION": "Ny jordobservasjon",
-    "NEW_WATER_OBSERVATION": "Ny vannobservasjon"
+    "NEW_WATER_OBSERVATION": "Ny vannobservasjon",
+    "NEW_WEATHER_OBSERVATION": "Ny værobservasjon"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -931,6 +932,21 @@
         "WATER_MARKING": "Vannstandsmarkering",
         "WATER_MEASUREMENT": "Vannstandsmåling"
       }
+    },
+    "WEATHER": {
+      "HEADER": "Ny værobservasjon",
+      "TIME_AND_PLACE_HEADER": "Tid og sted",
+      "PHENOMENON_HEADER": "Værfenomen",
+      "PHENOMENON_LABEL": "Værfenomen",
+      "PHENOMENON_TEXTAREA_LABEL": "Beskrivelse",
+      "PHENOMENON_TEXTAREA_DESCRIPTION": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",
+      "ADD_IMAGE_DESCRIPTION": "Her kan du laste opp bilder av området du har observert eller bilder av andre relevante ting til observasjonen din.",
+      "CONSEQUENCE_HEADER": "Konsekvens",
+      "CONSEQUENCE_TEXTAREA_LABEL": "Konsekvens",
+      "CONSEQUENCE_TEXTAREA_DESCRIPTION": "Forklaring mangler",
+      "EVALUATION_HEADER": "Evaluering",
+      "EVALUATION_LABEL": "Evaluering av farevarsel",
+      "EVALUATION_DESCRIPTION": "Forklaring mangler"
     }
   },
   "SETTINGS": {

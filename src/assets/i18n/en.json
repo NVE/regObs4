@@ -13,7 +13,8 @@
     "NEW_ICE_OBSERVATION": "New ice observation",
     "NEW_SNOW_OBSERVATION": "New snow observation",
     "NEW_SOIL_OBSERVATION": "New soil observation",
-    "NEW_WATER_OBSERVATION": "New water observation"
+    "NEW_WATER_OBSERVATION": "New water observation",
+    "NEW_WEATHER_OBSERVATION": "New weather observation"
   },
   "ALERT": {
     "CANCEL": "Cancel",
@@ -932,6 +933,21 @@
         "WATER_MARKING": "Water level marking",
         "WATER_MEASUREMENT": "Water level measurement"
       }
+    },
+    "WEATHER": {
+      "HEADER": "New weather observation",
+      "TIME_AND_PLACE_HEADER": "Time and place",
+      "PHENOMENON_HEADER": "Weather phenomenon",
+      "PHENOMENON_LABEL": "Weather phenomenon",
+      "PHENOMENON_TEXTAREA_LABEL": "Description",
+      "PHENOMENON_TEXTAREA_DESCRIPTION": "How has the weather been in the area during the last 24 hours? Example: Has there been showers? Have there been temperature changes? Where is the freezing level?",
+      "ADD_IMAGE_DESCRIPTION": "Here you can upload images of the area you have observed or images of other relevant things related to your observation.",
+      "CONSEQUENCE_HEADER": "Consequence",
+      "CONSEQUENCE_TEXTAREA_LABEL": "Consequence",
+      "CONSEQUENCE_TEXTAREA_DESCRIPTION": "Explanation missing",
+      "EVALUATION_HEADER": "Evaluation",
+      "EVALUATION_LABEL": "Evaluation of danger forecast",
+      "EVALUATION_DESCRIPTION": "Explanation missing"
     }
   },
   "SETTINGS": {
