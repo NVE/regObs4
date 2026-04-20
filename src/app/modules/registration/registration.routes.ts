@@ -1,39 +1,12 @@
 import { Routes } from '@angular/router';
 import { saveAsDraftGuard } from './pages/save-as-draft.guard';
 import { canDeactivateBasePageComponent } from './pages/can-deactivate-route.guard';
-import { inject } from '@angular/core';
-import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
-import { GeoHazard } from '../common-core/models';
-import { draftResolver } from 'src/app/core/services/draft/draft.resolver';
 
 export const routes: Routes = [
   {
     path: 'edit/:id',
-    redirectTo: async (activatedRouteSnapshot) => {
-      const draftService = inject(DraftRepositoryService);
-      const id = activatedRouteSnapshot.params['id'];
-      // TODO: Add error handling
-      const draft = await draftService.load(id);
-      if (draft.registration.GeoHazardTID === GeoHazard.Weather) {
-        return `edit-weather/${id}`;
-      } else {
-        return `edit-legacy/${id}`;
-      }
-    },
-  },
-  {
-    // Ny skjema-komponent som bruker designsystemet
-    path: 'edit-weather/:id',
-    // loadComponent: () => import('./pages/weather/weather.component').then((m) => m.WeatherComponent),
-    loadComponent: () => import('./pages/weather/weather.page').then((m) => m.WeatherPage),
-    canDeactivate: [saveAsDraftGuard],
-    // resolve: {
-    //   draft: draftResolver,
-    // },
-  },
-  {
-    path: 'edit-legacy/:id',
     loadComponent: () => import('./pages/overview/overview.page').then((m) => m.OverviewPage),
+    canDeactivate: [saveAsDraftGuard],
   },
   {
     path: 'new/:geoHazard',
