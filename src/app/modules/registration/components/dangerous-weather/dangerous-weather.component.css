@@ -1,8 +1,4 @@
-ion-list:last-child {
-  margin-bottom: 100px;
-}
-
-.content {
-  max-width: var(--desktop-max-width);
-  margin: 0 auto;
+:host {
+  display: block;
+  padding-bottom: 100px;
 }
