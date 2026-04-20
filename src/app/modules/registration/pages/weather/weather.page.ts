@@ -26,6 +26,7 @@ import { SummaryItemService } from '../../services/summary-item.service';
 import { ISummaryItem } from '../../components/summary-item/summary-item.model';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { FailedRegistrationComponent } from '../../components/failed-registration/failed-registration.component';
+import { HelpTextComponent } from '../../components/help-text/help-text.component';
 
 @Component({
   selector: 'app-weather-page',
@@ -49,6 +50,7 @@ import { FailedRegistrationComponent } from '../../components/failed-registratio
     SendButtonComponent,
     SummaryItemComponent,
     FailedRegistrationComponent,
+    HelpTextComponent,
   ],
   templateUrl: './weather.page.html',
   styleUrl: './weather.page.css',
