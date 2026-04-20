@@ -216,7 +216,13 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
     // read param on new format
     const geoHazardsParamValue = searchParams.get(URL_PARAM_GEOHAZARD);
     if (geoHazardsParamValue) {
-      const geoHazards = separatedStringToNumberArray(geoHazardsParamValue);
+      const geoHazards = separatedStringToNumberArray(geoHazardsParamValue)
+        // Filtrer bort naturfare vær enn så lenge.
+        // Vi har ikke noe egen håndtering av vær i forhold til dager tilbake, kart osv, så vær har ikke noe med
+        // usersettings å gjøre enn så lenge.
+        // NB: Hvis vi legger til filter for å skjule observasjoner fra naturfare vær, kanskje vi må revurdere/fjerne
+        // dette filteret.
+        .filter((x) => x !== GeoHazard.Weather);
       if (isGeoHazardValid(geoHazards)) {
         return geoHazards;
       }
