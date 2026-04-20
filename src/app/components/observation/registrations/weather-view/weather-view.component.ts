@@ -22,7 +22,13 @@ export class WeatherViewComponent {
   airTemperature = computed(() => this.data().AirTemperature);
   cloudCover = computed(() => this.data().CloudCover);
   comment = computed(() => this.data().Comment);
-  precipitation = computed(() => this.data().PrecipitationName);
+  precipitation = computed(() => {
+    const { PrecipitationTID, PrecipitationName } = this.data();
+    if (PrecipitationTID) {
+      return PrecipitationName;
+    }
+    return undefined;
+  });
   consequence = computed(() => this.data().Consequence);
 
   windDirection = computed(() => {
