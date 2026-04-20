@@ -8,19 +8,22 @@
         [withFallbackText]="true"
         [largeFallback]="true"
       ></app-remote-image>
-      <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
-        <!-- TODO: Remove map-control-fab from this component, has nothing to do here... -->
-        <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeExistingImage(attachment)">
-          <ion-icon name="close"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
+      @if (!disabled()) {
+        <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
+          <!-- TODO: Remove map-control-fab from this component, has nothing to do here... -->
+          <ion-fab-button size="small" color="dark" class="map-control-fab" (click)="removeExistingImage(attachment)">
+            <ion-icon name="close"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
+      }
       <app-text-comment
         [(value)]="attachment.Comment"
+        [disabled]="disabled()"
         label="{{ pictureCommentText() | translate }}"
         [rows]="2"
         placeholder="{{ pictureCommentPlaceholder() | translate }}"
       ></app-text-comment>
-      <ion-accordion-group>
+      <ion-accordion-group [disabled]="disabled()">
         <ion-accordion>
           <ion-item slot="header" class="accordion-button">
             <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE" | translate }}</ion-label>
@@ -71,26 +74,29 @@
           ></ion-progress-bar>
         </div>
       }
-      <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
-        <!-- TODO: Remove map-control-fab from this component, has nothing to do here... -->
-        <ion-fab-button
-          size="small"
-          color="dark"
-          class="map-control-fab"
-          (click)="removeNewImage(attachment)"
-          [disabled]="attachment.state === 'in-progress'"
-        >
-          <ion-icon name="close"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
+      @if (!disabled()) {
+        <ion-fab class="ion-no-margin" slot="fixed" vertical="top" horizontal="end">
+          <!-- TODO: Remove map-control-fab from this component, has nothing to do here... -->
+          <ion-fab-button
+            size="small"
+            color="dark"
+            class="map-control-fab"
+            (click)="removeNewImage(attachment)"
+            [disabled]="attachment.state === 'in-progress'"
+          >
+            <ion-icon name="close"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
+      }
       <app-text-comment
         [value]="attachment.Comment"
+        [disabled]="disabled()"
         (blur)="setNewAttachmentComment(attachment, $event)"
         label="{{ pictureCommentText() | translate }}"
         [rows]="2"
         placeholder="{{ pictureCommentPlaceholder() | translate }}"
       ></app-text-comment>
-      <ion-accordion-group>
+      <ion-accordion-group [disabled]="disabled()">
         <ion-accordion>
           <ion-item slot="header" class="accordion-button">
             <ion-label>{{ "REGISTRATION.SNOW.SNOW_PROFILE.STRAT_PROFILE.SHOW_MORE" | translate }}</ion-label>
@@ -100,12 +106,14 @@
               <app-select
                 label="REGISTRATION.IMAGE_ASPECT"
                 [(selectedValue)]="attachment.Aspect"
+                [disabled]="disabled()"
                 [options]="aspectOptions"
                 (selectedValueChange)="addNewAttachmentAspect(attachment, $event)"
               ></app-select>
             </ion-item>
             <ion-item>
               <ion-input
+                [disabled]="disabled()"
                 [value]="attachment.Photographer || userSettings()?.photographer"
                 (ionBlur)="addNewAttachmentPhotographer(attachment, $event)"
                 [label]="('MY_PROFILE.PHOTOGRAPHER' | translate).toUpperCase()"
@@ -116,6 +124,7 @@
             </ion-item>
             <ion-item>
               <ion-input
+                [disabled]="disabled()"
                 [value]="attachment.Copyright || userSettings()?.copyright || myPage()?.NickName"
                 (ionBlur)="addNewAttachmentCopyright(attachment, $event)"
                 [label]="('MY_PROFILE.COPYRIGHT' | translate).toUpperCase()"
@@ -131,14 +140,14 @@
   }
 </div>
 
-@if (isHybrid) {
+@if (isHybrid && !disabled()) {
   <ion-item (click)="addClick()">
     <ion-icon [color]="iconColor()" [name]="icon()" slot="start"></ion-icon>
     <ion-label>{{ title() | translate }}</ion-label>
   </ion-item>
 }
 
-@if (!isHybrid) {
+@if (!isHybrid && !disabled()) {
   <ion-item class="file-drop">
     <ngx-file-drop
       style="width: 100%"

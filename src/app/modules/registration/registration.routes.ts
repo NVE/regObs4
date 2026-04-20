@@ -24,11 +24,12 @@ export const routes: Routes = [
   {
     // Ny skjema-komponent som bruker designsystemet
     path: 'edit-weather/:id',
-    loadComponent: () => import('./pages/weather/weather.component').then((m) => m.WeatherComponent),
+    // loadComponent: () => import('./pages/weather/weather.component').then((m) => m.WeatherComponent),
+    loadComponent: () => import('./pages/weather/weather.page').then((m) => m.WeatherPage),
     canDeactivate: [saveAsDraftGuard],
-    resolve: {
-      draft: draftResolver,
-    },
+    // resolve: {
+    //   draft: draftResolver,
+    // },
   },
   {
     path: 'edit-legacy/:id',

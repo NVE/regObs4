@@ -6,6 +6,7 @@
     (click)="openActionSheet()"
     [lines]="ionItemLines()"
     class="action-sheet-button"
+    [disabled]="disabled()"
   >
     <ion-label color="medium" position="stacked">
       {{ label() | translate | uppercase }}

@@ -69,7 +69,7 @@ export class SendButtonComponent extends NgDestoryBase implements OnInit, OnChan
   isDisabled$?: Observable<boolean>;
   caption$: Observable<string>; // submit button caption
   private isSending = new Subject<boolean>();
-  private hasChanges = new Subject<void>();
+  hasChanges = new Subject<void>();
 
   constructor() {
     super();
