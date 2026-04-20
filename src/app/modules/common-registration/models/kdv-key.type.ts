@@ -30,7 +30,7 @@ export type KdvKey =
   | 'Snow_EstimatedNumKDV'
   | 'Snow_ExposedHeightComboKDV'
   | 'Snow_ForecastCorrectKDV'
-  | 'PrecipitationKDV'
+  | 'Snow_PrecipitationKDV'
   | 'Snow_AvalancheTriggerKDV'
   | 'Snow_TerrainStartZoneKDV'
   | 'Snow_SnowSurfaceKDV'
