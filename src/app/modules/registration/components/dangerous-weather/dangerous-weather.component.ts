@@ -12,7 +12,7 @@ import { HelpTextComponent } from '../../components/help-text/help-text.componen
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 
 @Component({
-  selector: 'app-weather-page',
+  selector: 'app-dangerous-weather',
   imports: [
     TranslatePipe,
     IonList,
@@ -24,11 +24,11 @@ import { DraftRepositoryService } from 'src/app/core/services/draft/draft-reposi
     KdvSelectComponent,
     HelpTextComponent,
   ],
-  templateUrl: './weather.page.html',
-  styleUrl: './weather.page.css',
+  templateUrl: './dangerous-weather.component.html',
+  styleUrl: './dangerous-weather.component.css',
   changeDetection: ChangeDetectionStrategy.Eager,
 })
-export class WeatherPage {
+export class DangerousWeatherComponent {
   private cdr = inject(ChangeDetectorRef);
   private draftService = inject(DraftRepositoryService);
 
