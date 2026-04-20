@@ -7,97 +7,99 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  @if (draft && locationAndTimeSummary) {
-    @if (hasError(draft)) {
-      <app-failed-registration [draft]="draft" (editOpened)="onEditOpened()"></app-failed-registration>
-    }
-    <ion-list lines="full">
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "Tid og sted" | translate }} </ion-label>
-      </ion-list-header>
-      <app-summary-item
-        [readonly]="hasError(draft)"
-        [simpleObsMode]="false"
-        [item]="locationAndTimeSummary"
-      ></app-summary-item>
-    </ion-list>
-    <ion-list lines="full">
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "Værfenomen" | translate }} </ion-label>
-      </ion-list-header>
-      <app-kdv-select
-        label="Værfenomen"
-        kdvKey="Weather_WeatherPhenomenonKDV"
-        [disabled]="hasError(draft)"
-        [value]="weather.WeatherPhenomenonTID"
-        (valueChange)="updatePhenomenon($event)"
-        [showResetButton]="true"
-      >
-      </app-kdv-select>
-      <app-text-comment
-        [value]="weather.Comment"
-        [disabled]="hasError(draft)"
-        (blur)="updateComment($event)"
-        label="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}"
-        placeholder="Placeholder"
-      ></app-text-comment>
-      <ion-item-divider>
-        <ion-label class="ion-text-wrap"
-          >Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor
-          går nullisotermen?</ion-label
-        >
-      </ion-item-divider>
-    </ion-list>
-    <ion-list lines="full">
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.SUBTITLE" | translate }} </ion-label>
-      </ion-list-header>
-      <app-edit-images
-        [disabled]="hasError(draft)"
-        [registrationTid]="registrationTid"
-        [geoHazard]="draft.registration.GeoHazardTID"
-        [draftUuid]="draft.uuid"
-        [(existingAttachments)]="draft.registration.Attachments"
-        [onBeforeAdd]="getSaveFunc()"
-      ></app-edit-images>
-      @if (!hasError(draft)) {
-        <ion-item-divider>
-          <ion-label class="ion-text-wrap"> {{ "REGISTRATION.GENERAL_COMMENT.DESCRIPTION" | translate }} </ion-label>
-        </ion-item-divider>
+  <div class="content">
+    @if (draft && locationAndTimeSummary) {
+      @if (hasError(draft)) {
+        <app-failed-registration [draft]="draft" (editOpened)="onEditOpened()"></app-failed-registration>
       }
-    </ion-list>
-    <ion-list lines="full">
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label>Konsekvenser</ion-label>
-      </ion-list-header>
-      <app-text-comment
-        [value]="weather.Consequence"
-        [disabled]="hasError(draft)"
-        (blur)="updateConsequence($event)"
-        label="{{ 'Konsekvens' | translate }}"
-        placeholder="Placeholder"
-      ></app-text-comment>
-      <ion-item-divider>
-        <ion-label class="ion-text-wrap">Forklaring til konsekvens</ion-label>
-      </ion-item-divider>
-    </ion-list>
-    <ion-list lines="full">
-      <ion-list-header class="ion-text-uppercase">
-        <ion-label>Evaluering</ion-label>
-      </ion-list-header>
-      <app-kdv-select
-        label="Evaluering av farevarsel"
-        kdvKey="Weather_ForecastCorrectKDV"
-        [value]="weather.ForecastCorrectTID"
-        [disabled]="hasError(draft)"
-        (valueChange)="updateForecastCorrect($event)"
-        [showResetButton]="true"
-      ></app-kdv-select>
-      <ion-item-divider>
-        <ion-label class="ion-text-wrap">Forklaring til evaluering</ion-label>
-      </ion-item-divider>
-    </ion-list>
-  }
+      <ion-list lines="full">
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "Tid og sted" | translate }} </ion-label>
+        </ion-list-header>
+        <app-summary-item
+          [readonly]="hasError(draft)"
+          [simpleObsMode]="false"
+          [item]="locationAndTimeSummary"
+        ></app-summary-item>
+      </ion-list>
+      <ion-list lines="full">
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "Værfenomen" | translate }} </ion-label>
+        </ion-list-header>
+        <app-kdv-select
+          label="Værfenomen"
+          kdvKey="Weather_WeatherPhenomenonKDV"
+          [disabled]="hasError(draft)"
+          [value]="weather.WeatherPhenomenonTID"
+          (valueChange)="updatePhenomenon($event)"
+          [showResetButton]="true"
+        >
+        </app-kdv-select>
+        <app-text-comment
+          [value]="weather.Comment"
+          [disabled]="hasError(draft)"
+          (blur)="updateComment($event)"
+          label="{{ 'REGISTRATION.GENERAL_COMMENT.COMMENT_TITLE' | translate }}"
+          placeholder="Placeholder"
+        ></app-text-comment>
+        <ion-item-divider>
+          <ion-label class="ion-text-wrap"
+            >Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer?
+            Hvor går nullisotermen?</ion-label
+          >
+        </ion-item-divider>
+      </ion-list>
+      <ion-list lines="full">
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label> {{ "REGISTRATION.GENERAL_COMMENT.SUBTITLE" | translate }} </ion-label>
+        </ion-list-header>
+        <app-edit-images
+          [disabled]="hasError(draft)"
+          [registrationTid]="registrationTid"
+          [geoHazard]="draft.registration.GeoHazardTID"
+          [draftUuid]="draft.uuid"
+          [(existingAttachments)]="draft.registration.Attachments"
+          [onBeforeAdd]="getSaveFunc()"
+        ></app-edit-images>
+        @if (!hasError(draft)) {
+          <ion-item-divider>
+            <ion-label class="ion-text-wrap"> {{ "REGISTRATION.GENERAL_COMMENT.DESCRIPTION" | translate }} </ion-label>
+          </ion-item-divider>
+        }
+      </ion-list>
+      <ion-list lines="full">
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label>Konsekvenser</ion-label>
+        </ion-list-header>
+        <app-text-comment
+          [value]="weather.Consequence"
+          [disabled]="hasError(draft)"
+          (blur)="updateConsequence($event)"
+          label="{{ 'Konsekvens' | translate }}"
+          placeholder="Placeholder"
+        ></app-text-comment>
+        <ion-item-divider>
+          <ion-label class="ion-text-wrap">Forklaring til konsekvens</ion-label>
+        </ion-item-divider>
+      </ion-list>
+      <ion-list lines="full">
+        <ion-list-header class="ion-text-uppercase">
+          <ion-label>Evaluering</ion-label>
+        </ion-list-header>
+        <app-kdv-select
+          label="Evaluering av farevarsel"
+          kdvKey="Weather_ForecastCorrectKDV"
+          [value]="weather.ForecastCorrectTID"
+          [disabled]="hasError(draft)"
+          (valueChange)="updateForecastCorrect($event)"
+          [showResetButton]="true"
+        ></app-kdv-select>
+        <ion-item-divider>
+          <ion-label class="ion-text-wrap">Forklaring til evaluering</ion-label>
+        </ion-item-divider>
+      </ion-list>
+    }
+  </div>
 </ion-content>
 <ion-footer>
   @if (draft) {
