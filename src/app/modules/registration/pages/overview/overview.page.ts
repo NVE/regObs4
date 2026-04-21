@@ -144,6 +144,8 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
     return GeoHazard[geoHazard];
   }
 
+  isWeatherGeoHazard = computed(() => this.draft()?.registration.GeoHazardTID === GeoHazard.Weather);
+
   private syncFailed(draft: RegistrationDraft): boolean {
     return this.draftHasStatusSync(draft) ? !!draft.error : false;
   }

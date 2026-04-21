@@ -52,7 +52,7 @@
         }
       </ion-list>
 
-      @if (draft.registration.GeoHazardTID === 120) {
+      @if (isWeatherGeoHazard()) {
         <app-dangerous-weather [draft]="draft"></app-dangerous-weather>
       }
     </div>

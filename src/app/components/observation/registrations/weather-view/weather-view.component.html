@@ -10,16 +10,16 @@
     [value]="precipitation()"
   ></app-key-value>
 }
-@if (airTemperature() !== null) {
+@if (airTemperature() != null) {
   <app-key-value
     [key]="'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_CAPTION' | translate"
     [value]="airTemperature() + ' °C'"
   ></app-key-value>
 }
-@if (windSpeed() !== null) {
+@if (windSpeed() != null) {
   <app-key-value [key]="'REGISTRATION.SNOW.WEATHER.WIND_SPEED_AND_DIRECTION_CAPTION' | translate">
     <span>{{ windSpeed() + " m/s " }}</span>
-    @if (windDirection() !== null) {
+    @if (windDirection() != null) {
       <span>{{
         "REGISTRATION.SNOW.WEATHER.WIND_DIRECTION_VALUE" | translate: { direction: windDirectionName() }
       }}</span>
@@ -27,7 +27,7 @@
     }
   </app-key-value>
 }
-@if (cloudCover() !== null) {
+@if (cloudCover() != null) {
   <app-key-value
     [key]="'REGISTRATION.SNOW.WEATHER.CLOUD_COVER_CAPTION' | translate"
     [value]="'REGISTRATION.SNOW.WEATHER.CLOUD_COVER_VALUE' | translate: { value: cloudCover() }"
