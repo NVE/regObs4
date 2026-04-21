@@ -873,6 +873,7 @@
         "COMMENT_CAPTION": "Beskrivelse",
         "COMMENT_HEADER": "Beskriv været",
         "COMMENT_PLACEHOLDER": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",
+        "CONSEQUENCE_CAPTION": "Konsekvens",
         "FORECAST_CORRECT_CAPTION": "Vurdering av varslet vær på varsom.no",
         "FROM_EAST": "Ø - fra øst",
         "FROM_NORTH": "N - fra nord",

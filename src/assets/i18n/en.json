@@ -874,6 +874,7 @@
         "COMMENT_CAPTION": "Description",
         "COMMENT_HEADER": "Describe weather",
         "COMMENT_PLACEHOLDER": "How has the weather been the last 24 hours? Example: Has there been snowfall? Temperature changes? At what altitude has the freezing point been?",
+        "CONSEQUENCE_CAPTION": "Consequence",
         "FORECAST_CORRECT_CAPTION": "Assessment of the forecasted weather on varsom.no",
         "FROM_EAST": "E - from east",
         "FROM_NORTH": "N - from north",

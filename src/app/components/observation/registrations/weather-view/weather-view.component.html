@@ -43,5 +43,8 @@
   <app-key-value [key]="'REGISTRATION.SNOW.WEATHER.COMMENT_CAPTION' | translate" [value]="comment()"></app-key-value>
 }
 @if (consequence()) {
-  <app-key-value [key]="'Konsekvens' | translate" [value]="consequence()"></app-key-value>
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.WEATHER.CONSEQUENCE_CAPTION' | translate"
+    [value]="consequence()"
+  ></app-key-value>
 }
