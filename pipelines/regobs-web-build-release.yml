@@ -27,6 +27,12 @@ stages:
               versionSpec: 20.x
 
           - task: Npm@1
+            displayName: 'Update npm to v11'
+            inputs:
+              command: custom
+              customCommand: 'install -g npm@11'
+
+          - task: Npm@1
             displayName: 'npm install (ci)'
             inputs:
               command: ci
