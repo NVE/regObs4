@@ -1,8 +1,9 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../out-tsc/app"
+    "outDir": "../out-tsc/app",
+    "types": ["cordova", "leaflet", "leaflet-draw", "leaflet.markercluster", "geojson"]
   },
-  "files": ["main.ts"],
-  "include": ["src/**/*.d.ts"]
+  "include": ["**/*.d.ts", "**/*.ts", "environments/version.json"],
+  "exclude": ["**/*.spec.ts", "test.ts", "**/*.worker.ts", "app/core/helpers/spied.ts", "global-polyfill.ts"]
 }

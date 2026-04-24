@@ -4,10 +4,10 @@ interface CarouselItem<T extends string> {
   type: T;
 }
 
-interface CarouselImageItem extends CarouselItem<'Attachment'> {
+export interface CarouselImageItem extends CarouselItem<'Attachment'> {
   data: AttachmentViewModel;
 }
 
-type CarouselSnowProfile = CarouselItem<'SnowProfile'>;
+export type CarouselSnowProfile = CarouselItem<'SnowProfile'>;
 
 export type CarouselItems = (CarouselSnowProfile | CarouselImageItem)[];

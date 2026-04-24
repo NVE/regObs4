@@ -1,7 +1,0 @@
-<ng-container *ngFor="let attachment of attachments; trackBy: trackById">
-  <img
-    *ngFor="let imgUrl of attachment.Attachments; let attachmentIndex = index"
-    [src]="imgUrl.Url"
-    (click)="openImage(attachmentIndex, attachment.Attachments, attachment.RegId)"
-  />
-</ng-container>
