@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { removeEmpty } from './remove-empty';
 
 // Delvis copilot-generert

@@ -12,7 +12,7 @@ import {
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-export type RefreshFunc = (cancelPromise: Promise<boolean>) => Promise<any>;
+export type RefreshFunc = (cancelPromise: Promise<boolean>) => Promise<unknown>;
 
 @Component({
   selector: 'app-refresh-with-cancel',

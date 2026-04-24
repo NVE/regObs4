@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { IceThicknessViewModel } from 'src/app/modules/common-regobs-api';
+import { IceThicknessViewModel, Summary } from 'src/app/modules/common-regobs-api';
 import { SummaryComponent } from '../../summary/summary.component';
 import moment from 'moment';
 import { IonIcon } from '@ionic/angular/standalone';
@@ -24,7 +24,7 @@ export class IceThicknessViewComponent {
   readonly obsDate = input.required<string>();
   readonly locationId = input<number>();
   readonly data = input.required<IceThicknessViewModel>();
-  readonly summaries = input.required<any>();
+  readonly summaries = input.required<Summary[]>();
 
   constructor() {
     addIcons({ openOutline });
