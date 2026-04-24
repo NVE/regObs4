@@ -75,7 +75,7 @@ export class AddMenuComponent {
       }))
   );
 
-  isMyObservations = this.router.url === '/my-observations';
+  isMyObservations = computed(() => this.router.url === '/my-observations');
 
   constructor(private router: Router) {
     addIcons({ add, create });
