@@ -28,20 +28,9 @@
     //   "es2018",
     //   "dom"
     // ],
-    "baseUrl": "./", // TODO: Remove, not recommended to use this by typescript if not using amd
-    // "paths": {
-    //   "core-js/es7/reflect": [
-    //     "../node_modules/core-js/proposals/reflect-metadata"
-    //   ],
-    //   "core-js/es6/*": [
-    //     "../node_modules/core-js/es/*"
-    //   ]
-    // },
-    // "types": [
-    //   "node",
-    //   "cordova",
-    //   "jasmine"
-    // ],
+    "paths": {
+      "src/*": ["./src/*"]
+    },
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
