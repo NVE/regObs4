@@ -1,6 +1,6 @@
 @if (weatherPhenomenon()) {
   <app-key-value
-    [key]="'REGISTRATION.SNOW.WEATHER.WEATHER_PHENOMENON' | translate"
+    [key]="'REGISTRATION.WEATHER.PHENOMENON_LABEL' | translate"
     [value]="weatherPhenomenon()"
   ></app-key-value>
 }
@@ -35,7 +35,7 @@
 }
 @if (forecastCorrect()) {
   <app-key-value
-    [key]="'REGISTRATION.SNOW.WEATHER.FORECAST_CORRECT_CAPTION' | translate"
+    [key]="'REGISTRATION.WEATHER.EVALUATION_LABEL' | translate"
     [value]="forecastCorrect()"
   ></app-key-value>
 }
@@ -44,7 +44,7 @@
 }
 @if (consequence()) {
   <app-key-value
-    [key]="'REGISTRATION.SNOW.WEATHER.CONSEQUENCE_CAPTION' | translate"
+    [key]="'REGISTRATION.WEATHER.CONSEQUENCE_TEXTAREA_LABEL' | translate"
     [value]="consequence()"
   ></app-key-value>
 }

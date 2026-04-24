@@ -874,8 +874,6 @@
         "COMMENT_CAPTION": "Description",
         "COMMENT_HEADER": "Describe weather",
         "COMMENT_PLACEHOLDER": "How has the weather been the last 24 hours? Example: Has there been snowfall? Temperature changes? At what altitude has the freezing point been?",
-        "CONSEQUENCE_CAPTION": "Consequence",
-        "FORECAST_CORRECT_CAPTION": "Assessment of the forecasted weather on varsom.no",
         "FROM_EAST": "E - from east",
         "FROM_NORTH": "N - from north",
         "FROM_NORTH_EAST": "NE - from north-east",
@@ -941,15 +939,17 @@
       "TIME_AND_PLACE_HEADER": "Time and place",
       "PHENOMENON_HEADER": "Weather phenomenon",
       "PHENOMENON_LABEL": "Weather phenomenon",
+      "PHENOMENOM_PLACEHOLDER": "todo: placeholder",
       "PHENOMENON_TEXTAREA_LABEL": "Description",
       "PHENOMENON_TEXTAREA_DESCRIPTION": "How has the weather been in the area during the last 24 hours? Example: Has there been showers? Have there been temperature changes? Where is the freezing level?",
       "ADD_IMAGE_DESCRIPTION": "Here you can upload images of the area you have observed or images of other relevant things related to your observation.",
       "CONSEQUENCE_HEADER": "Consequence",
+      "CONSEQUENCE_PLACEHOLDER": "todo: placeholder",
       "CONSEQUENCE_TEXTAREA_LABEL": "Consequence",
       "CONSEQUENCE_TEXTAREA_DESCRIPTION": "Explanation missing",
+      "EVALUATION_DESCRIPTION": "Assessment of the forecasted weather on varsom.no",
       "EVALUATION_HEADER": "Evaluation",
-      "EVALUATION_LABEL": "Evaluation of danger forecast",
-      "EVALUATION_DESCRIPTION": "Explanation missing"
+      "EVALUATION_LABEL": "Evaluation of danger forecast"
     }
   },
   "SETTINGS": {
