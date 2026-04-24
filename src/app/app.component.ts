@@ -58,7 +58,6 @@ export class AppComponent {
   private platform = inject(Platform);
   private userSettings = inject(UserSettingService);
   private dataMarshallService = inject(DataMarshallService);
-  // private offlineImageService = inject(OfflineImageService);
   private swipeBackService = inject(SwipeBackService);
   private loggingService = inject(LoggingService);
   private dbHelperService = inject(DbHelperService);

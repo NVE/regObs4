@@ -17,6 +17,12 @@ steps:
       versionSpec: 20.x
       checkLatest: false
 
+  - task: Npm@1
+    displayName: 'Update npm to v11'
+    inputs:
+      command: custom
+      customCommand: 'install -g npm@11'
+
   - task: Cache@2
     inputs:
       key: 'npm | "$(Agent.OS)" | package-lock.json'

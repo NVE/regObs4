@@ -18,7 +18,10 @@ describe('toSafeString', () => {
   });
 
   it('should serialize Error instances with details and custom properties', () => {
-    const error: any = new Error('Something went wrong');
+    interface ErrorWithCode extends Error {
+      code?: string;
+    }
+    const error: ErrorWithCode = new Error('Something went wrong') as ErrorWithCode;
     error.code = 'E_CUSTOM';
 
     const result = toSafeString(error);
@@ -66,7 +69,11 @@ describe('toSafeString', () => {
   });
 
   it('should mark circular references as [Circular] instead of throwing', () => {
-    const value: any = { foo: 'bar' };
+    interface CircularObject {
+      foo: string;
+      self?: CircularObject;
+    }
+    const value: CircularObject = { foo: 'bar' };
     value.self = value;
 
     const result = toSafeString(value);
@@ -78,7 +85,7 @@ describe('toSafeString', () => {
     const rootResult = toSafeString(10n);
     expect(rootResult).toBe('"BigInt(10)"');
 
-    const objectWithBigInt = { value: 10n } as any;
+    const objectWithBigInt = { value: 10n };
     const objectResult = toSafeString(objectWithBigInt);
     const parsed = JSON.parse(objectResult);
 
@@ -87,13 +94,14 @@ describe('toSafeString', () => {
   });
 
   it('should fall back to String() when JSON.stringify throws', () => {
-    const value: any = {};
-
-    Object.defineProperty(value, 'toJSON', {
-      value() {
+    interface ValueWithToJSON {
+      toJSON: () => never;
+    }
+    const value: ValueWithToJSON = {
+      toJSON() {
         throw new Error('Fail in toJSON');
       },
-    });
+    };
 
     const result = toSafeString(value);
 

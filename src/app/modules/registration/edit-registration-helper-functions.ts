@@ -1,7 +1,4 @@
-import { WritableSignal } from '@angular/core';
-import { Observable } from 'rxjs';
 import { RegistrationViewModel, MyPageData } from 'src/app/modules/common-regobs-api/models';
-import { RegistrationService } from '../common-regobs-api';
 
 export type EditMode = 'EDIT_AS_MODERATOR' | 'EDIT_OWN_REGISTRATION';
 

@@ -23,7 +23,7 @@ import {
   createCriticalLayers,
 } from './plot';
 import { CriticalLayer, Hardness, PlotFrame, PlotPoint, SimplePolygon } from './models';
-import { StratProfileLayerEditModel } from 'src/app/modules/common-regobs-api';
+import { CompressionTestEditModel, StratProfileLayerEditModel } from 'src/app/modules/common-regobs-api';
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -780,7 +780,7 @@ describe('createLayerLabels', () => {
 // ── createCompressionTestPlots ───────────────────────────
 
 describe('createCompressionTestPlots', () => {
-  const mockFormatter = (test: any, opts: { includeDepth: boolean; includeFracture: boolean }) => {
+  const mockFormatter = (test: CompressionTestEditModel, opts: { includeDepth: boolean; includeFracture: boolean }) => {
     let s = 'CT';
     if (opts.includeDepth && test.FractureDepth) s += `@${(test.FractureDepth * 100).toFixed(0)}cm`;
     if (opts.includeFracture) s += '(frac)';
@@ -789,13 +789,13 @@ describe('createCompressionTestPlots', () => {
   const depthProj = (d: number) => d * 100;
 
   it('filters out tests without FractureDepth', () => {
-    const tests = [{ FractureDepth: undefined, IncludeInSnowProfile: true }];
+    const tests: CompressionTestEditModel[] = [{ FractureDepth: undefined, IncludeInSnowProfile: true }];
     const result = createCompressionTestPlots(tests, mockFormatter, depthProj);
     expect(result.length).toBe(0);
   });
 
   it('filters out tests not included in snow profile', () => {
-    const tests = [{ FractureDepth: 0.5, IncludeInSnowProfile: false }];
+    const tests: CompressionTestEditModel[] = [{ FractureDepth: 0.5, IncludeInSnowProfile: false }];
     const result = createCompressionTestPlots(tests, mockFormatter, depthProj);
     expect(result.length).toBe(0);
   });

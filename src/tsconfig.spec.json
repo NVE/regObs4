@@ -2,11 +2,10 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "typeRoots": ["../node_modules/@types"],
-    "types": ["jasmine", "node"],
+    "types": ["jasmine"],
     "strict": false,
     "noImplicitReturns": false
   },
-  "files": ["test.ts"],
+  "files": ["test.ts", "nanosql.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

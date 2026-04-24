@@ -21,8 +21,11 @@ describe('SentryService', () => {
     service = TestBed.inject(SentryService);
 
     // Spy on the protected Sentry wrapper methods
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     addBreadcrumbSpy = spyOn<any>(service, 'sentryAddBreadcrumb');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     captureMessageSpy = spyOn<any>(service, 'sentryCaptureMessage');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     captureExceptionSpy = spyOn<any>(service, 'sentryCaptureException');
   });
 

@@ -51,6 +51,7 @@ export class AddMenuComponent {
   private tripLoggerService = inject(TripLoggerService);
   private userSettingService = inject(UserSettingService);
   private platform = inject(Platform);
+  private router = inject(Router);
 
   readonly menuFab = viewChild<IonFab>('menuFab');
 
@@ -77,7 +78,7 @@ export class AddMenuComponent {
 
   isMyObservations = this.router.url === '/my-observations';
 
-  constructor(private router: Router) {
+  constructor() {
     addIcons({ add, create });
   }
 

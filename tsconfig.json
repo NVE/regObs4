@@ -14,34 +14,12 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "es2023",
+    // Usikker på om module bør være "preserve" eller "esnext".
+    // Nye angular-prosjekter bruker "preserve"
     "module": "esnext",
-    // "sourceMap": true,
-    // "inlineSources": true,
-    // "sourceRoot": "/",
-    // "declaration": false,
-    // "emitDecoratorMetadata": true,
-    // "resolveJsonModule": true,
-    // "typeRoots": [
-    //   "node_modules/@types"
-    // ],
-    // "lib": [
-    //   "es2018",
-    //   "dom"
-    // ],
-    "baseUrl": "./", // TODO: Remove, not recommended to use this by typescript if not using amd
-    // "paths": {
-    //   "core-js/es7/reflect": [
-    //     "../node_modules/core-js/proposals/reflect-metadata"
-    //   ],
-    //   "core-js/es6/*": [
-    //     "../node_modules/core-js/es/*"
-    //   ]
-    // },
-    // "types": [
-    //   "node",
-    //   "cordova",
-    //   "jasmine"
-    // ],
+    "paths": {
+      "src/*": ["./src/*"]
+    },
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
@@ -50,5 +28,11 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "strictStandalone": true
-  }
+  },
+  "files": [],
+  "references": [
+    { "path": "./src/tsconfig.app.json" },
+    { "path": "./src/tsconfig.spec.json" },
+    { "path": "./tsconfig.worker.json" }
+  ]
 }
