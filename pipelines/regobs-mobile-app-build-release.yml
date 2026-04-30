@@ -19,7 +19,7 @@ variables:
   - group: sentryProperties
 
 pool:
-  vmImage: 'macos-14'
+  vmImage: 'macos-26'
   demands: xcode
 
 steps:
