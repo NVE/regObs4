@@ -71,6 +71,7 @@ import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.mode
 import { SnowProfileComponent } from 'src/app/components/snow-profile/snow-profile.component';
 import { CarouselItems } from 'src/app/components/observation/observation-image-carousel/models';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { WeatherViewComponent } from 'src/app/components/observation/registrations/weather-view/weather-view.component';
 
 const DEBUG_TAG = 'ViewObservationPage';
 
@@ -118,6 +119,7 @@ type RegistrationTypesV = { [geoHazardId: string]: RegistrationType[] };
     TranslatePipe,
     SummaryComponent,
     SnowProfileComponent,
+    WeatherViewComponent,
   ],
 })
 export class ViewObservationPage extends NgDestoryBase implements OnInit {

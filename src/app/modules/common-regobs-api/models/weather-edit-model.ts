@@ -6,4 +6,7 @@ export interface WeatherEditModel {
   PrecipitationTID?: number;
   WindDirection?: number;
   WindSpeed?: number;
+  Consequence?: string;
+  WeatherPhenomenonTID?: number;
+  ForecastCorrectTID?: number;
 }

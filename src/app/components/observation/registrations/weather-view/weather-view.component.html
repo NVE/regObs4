@@ -1,0 +1,50 @@
+@if (weatherPhenomenon()) {
+  <app-key-value
+    [key]="'REGISTRATION.WEATHER.PHENOMENON_LABEL' | translate"
+    [value]="weatherPhenomenon()"
+  ></app-key-value>
+}
+@if (precipitation()) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.WEATHER.PRECIPITATION' | translate"
+    [value]="precipitation()"
+  ></app-key-value>
+}
+@if (airTemperature() != null) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.WEATHER.AIR_TEMPERATURE_CAPTION' | translate"
+    [value]="airTemperature() + ' °C'"
+  ></app-key-value>
+}
+@if (windSpeed() != null) {
+  <app-key-value [key]="'REGISTRATION.SNOW.WEATHER.WIND_SPEED_AND_DIRECTION_CAPTION' | translate">
+    <span>{{ windSpeed() + " m/s " }}</span>
+    @if (windDirection() != null) {
+      <span>{{
+        "REGISTRATION.SNOW.WEATHER.WIND_DIRECTION_VALUE" | translate: { direction: windDirectionName() }
+      }}</span>
+      <span class="wind-arrow" [style.transform]="'rotate(' + windDirection() + 'deg)'" aria-disabled="true">↑</span>
+    }
+  </app-key-value>
+}
+@if (cloudCover() != null) {
+  <app-key-value
+    [key]="'REGISTRATION.SNOW.WEATHER.CLOUD_COVER_CAPTION' | translate"
+    [value]="'REGISTRATION.SNOW.WEATHER.CLOUD_COVER_VALUE' | translate: { value: cloudCover() }"
+  ></app-key-value>
+}
+@if (forecastCorrect()) {
+  <app-key-value
+    [key]="'REGISTRATION.WEATHER.EVALUATION_LABEL' | translate"
+    [value]="forecastCorrect()"
+  ></app-key-value>
+}
+@if (comment()) {
+  <app-key-value [key]="'REGISTRATION.SNOW.WEATHER.COMMENT_CAPTION' | translate" [value]="comment()"></app-key-value>
+}
+@if (consequence()) {
+  <app-key-value
+    [key]="'REGISTRATION.WEATHER.CONSEQUENCE_TEXTAREA_LABEL' | translate"
+    [value]="consequence()"
+  ></app-key-value>
+}

@@ -70,4 +70,6 @@ export type KdvKey =
   | 'LocalKnowledgeKDV'
   | 'RescueKDV'
   | 'Snow_SlopeActivityKDV'
-  | 'Snow_SkiConditionsKDV';
+  | 'Snow_SkiConditionsKDV'
+  | 'Weather_ForecastCorrectKDV'
+  | 'Weather_WeatherPhenomenonKDV';

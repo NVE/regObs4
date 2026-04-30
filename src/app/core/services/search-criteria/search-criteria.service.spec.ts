@@ -101,7 +101,7 @@ describe('SearchCriteriaService', () => {
     const { service, userSettings } = init({ userSettings: { language: LangKey.fr } });
     //check default criteria
     expect(service.criteria().LangKey).toEqual(LangKey.fr);
-    expect(service.criteria().SelectedGeoHazards).toEqual([GeoHazard.Snow]);
+    expect(service.criteria().SelectedGeoHazards).toEqual([GeoHazard.Snow, GeoHazard.Weather]);
 
     //verify that criteria changes when we change language and geo hazard
     userSettings.updateUserSettings({
@@ -109,7 +109,7 @@ describe('SearchCriteriaService', () => {
       currentGeoHazard: [GeoHazard.Soil, GeoHazard.Water],
     });
     expect(service.criteria().LangKey).toEqual(LangKey.en);
-    expect(service.criteria().SelectedGeoHazards).toEqual([GeoHazard.Soil, GeoHazard.Water]);
+    expect(service.criteria().SelectedGeoHazards).toEqual([GeoHazard.Soil, GeoHazard.Water, GeoHazard.Weather]);
   });
 
   it('addRegion should add regions to SelectedRegions', () => {

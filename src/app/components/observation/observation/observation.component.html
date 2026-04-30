@@ -137,7 +137,7 @@
   @if (hasData(reg.WeatherObservation)) {
     @let tid = RegistrationTid.WeatherObservation;
     <h3>{{ getSummaryHeader(reg, tid) }}</h3>
-    <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+    <app-weather-view [data]="reg.WeatherObservation"></app-weather-view>
   }
 
   @if (hasData(reg.SnowSurfaceObservation)) {

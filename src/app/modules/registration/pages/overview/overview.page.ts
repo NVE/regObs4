@@ -45,6 +45,7 @@ import { SummaryItemComponent } from '../../components/summary-item/summary-item
 import { SendButtonComponent } from '../../components/send-button/send-button.component';
 import { CoachMarksSimpleObsComponent } from '../../../../components/coach-marks/coach-marks-simple-obs/coach-marks-simple-obs.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { DangerousWeatherComponent } from '../../components/dangerous-weather/dangerous-weather.component';
 
 const DEBUG_TAG = 'OverviewPage';
 
@@ -85,6 +86,7 @@ const DEBUG_TAG = 'OverviewPage';
     SimpleWaterObsComponent,
     SummaryItemComponent,
     TranslatePipe,
+    DangerousWeatherComponent,
   ],
 })
 export class OverviewPage extends NgDestoryBase implements OnInit {
@@ -141,6 +143,8 @@ export class OverviewPage extends NgDestoryBase implements OnInit {
   getName(geoHazard: GeoHazard): string {
     return GeoHazard[geoHazard];
   }
+
+  isWeatherGeoHazard = computed(() => this.draft()?.registration.GeoHazardTID === GeoHazard.Weather);
 
   private syncFailed(draft: RegistrationDraft): boolean {
     return this.draftHasStatusSync(draft) ? !!draft.error : false;

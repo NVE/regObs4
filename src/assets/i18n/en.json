@@ -10,10 +10,12 @@
     "DRAFT_TITLE_SNOW": "Draft: Snow observation",
     "DRAFT_TITLE_SOIL": "Draft: Soil observation",
     "DRAFT_TITLE_WATER": "Draft: Water observation",
+    "DRAFT_TITLE_WEATHER": "Draft: Weather observation",
     "NEW_ICE_OBSERVATION": "New ice observation",
     "NEW_SNOW_OBSERVATION": "New snow observation",
     "NEW_SOIL_OBSERVATION": "New soil observation",
-    "NEW_WATER_OBSERVATION": "New water observation"
+    "NEW_WATER_OBSERVATION": "New water observation",
+    "NEW_WEATHER_OBSERVATION": "New weather observation"
   },
   "ALERT": {
     "CANCEL": "Cancel",
@@ -125,7 +127,8 @@
     "DIRT": "Soil",
     "ICE": "Ice",
     "SNOW": "Snow",
-    "WATER": "Water"
+    "WATER": "Water",
+    "WEATHER": "Weather"
   },
   "HELP": {
     "TITLE": "Help"
@@ -863,8 +866,12 @@
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Air temperature (C)",
+        "AIR_TEMPERATURE_CAPTION": "Temperature",
         "AIR_TEMPERATURE_PLACEHOLDER": "Can be given with two decimals",
         "CLOUD_COVER": "Cloud cover (%)",
+        "CLOUD_COVER_CAPTION": "Cloud cover",
+        "CLOUD_COVER_VALUE": "{{value}} % clouds",
+        "COMMENT_CAPTION": "Description",
         "COMMENT_HEADER": "Describe weather",
         "COMMENT_PLACEHOLDER": "How has the weather been the last 24 hours? Example: Has there been snowfall? Temperature changes? At what altitude has the freezing point been?",
         "FROM_EAST": "E - from east",
@@ -879,8 +886,11 @@
         "ONLY_FULL_PERCENTAGE": "Percentage without decimals",
         "PRECIPITATION": "Precipitation",
         "TITLE": "Weather",
+        "WEATHER_PHENOMENON": "Weather phenomenon",
         "WIND_DIRECTION": "Wind direction",
-        "WIND_SPEED": "Wind speed (m/s)"
+        "WIND_DIRECTION_VALUE": "from {{direction}}",
+        "WIND_SPEED": "Wind speed (m/s)",
+        "WIND_SPEED_AND_DIRECTION_CAPTION": "Wind"
       }
     },
     "SUMMARY": "Summary",
@@ -923,6 +933,23 @@
         "WATER_MARKING": "Water level marking",
         "WATER_MEASUREMENT": "Water level measurement"
       }
+    },
+    "WEATHER": {
+      "HEADER": "New weather observation",
+      "TIME_AND_PLACE_HEADER": "Time and place",
+      "PHENOMENON_HEADER": "Weather type",
+      "PHENOMENON_LABEL": "Weather type",
+      "PHENOMENOM_PLACEHOLDER": "Describe the weather you want to report",
+      "PHENOMENON_TEXTAREA_LABEL": "Description",
+      "PHENOMENON_TEXTAREA_DESCRIPTION": "For example: Which direction did the wind gusts come from? Was there hail in the showers? How much snow has fallen? NB Do not expose yourself to danger in severe weather!",
+      "ADD_IMAGE_DESCRIPTION": "Here you can upload images of the area you observed or images of other relevant things for your observation.",
+      "CONSEQUENCE_HEADER": "Consequences",
+      "CONSEQUENCE_PLACEHOLDER": "Describe the consequences of the weather",
+      "CONSEQUENCE_TEXTAREA_LABEL": "Consequences",
+      "CONSEQUENCE_TEXTAREA_DESCRIPTION": "For example: Has anything blown away? Is there damage to buildings, roads or bridges? Has the power gone out? Is your garden flooded? Is the road snowed in? Is there ice on the road? NB: Do not expose yourself to danger in severe weather!",
+      "EVALUATION_DESCRIPTION": "Was the hazard warning accurate? Should a hazard warning have been issued? Should the hazard warning have had a different hazard level? Was the weather type correct or should a different weather type have been warned about?",
+      "EVALUATION_HEADER": "Evaluation",
+      "EVALUATION_LABEL": "Evaluation of hazard warning"
     }
   },
   "SETTINGS": {

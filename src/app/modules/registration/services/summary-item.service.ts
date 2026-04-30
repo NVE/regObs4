@@ -198,7 +198,7 @@ export class SummaryItemService {
       ...(await this.getGeoHazardItems(draft, attachmentsToUse)),
     ];
 
-    if (draft.registration.GeoHazardTID != 70) {
+    if (![GeoHazard.Ice, GeoHazard.Weather].includes(draft.registration.GeoHazardTID)) {
       summaryItems.push(
         await this.getRegItem(
           draft,

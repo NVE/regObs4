@@ -54,6 +54,7 @@ export class AddMenuComponent {
   private router = inject(Router);
 
   readonly menuFab = viewChild<IonFab>('menuFab');
+  readonly geoHazardsEnum = GeoHazard;
 
   geoHazards = toSignal(this.userSettingService.userSetting$.pipe(map((us) => us.currentGeoHazard)), {
     initialValue: [GeoHazard.Snow],

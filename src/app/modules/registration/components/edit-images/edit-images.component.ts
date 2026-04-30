@@ -114,6 +114,8 @@ export class EditImagesComponent implements OnInit {
   readonly onBeforeAdd = input<() => Promise<void> | void>();
   readonly attachmentType = input<AttachmentType>('Attachment');
   readonly ref = input<string>();
+  readonly disabled = input(false);
+
   getRoundedDownOrientationValue = getRoundedDownOrientationValue;
   userSettings = toSignal(this.userSettingService.userSetting$);
   myPage = toSignal(this.regobsAuthService.myPageData$);

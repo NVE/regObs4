@@ -36,6 +36,7 @@ import { ObservationLocationMapComponent } from '../observation-location-map/obs
 import { GeohazardChipComponent } from '../geohazard-chip/geohazard-chip.component';
 import { SnowProfileComponent } from '../../snow-profile/snow-profile.component';
 import { CarouselItems } from '../observation-image-carousel/models';
+import { WeatherViewComponent } from '../registrations/weather-view/weather-view.component';
 
 const DEBUG_TAG = 'ObservationComponent';
 const isVisibleInitialValue = CSS.supports('content-visibility: auto') ? false : true;
@@ -59,6 +60,7 @@ const isVisibleInitialValue = CSS.supports('content-visibility: auto') ? false :
     AvalancheEvaluationViewComponent,
     ObservationActionsComponent,
     SnowProfileComponent,
+    WeatherViewComponent,
   ],
   templateUrl: './observation.component.html',
   styleUrl: './observation.component.css',

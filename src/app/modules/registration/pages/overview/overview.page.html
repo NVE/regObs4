@@ -51,6 +51,10 @@
           ></app-summary-item>
         }
       </ion-list>
+
+      @if (isWeatherGeoHazard()) {
+        <app-dangerous-weather [draft]="draft"></app-dangerous-weather>
+      }
     </div>
   </ion-content>
   @if (!hideSendButton(draft)) {

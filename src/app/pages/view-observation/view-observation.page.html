@@ -216,7 +216,9 @@
                 (attachmentClicked)="openImageCarousel($event, attachments)"
               ></app-attachment-grid>
             }
-            <app-summary [summaries]="getSummaries(reg, tid)"></app-summary>
+            @if (reg.WeatherObservation) {
+              <app-weather-view [data]="reg.WeatherObservation"></app-weather-view>
+            }
           </app-registration-view>
         }
 

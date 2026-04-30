@@ -645,6 +645,23 @@ ion-toast {
   display: none;
 }
 
+.obs-marker {
+  position: relative;
+}
+.obs-marker::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 20px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  transform: rotate(-30deg) translateY(-5px);
+  filter: blur(3px);
+  z-index: -1;
+}
+
 .obs-marker:hover svg,
 .obs-marker:focus svg,
 .active-map-marker svg {

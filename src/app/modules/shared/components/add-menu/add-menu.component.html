@@ -6,6 +6,12 @@
   <ion-fab-list side="top">
     <ion-list lines="full" class="ion-no-padding ion-no-margin add-menu-list">
       <!-- New observation button -->
+
+      <ion-item button (click)="createRegistration(geoHazardsEnum.Weather)">
+        <app-geo-icon slot="start" [useGeoColors]="false" [geoHazards]="[geoHazardsEnum.Weather]"></app-geo-icon>
+        <ion-label>{{ "ADD_MENU.NEW_WEATHER_OBSERVATION" | translate }}</ion-label>
+      </ion-item>
+
       @for (geoHazard of geoHazards(); track geoHazard) {
         <ion-item button (click)="createRegistration(geoHazard)">
           <app-geo-icon slot="start" [useGeoColors]="false" [geoHazards]="[geoHazard]"></app-geo-icon>

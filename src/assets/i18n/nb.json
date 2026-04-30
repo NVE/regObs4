@@ -10,10 +10,12 @@
     "DRAFT_TITLE_SNOW": "Kladd: Snøobservasjon",
     "DRAFT_TITLE_SOIL": "Kladd: Jordobservasjon",
     "DRAFT_TITLE_WATER": "Kladd: Vannobservasjon",
+    "DRAFT_TITLE_WEATHER": "Kladd: Værobservasjon",
     "NEW_ICE_OBSERVATION": "Ny isobservasjon",
     "NEW_SNOW_OBSERVATION": "Ny snøobservasjon",
     "NEW_SOIL_OBSERVATION": "Ny jordobservasjon",
-    "NEW_WATER_OBSERVATION": "Ny vannobservasjon"
+    "NEW_WATER_OBSERVATION": "Ny vannobservasjon",
+    "NEW_WEATHER_OBSERVATION": "Ny værobservasjon"
   },
   "ALERT": {
     "CANCEL": "Avbryt",
@@ -124,7 +126,8 @@
     "DIRT": "Jord",
     "ICE": "Is",
     "SNOW": "Snø",
-    "WATER": "Vann"
+    "WATER": "Vann",
+    "WEATHER": "Vær"
   },
   "HELP": {
     "TITLE": "Hjelp"
@@ -862,8 +865,12 @@
       },
       "WEATHER": {
         "AIR_TEMPERATURE": "Lufttemperatur (C)",
+        "AIR_TEMPERATURE_CAPTION": "Temperatur",
         "AIR_TEMPERATURE_PLACEHOLDER": "Kan gis med to desimal",
         "CLOUD_COVER": "Skydekke (%)",
+        "CLOUD_COVER_CAPTION": "Skydekke",
+        "CLOUD_COVER_VALUE": "{{value}} % skyer",
+        "COMMENT_CAPTION": "Beskrivelse",
         "COMMENT_HEADER": "Beskriv været",
         "COMMENT_PLACEHOLDER": "Hvordan har været vært i området siste døgn? Eks: Har det vært byger? Har det vært temperaturendringer? Hvor går nullisotermen?",
         "FROM_EAST": "Ø - fra øst",
@@ -879,7 +886,9 @@
         "PRECIPITATION": "Nedbørstype",
         "TITLE": "Vær",
         "WIND_DIRECTION": "Vindretning",
-        "WIND_SPEED": "Vindhastighet (m/s)"
+        "WIND_DIRECTION_VALUE": "fra {{direction}}",
+        "WIND_SPEED": "Vindhastighet (m/s)",
+        "WIND_SPEED_AND_DIRECTION_CAPTION": "Vind"
       }
     },
     "SUMMARY": "Oppsummering",
@@ -922,6 +931,23 @@
         "WATER_MARKING": "Vannstandsmarkering",
         "WATER_MEASUREMENT": "Vannstandsmåling"
       }
+    },
+    "WEATHER": {
+      "HEADER": "Ny værobservasjon",
+      "TIME_AND_PLACE_HEADER": "Tid og sted",
+      "PHENOMENON_HEADER": "Værtype",
+      "PHENOMENON_LABEL": "Værtype",
+      "PHENOMENOM_PLACEHOLDER": "Beskriv været du ønsker å rapportere om",
+      "PHENOMENON_TEXTAREA_LABEL": "Beskrivelse",
+      "PHENOMENON_TEXTAREA_DESCRIPTION": "For eksempel: Hvilken retning kom vindkastene fra? Har det vært hagl i bygene? Hvor mye snø har kommet? NB Ikke utsett deg for fare i dårlig vær!",
+      "ADD_IMAGE_DESCRIPTION": "Her kan du laste opp bilder av området du har observert eller bilder av andre relevante ting til observasjonen din.",
+      "CONSEQUENCE_HEADER": "Konsekvenser",
+      "CONSEQUENCE_PLACEHOLDER": "Beskriv konsekvensene av været",
+      "CONSEQUENCE_TEXTAREA_LABEL": "Konsekvenser",
+      "CONSEQUENCE_TEXTAREA_DESCRIPTION": "For eksempel: Har noe blåst bort? Er det skader på bygninger, vei eller broer? Har strømmen gått? Er hagen din oversvømt? Har vegen snødd igjen? Er det is i vegbanen? NB: Ikke utsett deg for fare i dårlig vær!",
+      "EVALUATION_DESCRIPTION": "Traff farevarselet? Burde det ha vært sendt farevarsel? Burde farevarselet hatt et annet farenivå? Stemte værtypen eller burde det ha vært varslet om en annen værtype?",
+      "EVALUATION_HEADER": "Evaluering",
+      "EVALUATION_LABEL": "Evaluering av farevarsel"
     }
   },
   "SETTINGS": {
