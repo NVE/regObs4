@@ -55,10 +55,10 @@ steps:
       provProfileSecureFile: 'appledistribution20251211.mobileprovision'
 
   - task: NodeTool@0
-    displayName: 'Use Node 20.x'
+    displayName: 'Use Node 25.x'
     inputs:
       versionSource: 'spec'
-      versionSpec: 20.x
+      versionSpec: 24.x
       checkLatest: false
 
   - task: Npm@1
