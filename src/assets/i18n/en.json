@@ -937,19 +937,19 @@
     "WEATHER": {
       "HEADER": "New weather observation",
       "TIME_AND_PLACE_HEADER": "Time and place",
-      "PHENOMENON_HEADER": "Weather phenomenon",
-      "PHENOMENON_LABEL": "Weather phenomenon",
-      "PHENOMENOM_PLACEHOLDER": "todo: placeholder",
+      "PHENOMENON_HEADER": "Weather type",
+      "PHENOMENON_LABEL": "Weather type",
+      "PHENOMENOM_PLACEHOLDER": "Describe the weather you want to report",
       "PHENOMENON_TEXTAREA_LABEL": "Description",
-      "PHENOMENON_TEXTAREA_DESCRIPTION": "How has the weather been in the area during the last 24 hours? Example: Has there been showers? Have there been temperature changes? Where is the freezing level?",
-      "ADD_IMAGE_DESCRIPTION": "Here you can upload images of the area you have observed or images of other relevant things related to your observation.",
-      "CONSEQUENCE_HEADER": "Consequence",
-      "CONSEQUENCE_PLACEHOLDER": "todo: placeholder",
-      "CONSEQUENCE_TEXTAREA_LABEL": "Consequence",
-      "CONSEQUENCE_TEXTAREA_DESCRIPTION": "Explanation missing",
-      "EVALUATION_DESCRIPTION": "Assessment of the forecasted weather on varsom.no",
+      "PHENOMENON_TEXTAREA_DESCRIPTION": "For example: Which direction did the wind gusts come from? Was there hail in the showers? How much snow has fallen? NB Do not expose yourself to danger in severe weather!",
+      "ADD_IMAGE_DESCRIPTION": "Here you can upload images of the area you observed or images of other relevant things for your observation.",
+      "CONSEQUENCE_HEADER": "Consequences",
+      "CONSEQUENCE_PLACEHOLDER": "Describe the consequences of the weather",
+      "CONSEQUENCE_TEXTAREA_LABEL": "Consequences",
+      "CONSEQUENCE_TEXTAREA_DESCRIPTION": "For example: Has anything blown away? Is there damage to buildings, roads or bridges? Has the power gone out? Is your garden flooded? Is the road snowed in? Is there ice on the road? NB: Do not expose yourself to danger in severe weather!",
+      "EVALUATION_DESCRIPTION": "Was the hazard warning accurate? Should a hazard warning have been issued? Should the hazard warning have had a different hazard level? Was the weather type correct or should a different weather type have been warned about?",
       "EVALUATION_HEADER": "Evaluation",
-      "EVALUATION_LABEL": "Evaluation of danger forecast"
+      "EVALUATION_LABEL": "Evaluation of hazard warning"
     }
   },
   "SETTINGS": {

@@ -944,7 +944,7 @@
       "CONSEQUENCE_HEADER": "Konsekvenser",
       "CONSEQUENCE_PLACEHOLDER": "Beskriv konsekvensene av været",
       "CONSEQUENCE_TEXTAREA_LABEL": "Konsekvenser",
-      "CONSEQUENCE_TEXTAREA_DESCRIPTION": "For eksempel: Har noe blåst bort? Er det skader på bygninger, vei eller broer? Har strømmen gått? Er hagen din oversvømt?   Har vegen snødd igjen? Er det is i vegbanen? NB: Ikke utsett deg for fare i dårlig vær!",
+      "CONSEQUENCE_TEXTAREA_DESCRIPTION": "For eksempel: Har noe blåst bort? Er det skader på bygninger, vei eller broer? Har strømmen gått? Er hagen din oversvømt? Har vegen snødd igjen? Er det is i vegbanen? NB: Ikke utsett deg for fare i dårlig vær!",
       "EVALUATION_DESCRIPTION": "Traff farevarselet? Burde det ha vært sendt farevarsel? Burde farevarselet hatt et annet farenivå? Stemte værtypen eller burde det ha vært varslet om en annen værtype?",
       "EVALUATION_HEADER": "Evaluering",
       "EVALUATION_LABEL": "Evaluering av farevarsel"
