@@ -197,7 +197,7 @@ steps:
       actions: 'build'
       configuration: 'Release'
       sdk: 'iphoneos'
-      xcodeVersion: '16'
+      xcodeVersion: '26'
       xcWorkspacePath: '$(system.defaultworkingdirectory)/ios/App/App.xcworkspace'
       scheme: 'App'
       packageApp: true
