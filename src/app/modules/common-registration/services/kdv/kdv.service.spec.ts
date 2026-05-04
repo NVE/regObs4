@@ -43,24 +43,25 @@ describe('KdvService.update()', () => {
     const values: boolean[] = [];
     service.isUpdating$.subscribe((v) => values.push(v));
 
-    service.update();
-    flushMicrotasks(); // løser Promise fra saveDataToOfflineDb
+    let result: boolean | undefined;
+    service.update().subscribe((v) => (result = v));
+    flushMicrotasks();
 
+    expect(result).toBeTrue();
     expect(values).toEqual([false, true, false]);
   }));
 
   it('setter isUpdating$ tilbake til false når API-kallet timer ut', fakeAsync(() => {
-    // NEVER simulerer et API-kall som aldri svarer → utløser timeout etter 2000ms
     kdvElementsSpy.KdvElementsGetKdvs.and.returnValue(NEVER);
 
     const values: boolean[] = [];
     service.isUpdating$.subscribe((v) => values.push(v));
 
-    service.update();
-    tick(2001); // forbi FETCH_NEW_DATA_TIMEOUT (2000ms)
+    let result: boolean | undefined;
+    service.update().subscribe((v) => (result = v));
+    tick(2001);
 
-    // Feilen skal fanges internt – ingenting bobler ut av update()
-    // isUpdating$ skal resettes til false etter timeout
+    expect(result).toBeFalse();
     expect(values).toEqual([false, true, false]);
   }));
 });

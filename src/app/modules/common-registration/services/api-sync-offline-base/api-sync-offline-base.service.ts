@@ -48,19 +48,18 @@ export abstract class ApiSyncOfflineBaseService<T> {
   protected abstract getDebugTag(): string;
 
   /** Force update offline data */
-  public update(): void {
+  public update(): Observable<boolean> {
     this.isUpdatingSubject.next(true);
-    combineLatest([this.userSettingService.language$, this.userSettingService.appMode$])
-      .pipe(
-        switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
-        take(1),
-        catchError((err) => {
-          this.logger.log('Update failed', err, LogLevel.Warning, this.getDebugTag());
-          return of(null);
-        }),
-        finalize(() => this.isUpdatingSubject.next(false))
-      )
-      .subscribe();
+    return combineLatest([this.userSettingService.language$, this.userSettingService.appMode$]).pipe(
+      switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
+      take(1),
+      map(() => true),
+      catchError((err) => {
+        this.logger.log('Update failed', err, LogLevel.Warning, this.getDebugTag());
+        return of(false);
+      }),
+      finalize(() => this.isUpdatingSubject.next(false))
+    );
   }
 
   /**
