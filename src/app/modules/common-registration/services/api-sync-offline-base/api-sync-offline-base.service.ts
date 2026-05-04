@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, combineLatest, from, of, BehaviorSubject } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
-import { map, switchMap, shareReplay, catchError, concatMap, take, timeout } from 'rxjs/operators';
+import { map, switchMap, shareReplay, catchError, concatMap, take, timeout, finalize } from 'rxjs/operators';
 import { OfflineSyncMeta } from '../../models/offline-sync-meta.interface';
 import moment from 'moment';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -48,16 +48,18 @@ export abstract class ApiSyncOfflineBaseService<T> {
   protected abstract getDebugTag(): string;
 
   /** Force update offline data */
-  public update(): void {
+  public update(): Observable<boolean> {
     this.isUpdatingSubject.next(true);
-    combineLatest([this.userSettingService.language$, this.userSettingService.appMode$])
-      .pipe(
-        switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
-        take(1)
-      )
-      .subscribe(() => {
-        this.isUpdatingSubject.next(false);
-      });
+    return combineLatest([this.userSettingService.language$, this.userSettingService.appMode$]).pipe(
+      switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
+      take(1),
+      map(() => true),
+      catchError((err) => {
+        this.logger.log('Update failed', err, LogLevel.Warning, this.getDebugTag());
+        return of(false);
+      }),
+      finalize(() => this.isUpdatingSubject.next(false))
+    );
   }
 
   /**

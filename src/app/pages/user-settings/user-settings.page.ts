@@ -143,8 +143,8 @@ export class UserSettingsPage implements OnInit, OnDestroy {
 
   async updateDropdowns() {
     this.isUpdating.set(true);
-    this.kdvService.update();
-    await this.showKdvElementsUpdated(true);
+    const success = await firstValueFrom(this.kdvService.update());
+    await this.showKdvElementsUpdated(success);
     this.isUpdating.set(false);
   }
 
