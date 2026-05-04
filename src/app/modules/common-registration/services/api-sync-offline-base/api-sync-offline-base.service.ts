@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, combineLatest, from, of, BehaviorSubject } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
-import { map, switchMap, shareReplay, catchError, concatMap, take, timeout } from 'rxjs/operators';
+import { map, switchMap, shareReplay, catchError, concatMap, take, timeout, finalize } from 'rxjs/operators';
 import { OfflineSyncMeta } from '../../models/offline-sync-meta.interface';
 import moment from 'moment';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -53,11 +53,14 @@ export abstract class ApiSyncOfflineBaseService<T> {
     combineLatest([this.userSettingService.language$, this.userSettingService.appMode$])
       .pipe(
         switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
-        take(1)
+        take(1),
+        catchError((err) => {
+          this.logger.log('Update failed', err, LogLevel.Warning, this.getDebugTag());
+          return of(null);
+        }),
+        finalize(() => this.isUpdatingSubject.next(false))
       )
-      .subscribe(() => {
-        this.isUpdatingSubject.next(false);
-      });
+      .subscribe();
   }
 
   /**
