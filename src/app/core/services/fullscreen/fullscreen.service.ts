@@ -6,6 +6,7 @@ import { NgDestoryBase } from '../../helpers/observable-helper';
 import { Platform } from '@ionic/angular/standalone';
 import { isAndroidOrIos } from '../../helpers/ionic/platform-helper';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { SystemBars } from '@capacitor/core';
 
 const DEBUG_TAG = 'FullscreenService';
 
@@ -54,12 +55,16 @@ export class FullscreenService extends NgDestoryBase {
   }
 
   private async turnFullscreenOn(): Promise<void> {
+    // Statusbar brukes for eldre OS-versjoner, SystemBars for nyere (Android 16+)
     await StatusBar.setOverlaysWebView({ overlay: true });
     await StatusBar.hide();
+    await SystemBars.hide(); // skjule navigasjonslinja i Android 16 og nyere
   }
 
   private async turnFullscreenOff() {
+    // Statusbar brukes for eldre OS-versjoner, SystemBars for nyere (Android 16+)
     await StatusBar.setOverlaysWebView({ overlay: false });
     await StatusBar.show();
+    await SystemBars.show();
   }
 }
