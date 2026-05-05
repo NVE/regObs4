@@ -61,12 +61,6 @@ steps:
       versionSpec: 24.x
       checkLatest: false
 
-  - task: Npm@1
-    displayName: 'Update npm to v11'
-    inputs:
-      command: custom
-      customCommand: 'install -g npm@11'
-
   # Needed to sign Android apk/aab
   - task: DownloadSecureFile@1
     displayName: 'Download secure file: nve.keystore'
