@@ -5,8 +5,8 @@
   "license": "NLOD-2.0",
   "homepage": "http://www.nve.no",
   "engines": {
-    "npm": "^11.12.1",
-    "node": "^24.15.0"
+    "npm": "^11.10.0",
+    "node": "^24.13.0"
   },
   "scripts": {
     "ng": "ng",
