@@ -30,6 +30,11 @@ ul {
   padding: 0 15px;
 }
 
+// For å gi plass til navigasjonslinja på telefonen
+:host {
+  padding-bottom: var(--safe-area-inset-bottom, 0px);
+}
+
 swiper-container {
   height: calc(100% - 53px);
   width: 100%;
