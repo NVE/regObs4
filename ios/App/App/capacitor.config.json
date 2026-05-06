@@ -11,6 +11,12 @@
 			"style": "DARK",
 			"overlaysWebView": false
 		},
+		"SystemBars": {
+			"insetsHandling": "css",
+			"style": "DEFAULT",
+			"hidden": false,
+			"animation": "NONE"
+		},
 		"SplashScreen": {
 			"launchAutoHide": false
 		},
@@ -19,9 +25,6 @@
 			"resizeOnFullScreen": true,
 			"style": "DEFAULT"
 		}
-	},
-	"android": {
-		"adjustMarginsForEdgeToEdge": "auto"
 	},
 	"cordova": {
 		"preferences": {
