@@ -27,10 +27,6 @@
     <param name="ios-package" value="SafariViewController"/>
   </feature>
 
-  <feature name="SecureStorage">
-    <param name="ios-package" value="SecureStorage"/>
-  </feature>
-
   
   <preference name="ScrollEnabled" value="false" />
   <preference name="android-minSdkVersion" value="24" />

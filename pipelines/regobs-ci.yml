@@ -12,16 +12,10 @@ variables:
 
 steps:
   - task: NodeTool@0
-    displayName: 'Use Node 20.x'
+    displayName: 'Use Node 24.x'
     inputs:
-      versionSpec: 20.x
+      versionSpec: 24.x
       checkLatest: false
-
-  - task: Npm@1
-    displayName: 'Update npm to v11'
-    inputs:
-      command: custom
-      customCommand: 'install -g npm@11'
 
   - task: Cache@2
     inputs:

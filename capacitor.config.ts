@@ -14,6 +14,12 @@ const config: CapacitorConfig = {
       style: 'DARK',
       overlaysWebView: false,
     },
+    SystemBars: {
+      insetsHandling: 'css',
+      style: 'DEFAULT',
+      hidden: false,
+      animation: 'NONE',
+    },
     SplashScreen: {
       launchAutoHide: false,
     },
@@ -22,9 +28,6 @@ const config: CapacitorConfig = {
       resizeOnFullScreen: true, // RO-3111: Hindre at tataturet dekker over tekstfelt i Android 15 og 16
       style: KeyboardStyle.Default,
     },
-  },
-  android: {
-    adjustMarginsForEdgeToEdge: 'auto',
   },
   cordova: {
     preferences: {

@@ -204,7 +204,8 @@ export class GeoPositionService implements OnDestroy {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           if (pos && pos.coords) {
-            this.currentPosition.next(pos);
+            // W3C Position inneholder ikke alle feltene som Capacitor Position har, så vi caster den
+            this.currentPosition.next(pos as unknown as Position);
           } else {
             const errorMessage: string = this.translateService.instant('GEOLOCATION.POSITION_ERROR.INVALID');
             this.gpsPositionLog.next(this.createPositionError('Empty position data or no coords'));
