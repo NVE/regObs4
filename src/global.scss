@@ -1056,3 +1056,8 @@ ion-split-pane {
   --side-max-width: 300px;
   --border: none;
 }
+
+/** Fjerner unøvendig padding på header på eldre android-versjoner */
+.md ion-header ion-toolbar:first-of-type {
+  padding-top: env(safe-area-inset-top);
+}
