@@ -2,7 +2,9 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 
 export function getGeohazardsId(geohazards: GeoHazard[]) {
   return geohazards
-    .map((geoHazard) => (geoHazard !== GeoHazard.Soil ? (<string>GeoHazard[geoHazard]).toLowerCase() : 'dirt'))
+    .map((geoHazard) => (geoHazard !== GeoHazard.Soil ? <string>GeoHazard[geoHazard] : 'dirt'))
+    .map((id) => id ?? 'unknown')
+    .map((id) => id.toLowerCase())
     .join('-');
 }
 
