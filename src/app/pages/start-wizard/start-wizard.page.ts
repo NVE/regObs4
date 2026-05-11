@@ -16,6 +16,7 @@ import {
   IonLabel,
   IonSelectOption,
   NavController,
+  IonContent,
 } from '@ionic/angular/standalone';
 import { LangKey, GeoHazard } from '../../modules/common-core/models';
 import { settings } from '../../../settings';
@@ -29,7 +30,7 @@ import { SwiperContainer } from 'swiper/element';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './start-wizard.page.html',
   styleUrls: ['./start-wizard.page.scss'],
-  imports: [IonButton, IonFooter, IonToolbar, TranslatePipe, IonLabel, IonSelect, IonSelectOption],
+  imports: [IonButton, IonFooter, IonToolbar, TranslatePipe, IonLabel, IonSelect, IonSelectOption, IonContent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class StartWizardPage {
