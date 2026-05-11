@@ -1,34 +1,64 @@
 <!-- En liste av bilder fra observasjoner, organisert i tabellform -->
-<ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="refresh()">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-  <div class="list-header">
-    <p>{{ "OBSERVATION_LIST.IMAGES_DESCRIPTION" | translate }}</p>
-    <app-list-controls pageType="images"></app-list-controls>
-  </div>
-
-  <div class="grid" #grid>
-    @for (reg of registrations(); track reg.RegId) {
-      @for (attachment of reg.Attachments; track attachment.AttachmentId) {
-        <app-grid-image
-          [attachment]="attachment"
-          (click)="openImageCarousel(attachment.Url, reg.RegId, reg.Attachments)"
-        ></app-grid-image>
-      }
-    } @empty {
-      @if (error().hasError) {
-        <app-error-state></app-error-state>
-      } @else if (isLoading()) {
-        <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
-      } @else {
-        <app-empty-state></app-empty-state>
-      }
+<ion-split-pane contentId="main-content-image-list">
+  <ion-menu side="start" menuId="list-filter" contentId="main-content-image-list" max-edge-start="0">
+    @defer {
+      <app-filter-menu>
+        <!-- TODO: Legg til filter for kartutsnitt her  -->
+      </app-filter-menu>
     }
-  </div>
+  </ion-menu>
 
-  <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
-    <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-</ion-content>
+  <div id="main-content-image-list" class="ion-page">
+    <app-header>
+      <!-- Høyremeny -->
+      <ion-buttons slot="end">
+        <ion-menu-button color="light"> </ion-menu-button>
+      </ion-buttons>
+
+      <!-- Venstremeny / filtermeny -->
+      <ion-buttons slot="start">
+        <ion-menu-button menu="list-filter" color="light">
+          <ion-icon name="options-outline"></ion-icon>
+        </ion-menu-button>
+      </ion-buttons>
+
+      <ion-title>{{ "OBSERVATION_LIST.TITLE" | translate }}</ion-title>
+    </app-header>
+
+    <ion-content>
+      <ion-refresher slot="fixed" (ionRefresh)="refresh()">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+
+      <div class="list-header">
+        <p>{{ "OBSERVATION_LIST.IMAGES_DESCRIPTION" | translate }}</p>
+        <app-list-controls pageType="images"></app-list-controls>
+      </div>
+
+      <div class="grid" #grid>
+        @for (reg of registrations(); track reg.RegId) {
+          @for (attachment of reg.Attachments; track attachment.AttachmentId) {
+            <app-grid-image
+              [attachment]="attachment"
+              (click)="openImageCarousel(attachment.Url, reg.RegId, reg.Attachments)"
+            ></app-grid-image>
+          }
+        } @empty {
+          @if (error().hasError) {
+            <app-error-state></app-error-state>
+          } @else if (isLoading()) {
+            <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
+          } @else {
+            <app-empty-state></app-empty-state>
+          }
+        }
+      </div>
+
+      <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
+        <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-content>
+
+    <app-add-menu></app-add-menu>
+  </div>
+</ion-split-pane>

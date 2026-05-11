@@ -5,7 +5,8 @@ import { Location } from '@angular/common';
 
 export enum TABS {
   HOME = 'home',
-  OBSERVATION_LIST = 'search',
+  OBSERVATION_LIST = 'list',
+  IMAGES = 'images',
   WARNING_LIST = 'warning-list',
   PLANS = 'plans',
 }
@@ -36,6 +37,8 @@ export class TabsService {
     const cleanPath = path.includes('?') ? path.slice(0, path.indexOf('?')) : path;
     if (cleanPath.indexOf(TABS.OBSERVATION_LIST) > -1) {
       return TABS.OBSERVATION_LIST;
+    } else if (cleanPath.indexOf(TABS.IMAGES) > -1) {
+      return TABS.IMAGES;
     } else if (cleanPath.indexOf(TABS.WARNING_LIST) > -1) {
       return TABS.WARNING_LIST;
     } else if (cleanPath.indexOf(TABS.PLANS) > -1) {

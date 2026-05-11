@@ -6,6 +6,12 @@ import {
   IonInfiniteScrollContent,
   IonRefresher,
   IonRefresherContent,
+  IonSplitPane,
+  IonMenu,
+  IonButtons,
+  IonMenuButton,
+  IonIcon,
+  IonTitle,
 } from '@ionic/angular/standalone';
 import { combineLatest, map, tap } from 'rxjs';
 import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
@@ -18,6 +24,9 @@ import { ListControlsComponent } from '../list-controls/list-controls.component'
 import { TranslatePipe } from '@ngx-translate/core';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { UpdateObservationsService } from 'src/app/modules/side-menu/components/update-observations/update-observations.service';
+import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
+import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
+import { AddMenuComponent } from 'src/app/modules/shared/components/add-menu/add-menu.component';
 
 @Component({
   selector: 'app-observation-list',
@@ -32,6 +41,15 @@ import { UpdateObservationsService } from 'src/app/modules/side-menu/components/
     EmptyStateComponent,
     ListControlsComponent,
     TranslatePipe,
+    IonSplitPane,
+    IonMenu,
+    FilterMenuComponent,
+    HeaderComponent,
+    IonButtons,
+    IonMenuButton,
+    IonIcon,
+    IonTitle,
+    AddMenuComponent,
   ],
   templateUrl: './observation-list.component.html',
   styleUrl: './observation-list.component.css',

@@ -9,20 +9,6 @@
 
 <div class="selects">
   <ion-select
-    [label]="'OBSERVATION_LIST.VIEW_TYPE' | translate"
-    fill="outline"
-    [value]="pageType()"
-    interface="popover"
-    color="primary"
-    (ionChange)="navigate($event.target.value)"
-  >
-    <ion-select-option value="observations">{{
-      "OBSERVATION_LIST.VIEW_TYPE_OBSERVATIONS" | translate
-    }}</ion-select-option>
-    <ion-select-option value="images">{{ "OBSERVATION_LIST.VIEW_TYPE_IMAGES" | translate }}</ion-select-option>
-  </ion-select>
-
-  <ion-select
     [label]="'OBSERVATION_LIST.SORT_BY_TEXT' | translate"
     fill="outline"
     [value]="orderBy()"

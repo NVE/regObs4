@@ -60,7 +60,7 @@ export class ObservationImageCarouselComponent {
   layerComments = computed(() => this.snowProfile()?.comments());
   showsComments = computed(() => !!this.snowProfile()?.showComments());
 
-  isImageListView = computed(() => this.router.url.includes('search/pictures'));
+  isImageListView = computed(() => this.router.url.includes('/images'));
   roundedDownOrientationValue = computed(() => {
     const item = this.currentItem();
     if (item.type === 'SnowProfile') {

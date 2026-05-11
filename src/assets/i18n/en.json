@@ -1103,7 +1103,8 @@
     "LIST": "List",
     "MAP": "Map",
     "TRIPS": "Trips",
-    "WARNINGS": "Warnings"
+    "WARNINGS": "Warnings",
+    "IMAGES": "Images"
   },
   "TRIP": {
     "COMMENT_CAPTION": "Description (required)",

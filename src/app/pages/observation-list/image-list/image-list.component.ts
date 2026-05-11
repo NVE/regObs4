@@ -17,6 +17,12 @@ import {
   IonRefresherContent,
   LoadingController,
   ModalController,
+  IonSplitPane,
+  IonMenu,
+  IonButtons,
+  IonMenuButton,
+  IonIcon,
+  IonTitle,
 } from '@ionic/angular/standalone';
 import { tap, combineLatest, map, firstValueFrom } from 'rxjs';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
@@ -32,6 +38,9 @@ import { ObservationImageCarouselComponent } from 'src/app/components/observatio
 import { AttachmentViewModel, SearchService } from 'src/app/modules/common-regobs-api';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { CarouselItems } from 'src/app/components/observation/observation-image-carousel/models';
+import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
+import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
+import { AddMenuComponent } from 'src/app/modules/shared/components/add-menu/add-menu.component';
 
 const DEBUG_TAG = 'ImageList';
 
@@ -51,6 +60,15 @@ const DEBUG_TAG = 'ImageList';
     ListControlsComponent,
     GridImageComponent,
     TranslatePipe,
+    IonSplitPane,
+    IonMenu,
+    FilterMenuComponent,
+    HeaderComponent,
+    IonButtons,
+    IonMenuButton,
+    IonIcon,
+    IonTitle,
+    AddMenuComponent,
   ],
   templateUrl: './image-list.component.html',
   styleUrl: './image-list.component.css',

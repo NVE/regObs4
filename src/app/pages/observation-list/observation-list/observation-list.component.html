@@ -1,31 +1,61 @@
 <!-- Viser observasjoner i en liste -->
-<ion-content>
-  <ion-refresher slot="fixed" (ionRefresh)="refresh()">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
-
-  @if (isDesktop()) {
-    <div class="list-header">
-      <p>{{ isLoading() ? " - " : count() }} {{ "OBSERVATION_LIST.COUNT_POSTFIX" | translate }}</p>
-      <app-list-controls></app-list-controls>
-    </div>
-  }
-
-  <div class="list">
-    @for (reg of registrations(); track reg.RegId) {
-      <app-observation class="obs" [registration]="reg"></app-observation>
-    } @empty {
-      @if (error().hasError) {
-        <app-error-state></app-error-state>
-      } @else if (isLoading()) {
-        <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
-      } @else {
-        <app-empty-state></app-empty-state>
-      }
+<ion-split-pane contentId="main-content-list-page">
+  <ion-menu side="start" menuId="list-filter" contentId="main-content-list-page" max-edge-start="0">
+    @defer {
+      <app-filter-menu>
+        <!-- TODO: Legg til filter for kartutsnitt her  -->
+      </app-filter-menu>
     }
+  </ion-menu>
 
-    <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
-      <ion-infinite-scroll-content> </ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+  <div id="main-content-list-page" class="ion-page">
+    <app-header>
+      <!-- Høyremeny -->
+      <ion-buttons slot="end">
+        <ion-menu-button color="light"> </ion-menu-button>
+      </ion-buttons>
+
+      <!-- Venstremeny / filtermeny -->
+      <ion-buttons slot="start">
+        <ion-menu-button menu="list-filter" color="light">
+          <ion-icon name="options-outline"></ion-icon>
+        </ion-menu-button>
+      </ion-buttons>
+
+      <ion-title>{{ "OBSERVATION_LIST.TITLE" | translate }}</ion-title>
+    </app-header>
+
+    <ion-content>
+      <ion-refresher slot="fixed" (ionRefresh)="refresh()">
+        <ion-refresher-content></ion-refresher-content>
+      </ion-refresher>
+
+      @if (isDesktop()) {
+        <div class="list-header">
+          <p>{{ isLoading() ? " - " : count() }} {{ "OBSERVATION_LIST.COUNT_POSTFIX" | translate }}</p>
+          <app-list-controls></app-list-controls>
+        </div>
+      }
+
+      <div class="list">
+        @for (reg of registrations(); track reg.RegId) {
+          <app-observation class="obs" [registration]="reg"></app-observation>
+        } @empty {
+          @if (error().hasError) {
+            <app-error-state></app-error-state>
+          } @else if (isLoading()) {
+            <p>{{ "OBSERVATION_LIST.LOADING" | translate }}</p>
+          } @else {
+            <app-empty-state></app-empty-state>
+          }
+        }
+
+        <ion-infinite-scroll (ionInfinite)="loadNextPage()" [disabled]="disableInfiniteScroll()">
+          <ion-infinite-scroll-content> </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </div>
+    </ion-content>
+
+    <app-add-menu></app-add-menu>
   </div>
-</ion-content>
+</ion-split-pane>

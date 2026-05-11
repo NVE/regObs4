@@ -13,9 +13,9 @@
           <ion-label>{{ "TABS.MAP" | translate }}</ion-label>
         </ion-tab-button>
         <ion-tab-button
-          [class.tab-button--active]="selectedTab() === 'search'"
-          tab="search"
-          [selected]="selectedTab() === 'search'"
+          [class.tab-button--active]="selectedTab() === 'list'"
+          tab="list"
+          [selected]="selectedTab() === 'list'"
           [layout]="iconLayout()"
         >
           <ion-icon name="list" aria-hidden="true"></ion-icon>
@@ -34,6 +34,16 @@
             }
           </ion-tab-button>
         } @else {
+          <ion-tab-button
+            [class.tab-button--active]="selectedTab() === 'images'"
+            tab="images"
+            [selected]="selectedTab() === 'images'"
+            [layout]="iconLayout()"
+          >
+            <ion-icon name="images-outline" aria-hidden="true"></ion-icon>
+            <ion-label>{{ "TABS.IMAGES" | translate }}</ion-label>
+          </ion-tab-button>
+
           <ion-tab-button
             class="tab-button--desktop"
             [href]="warningsLink()"

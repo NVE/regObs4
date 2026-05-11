@@ -9,7 +9,7 @@ import { WarningService } from '../../core/services/warning/warning.service';
 import { TABS, TabsService } from './tabs.service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
-import { mapOutline, list, warning, openOutline, analyticsOutline } from 'ionicons/icons';
+import { mapOutline, list, warning, openOutline, analyticsOutline, imagesOutline } from 'ionicons/icons';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { BreakpointService } from 'src/app/core/services/breakpoint.service';
 import { Capacitor } from '@capacitor/core';
@@ -40,7 +40,7 @@ export class TabsPage {
   isNative = Capacitor.isNativePlatform();
 
   constructor() {
-    addIcons({ mapOutline, list, warning, openOutline, analyticsOutline });
+    addIcons({ mapOutline, list, warning, openOutline, analyticsOutline, imagesOutline });
     combineLatest([
       this.searchCriteriaService.searchCriteria$,
       toObservable(this.searchCriteriaService.isExtentCriteriaActive),
