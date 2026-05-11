@@ -172,8 +172,10 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "masl",
-    "AWAY_FROM": "away",
     "COPIED_TO_CLIPBOARD": "Copied to clipboard",
+    "DISTANCE_HIGHER": "higher",
+    "DISTANCE_HORIZONTAL": "Horizontal distance",
+    "DISTANCE_LOWER": "lower",
     "EAST_SHORT": "E",
     "NORTH_SHORT": "N",
     "WEATHER_ERROR": "Weather forecast not found!",

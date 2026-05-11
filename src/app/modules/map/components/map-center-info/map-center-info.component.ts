@@ -30,7 +30,8 @@ import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 import { NgStyle, DecimalPipe } from '@angular/common';
 import { AbsPipe } from '../../../shared/pipes/abs.pipe';
 import { addIcons } from 'ionicons';
-import { arrowUp, arrowDown } from 'ionicons/icons';
+import { arrowUp, arrowDown, arrowForward } from 'ionicons/icons';
+import { calculateMagneticBearing } from './map-center-utils';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
@@ -99,13 +100,31 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
     return;
   }
 
+  /**
+   * Beregner kompasskurs i grader fra brukerens posisjon til kartets sentrum, der 0° er nord, 90° er øst, osv.
+   * Returnerer undefined hvis vi ikke har nok info til å beregne (f.eks. ingen gps-posisjon eller kart-senter).
+   * Funksjonen justerer også for misvisning
+   */
+  get bearing(): number | undefined {
+    if (this.userPos?.coords && this.mapCenter != null) {
+      return calculateMagneticBearing(
+        this.userPos.coords.latitude,
+        this.userPos.coords.longitude,
+        this.mapCenter.lat,
+        this.mapCenter.lng,
+        this.userAltitude ?? 0
+      );
+    }
+    return;
+  }
+
   constructor() {
     super();
 
     // We call detectChanges after every new mapView or gps pos has been processed, so
     // no need for this component to be in the regular change detection loop.
     this.cdr.detach();
-    addIcons({ arrowUp, arrowDown });
+    addIcons({ arrowUp, arrowDown, arrowForward });
   }
 
   ngOnInit(): void {

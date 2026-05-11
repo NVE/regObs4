@@ -171,8 +171,10 @@
   },
   "MAP_CENTER_INFO": {
     "ABOVE_SEA_LEVEL": "moh",
-    "AWAY_FROM": "unna",
     "COPIED_TO_CLIPBOARD": "Kopiert til utklippstavlen",
+    "DISTANCE_HIGHER": "høyere",
+    "DISTANCE_HORIZONTAL": "Horisontal avstand",
+    "DISTANCE_LOWER": "lavere",
     "EAST_SHORT": "Ø",
     "NORTH_SHORT": "N",
     "WEATHER_ERROR": "Fant ikke værvarsel!",

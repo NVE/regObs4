@@ -42,23 +42,35 @@ NB! Root elements in this view has positon: absolute..
     <!-- Coordinates -->
     @if (mapCenter) {
       <ion-row name="map-center-info-row">
-        {{ mapCenter.lat | number: ".3" }}&deg;{{ "MAP_CENTER_INFO.NORTH_SHORT" | translate }},
-        {{ mapCenter.lng | number: ".3" }}&deg;{{ "MAP_CENTER_INFO.EAST_SHORT" | translate }}
+        {{ mapCenter.lat | number: ".3" : "en-US" }}&deg;{{ "MAP_CENTER_INFO.NORTH_SHORT" | translate }},&nbsp;&nbsp;
+        {{ mapCenter.lng | number: ".3" : "en-US" }}&deg;{{ "MAP_CENTER_INFO.EAST_SHORT" | translate }}
       </ion-row>
     }
 
     <!-- Distance and height difference to gps position -->
     @if (distance != null && distance > 0) {
       <ion-row name="map-center-info-row">
-        {{ getHorizontalDifferenceText(distance) }} {{ "MAP_CENTER_INFO.AWAY_FROM" | translate }}
+        <ion-icon name="arrow-forward" aria-label="{{ 'MAP_CENTER_INFO.DISTANCE_HORIZONTAL' | translate }}"></ion-icon>
+        {{ getHorizontalDifferenceText(distance) }}
         @if (!loading && heightDifference != null) {
           @if (heightDifference > 0) {
-            <ion-icon name="arrow-up" class="height-difference-icon"></ion-icon>
+            <ion-icon
+              name="arrow-up"
+              class="height-difference-icon"
+              aria-label="{{ 'MAP_CENTER_INFO.DISTANCE_HIGHER' | translate }}"
+            ></ion-icon>
           }
           @if (heightDifference < 0) {
-            <ion-icon name="arrow-down" class="height-difference-icon"></ion-icon>
+            <ion-icon
+              name="arrow-down"
+              class="height-difference-icon"
+              aria-label="{{ 'MAP_CENTER_INFO.DISTANCE_LOWER' | translate }}"
+            ></ion-icon>
           }
           {{ heightDifference | abs | number: "1.0-0" }} m
+        }
+        @if (bearing !== undefined) {
+          <span class="bearing">{{ bearing | number: "1.0-0" }} &deg;</span>
         }
       </ion-row>
     }
