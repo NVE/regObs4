@@ -140,8 +140,9 @@ export class SnowProfileComponent {
       return scaleFactor;
     }
 
-    // Dette passer bra med bildekarusellen, men kunne også vært fjernet, if-setningen under håndterer dette fint
-    if (width < 400) {
+    // 300 er en verdi som bare er basert på enkel testing.
+    // Når bredden er mindre enn ca 300px kan labels havne oppå hverandre uten skalering.
+    if (width < 300) {
       scaleFactor = 1.5;
     }
 
