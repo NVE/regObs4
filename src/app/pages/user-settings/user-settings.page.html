@@ -37,6 +37,12 @@
         <ion-toggle slot="end" [(ngModel)]="userSettings.useRetinaMap" (ngModelChange)="updateSettings()"> </ion-toggle>
       </ion-item>
 
+      <ion-item>
+        <ion-label>{{ "SETTINGS.USE_MAGNETIC_BEARING" | translate }}</ion-label>
+        <ion-toggle slot="end" [(ngModel)]="userSettings.useMagneticBearing" (ngModelChange)="updateSettings()">
+        </ion-toggle>
+      </ion-item>
+
       <!-- GPS Debug -->
       @if (userSettings.featureToggleDeveloperMode) {
         <ion-item>

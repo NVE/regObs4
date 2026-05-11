@@ -11,7 +11,7 @@ import { IonGrid, IonIcon, IonRow, IonSpinner, ToastController } from '@ionic/an
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, iif, Observable, of } from 'rxjs';
-import { catchError, debounceTime, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
+import { catchError, debounceTime, map, switchMap, takeUntil, tap, timeout } from 'rxjs/operators';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapService } from '../../services/map/map.service';
 import { GeoPositionService } from 'src/app/core/services/geo-position/geo-position.service';
@@ -31,7 +31,9 @@ import { NgStyle, DecimalPipe } from '@angular/common';
 import { AbsPipe } from '../../../shared/pipes/abs.pipe';
 import { addIcons } from 'ionicons';
 import { arrowUp, arrowDown, arrowForward } from 'ionicons/icons';
-import { calculateMagneticBearing } from './map-center-utils';
+import { calculateBearing, calculateMagneticBearing } from './map-center-utils';
+import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
@@ -54,6 +56,7 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private loggingService = inject(LoggingService);
   private externalLinkService = inject(ExternalLinkService);
   private http = inject(HttpClient);
+  private userSettingService = inject(UserSettingService);
 
   private userPos?: Position; // Caches the gps position for distance and height diff computation
   private lastUserPos?: L.LatLng; //Remember last gps position to avoid adjusting altitude when device dont' move
@@ -103,20 +106,32 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   /**
    * Beregner kompasskurs i grader fra brukerens posisjon til kartets sentrum, der 0° er nord, 90° er øst, osv.
    * Returnerer undefined hvis vi ikke har nok info til å beregne (f.eks. ingen gps-posisjon eller kart-senter).
-   * Funksjonen justerer også for misvisning
+   * Funksjonen justerer også for misvisning hvis bruker ikke har deaktivert dette
    */
   get bearing(): number | undefined {
     if (this.userPos?.coords && this.mapCenter != null) {
-      return calculateMagneticBearing(
+      if (this.useMagneticBearing()) {
+        return calculateMagneticBearing(
+          this.userPos.coords.latitude,
+          this.userPos.coords.longitude,
+          this.mapCenter.lat,
+          this.mapCenter.lng,
+          this.userAltitude ?? 0
+        );
+      }
+      return calculateBearing(
         this.userPos.coords.latitude,
         this.userPos.coords.longitude,
         this.mapCenter.lat,
-        this.mapCenter.lng,
-        this.userAltitude ?? 0
+        this.mapCenter.lng
       );
     }
     return;
   }
+
+  readonly useMagneticBearing = toSignal(this.userSettingService.userSetting$.pipe(map((s) => s.useMagneticBearing)), {
+    initialValue: true,
+  });
 
   constructor() {
     super();

@@ -972,6 +972,7 @@
     "TITLE": "Innstillinger",
     "UPDATE_DROPDOWNS": "Oppdater nedtrekksmenyer",
     "USE_IN_WORLD": "Utenfor Norge",
+    "USE_MAGNETIC_BEARING": "Kompenser for misvisning i kurs",
     "USE_RETINA_MAP": "Bruk høy oppløsning på kart"
   },
   "SET_NICK_ALERT": {

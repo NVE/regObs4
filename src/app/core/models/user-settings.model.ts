@@ -36,4 +36,7 @@ export interface UserSetting extends InfoPopupSettings {
    * Ikke mas om utdaterte kartpakker før dette tidspunktet er passert
    */
   suppressOfflineMapUpdateNotificationUntil?: string; // i ISO8601-format
+
+  /** true = ta med misvisning ved beregning av kompasskurs */
+  useMagneticBearing: boolean;
 }
