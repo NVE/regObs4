@@ -69,8 +69,8 @@ NB! Root elements in this view has positon: absolute..
           }
           {{ heightDifference() | abs | number: "1.0-0" }} m
         }
-        @if (bearing(); as bearing) {
-          <span class="bearing">{{ bearing | number: "1.0-0" }} &deg;</span>
+        @if (bearing() != null) {
+          <span class="bearing">{{ bearing() | number: "1.0-0" }} &deg;</span>
         }
       </ion-row>
     }
