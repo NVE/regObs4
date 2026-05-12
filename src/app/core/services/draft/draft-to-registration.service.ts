@@ -79,7 +79,7 @@ export class DraftToRegistrationService {
       syncStatus: syncStatus,
     };
     this.loggerService.debug('Saving draft with updated sync status', DEBUG_TAG, { updatedDraft, ignoreVersionCheck });
-    this.draftService.save(updatedDraft);
+    await this.draftService.save(updatedDraft);
   }
 
   private startUploadingRegistrations() {
@@ -157,17 +157,27 @@ export class DraftToRegistrationService {
       } else {
         await this.addUpdateDeleteRegistrationService.add(draft);
       }
-
-      this.loggerService.debug(`Add or update complete, deleting draft`, DEBUG_TAG, { uuid: draft.uuid });
-      await this.draftService.delete(draft.uuid);
     } catch (error) {
       const { message, code } = handleError(error);
-      this.loggerService.error(error, DEBUG_TAG, 'Got error during add, update or draft delete', {
+      this.loggerService.error(error, DEBUG_TAG, 'Got error during add or update', {
         message,
         code,
         uuid: draft.uuid,
       });
       await this.draftService.save({ ...draft, error: { code, message, timestamp: Date.now() } });
+      return;
+    }
+
+    this.loggerService.debug(`Add or update complete, deleting draft`, DEBUG_TAG, { uuid: draft.uuid });
+    try {
+      await this.draftService.delete(draft.uuid);
+    } catch (error) {
+      this.loggerService.error(
+        error,
+        DEBUG_TAG,
+        'Got error deleting draft after successful upload. Draft may remain but observation is already submitted.',
+        { uuid: draft.uuid }
+      );
     }
   }
 
