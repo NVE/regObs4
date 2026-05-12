@@ -290,6 +290,29 @@ describe('DraftRepositoryService', () => {
     expect(newAttachmentService.removeAttachments).toHaveBeenCalledWith(draft.uuid);
   }));
 
+  it('delete removes the draft from database even if attachment cleanup fails', fakeAsync(async () => {
+    // Regression test: previously removeAttachments() throwing would prevent
+    // databaseService.remove() from running, leaving the draft in the DB with
+    // syncStatus: Sync — causing it to be re-submitted on next app start.
+    const service = TestBed.inject(DraftRepositoryService);
+    const draft = await service.create(GeoHazard.Ice);
+    await service.save(draft as RegistrationDraft);
+
+    expect(database.store.size).toBe(1);
+
+    // Simulate a filesystem error (e.g. Filesystem.rmdir failed)
+    newAttachmentService.removeAttachments.and.rejectWith(new Error('Filesystem.rmdir failed'));
+
+    // delete() should not throw
+    await expectAsync(service.delete(draft.uuid)).toBeResolved();
+    tick();
+
+    // The draft must be gone from the database despite the attachment error
+    expect(database.store.has(`drafts.TEST.${draft.uuid}`)).toBeFalse();
+    const draftChanges = await firstValueFrom(service.drafts$);
+    expect(draftChanges.length).toBe(0);
+  }));
+
   it('we do not mix data from different environments', fakeAsync(async () => {
     const service = TestBed.inject(DraftRepositoryService);
     //save 2 drafts in test environment

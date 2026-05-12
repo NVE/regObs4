@@ -370,7 +370,11 @@ export class DraftRepositoryService {
   async delete(uuid: string): Promise<void> {
     this.logger.debug(`Deleting draft`, DEBUG_TAG, { uuid });
     this.throwIfMissingUuid(uuid);
-    await this.newAttachmentSerivice.removeAttachments(uuid);
+    try {
+      await this.newAttachmentSerivice.removeAttachments(uuid);
+    } catch (error) {
+      this.logger.error(error, DEBUG_TAG, 'Failed to remove attachments during draft delete, continuing', { uuid });
+    }
     const appMode = await firstValueFrom(this.userSettingService.appMode$);
     const key = this.createKey(uuid, appMode);
     await this.databaseService.remove(key);
