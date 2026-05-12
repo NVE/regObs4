@@ -77,4 +77,60 @@ describe('UserSettingService', () => {
       copyright: 'Kantkorn48',
     } as unknown as UserSetting);
   }));
+
+  it('normalizes stored daysBack to first valid option when the saved value is no longer in settings', fakeAsync(async () => {
+    // Set up a stored value that is no longer a valid option.
+    // Valid Ice options in settings.ts are [0, 1, 2, 3, 7, 14] — 28 is not among them anymore.
+    db = {
+      currentGeoHazard: [GeoHazard.Ice],
+      observationDaysBack: [
+        { geoHazard: GeoHazard.Ice, daysBack: 28 }, // no longer valid
+        { geoHazard: GeoHazard.Snow, daysBack: 7 }, // still valid, must not change
+      ],
+    };
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideTranslateService(),
+        provideTestLogger(),
+        { provide: UserSettingService, useClass: UserSettingServiceWithoutExternalDeps },
+      ],
+    });
+
+    const service = TestBed.inject(UserSettingService);
+    service.init();
+
+    tick(1500); // wait for simulated 1s DB read + debounce
+
+    const daysBack = await firstValueFrom(service.daysBackForCurrentGeoHazard$);
+
+    // Should fall back to first valid option (0), not the stored invalid value (28)
+    expect(daysBack).toBe(0);
+  }));
+
+  it('does not change stored daysBack when the value is still a valid option', fakeAsync(async () => {
+    db = {
+      currentGeoHazard: [GeoHazard.Snow],
+      observationDaysBack: [
+        { geoHazard: GeoHazard.Snow, daysBack: 7 }, // valid option
+      ],
+    };
+
+    TestBed.configureTestingModule({
+      providers: [
+        provideTranslateService(),
+        provideTestLogger(),
+        { provide: UserSettingService, useClass: UserSettingServiceWithoutExternalDeps },
+      ],
+    });
+
+    const service = TestBed.inject(UserSettingService);
+    service.init();
+
+    tick(1500);
+
+    const daysBack = await firstValueFrom(service.daysBackForCurrentGeoHazard$);
+
+    expect(daysBack).toBe(7);
+  }));
 });
