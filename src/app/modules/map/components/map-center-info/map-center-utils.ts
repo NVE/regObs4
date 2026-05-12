@@ -29,7 +29,7 @@ export function calculateBearing(fromLat: number, fromLng: number, toLat: number
  * @returns Magnetisk misvisning i grader (positiv = østlig, negativ = vestlig)
  */
 export function getMagneticDeclination(lat: number, lng: number, altitude = 0): number {
-  const model = geomagnetism.model(new Date(), { allowOutOfBoundsModel: true });
+  const model = getGeomagnetismModel();
   const altitudeKm = altitude / 1000; // Konverter høyde til kilometer
   const info = model.point([lat, lng, altitudeKm]);
   return info.decl;
@@ -65,4 +65,17 @@ function toRadians(degrees: number): number {
 
 function toDegrees(radians: number): number {
   return radians * (180 / Math.PI);
+}
+
+// vi gjenbruker modellen så lenge året er det samme, siden modellen oppdateres årlig
+let cachedModel: ReturnType<typeof geomagnetism.model> | undefined;
+let cachedYear: number | undefined;
+
+function getGeomagnetismModel() {
+  const currentYear = new Date().getFullYear();
+  if (cachedModel == null || cachedYear !== currentYear) {
+    cachedModel = geomagnetism.model(new Date(), { allowOutOfBoundsModel: true });
+    cachedYear = currentYear;
+  }
+  return cachedModel;
 }

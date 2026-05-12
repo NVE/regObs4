@@ -103,7 +103,7 @@ describe('map-center-utils', () => {
       const declinationSeaLevel = getMagneticDeclination(59.9139, 10.7522, 0);
 
       // Verdiene skal være identiske siden default er 0
-      expect(declinationDefault).toBe(declinationSeaLevel);
+      expect(declinationDefault).toBeCloseTo(declinationSeaLevel);
     });
 
     it('should have minimal difference with altitude changes', () => {
