@@ -295,4 +295,74 @@ describe('DraftToRegistrationService', () => {
       discardPeriodicTasks();
     })
   );
+
+  it('Does not save draft with error when upload succeeds but draft delete fails', fakeAsync(() => {
+    // Regression test for RO-3167: Previously the catch block wrapped both the upload AND the delete,
+    // so a failed delete (e.g. Filesystem.rmdir error) would re-save the draft with an error
+    // even though the observation was already submitted to the server.
+    spyOn(loggerService, 'error').and.callThrough();
+
+    const registration = { RegId: 123456, GeoHazardTID: 10, DtObsTime: 'Test' } as RegistrationViewModel;
+    addUpdateDeleteRegService.add.and.resolveTo(registration);
+
+    // Simulate a filesystem error when trying to delete the local draft
+    draftService.delete.and.rejectWith(new Error('Filesystem.rmdir failed'));
+
+    connected.next(true);
+    drafts.next([draft]);
+
+    service.createSubscriptions();
+    flush();
+
+    // The observation is on the server, so the draft must NOT be saved with an error code
+    expect(draftService.save).not.toHaveBeenCalled();
+
+    // The error should be logged so we can diagnose it
+    expect(loggerService.error).toHaveBeenCalledTimes(1);
+
+    discardPeriodicTasks();
+  }));
+
+  it('saves the draft with SyncStatus.Sync', async () => {
+    draftService.save.and.resolveTo();
+
+    await service.markDraftAsReadyToSubmit(draft);
+
+    expect(draftService.save).toHaveBeenCalledWith(jasmine.objectContaining({ syncStatus: SyncStatus.Sync }));
+  });
+
+  it('removes existing error from draft so it can be retried', async () => {
+    draftService.save.and.resolveTo();
+
+    const draftWithError: RegistrationDraft = {
+      ...draft,
+      syncStatus: SyncStatus.Sync,
+      error: { code: RegistrationDraftErrorCode.NoNetworkOrTimedOut, timestamp: 12345 },
+    };
+
+    await service.markDraftAsReadyToSubmit(draftWithError);
+
+    const savedDraft = draftService.save.calls.first().args[0];
+    expect(savedDraft.error).toBeUndefined();
+    expect(savedDraft.syncStatus).toBe(SyncStatus.Sync);
+  });
+
+  it('resolves only after the save is complete', async () => {
+    // Regression test for RO-3167: previously save() was called without await, so the method
+    // returned before the save completed, creating a race condition.
+    let saveResolved = false;
+    draftService.save.and.callFake(
+      () =>
+        new Promise<void>((resolve) =>
+          setTimeout(() => {
+            saveResolved = true;
+            resolve();
+          }, 50)
+        )
+    );
+
+    await service.markDraftAsReadyToSubmit(draft);
+
+    expect(saveResolved).toBeTrue();
+  });
 });
