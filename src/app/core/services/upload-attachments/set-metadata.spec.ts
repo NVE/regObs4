@@ -20,6 +20,7 @@ const basicUserSettings: UserSetting = {
   featureToggeGpsDebug: false,
   featureToggleDeveloperMode: false,
   topoMap: TopoMap.default,
+  useMagneticBearing: true,
 };
 
 describe('setCopyright', () => {
