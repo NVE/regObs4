@@ -12,6 +12,8 @@
   display: block;
 
   ion-row {
+    display: flex;
+    align-items: center;
     height: 17px;
   }
 
@@ -51,6 +53,10 @@
   padding-top: 2px;
   padding-left: 5px;
   padding-right: 1px;
+}
+
+.bearing {
+  padding-left: 5px;
 }
 
 .yr-icon {

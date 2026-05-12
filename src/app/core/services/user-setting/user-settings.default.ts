@@ -37,5 +37,6 @@ export const DEFAULT_USER_SETTINGS: (langKey?: LangKey) => UserSetting = (langKe
     featureToggeGpsDebug: false,
     featureToggleDeveloperMode: false,
     preferCompleteSnowObservations: false,
+    useMagneticBearing: true,
   };
 };
