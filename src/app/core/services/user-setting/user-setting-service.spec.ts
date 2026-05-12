@@ -8,9 +8,12 @@ import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-
 import { Injectable } from '@angular/core';
 
 describe('UserSettingService', () => {
-  let db: Partial<UserSetting> = {
-    photographer: 'Hestejente3000',
-  };
+  let db: Partial<UserSetting>;
+
+  beforeEach(() => {
+    db = { photographer: 'Hestejente3000' };
+    saveSpy.calls.reset();
+  });
 
   const saveSpy = jasmine.createSpy('saveUserSettingsToDb').and.callFake((us) => {
     db = { ...us };
