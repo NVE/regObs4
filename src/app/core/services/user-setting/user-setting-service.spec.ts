@@ -81,7 +81,7 @@ describe('UserSettingService', () => {
     } as unknown as UserSetting);
   }));
 
-  it('normalizes stored daysBack to first valid option when the saved value is no longer in settings', fakeAsync(async () => {
+  it('normalizes stored daysBack to last valid option when the saved value is no longer in settings', fakeAsync(async () => {
     // Set up a stored value that is no longer a valid option.
     // Valid Ice options in settings.ts are [0, 1, 2, 3, 7, 14] — 28 is not among them anymore.
     db = {
@@ -107,8 +107,8 @@ describe('UserSettingService', () => {
 
     const daysBack = await firstValueFrom(service.daysBackForCurrentGeoHazard$);
 
-    // Should fall back to first valid option (0), not the stored invalid value (28)
-    expect(daysBack).toBe(0);
+    // Should fall back to last valid option (14), not the stored invalid value (28)
+    expect(daysBack).toBe(14);
   }));
 
   it('does not change stored daysBack when the value is still a valid option', fakeAsync(async () => {

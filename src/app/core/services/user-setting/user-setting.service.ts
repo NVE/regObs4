@@ -471,12 +471,12 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
       if (!validOptions || validOptions.includes(daysBack)) {
         return { geoHazard, daysBack };
       }
-      this.loggingService?.debug('Stored daysBack not in valid options, using first option', DEBUG_TAG, {
+      this.loggingService?.debug('Stored daysBack not in valid options, using last option', DEBUG_TAG, {
         geoHazard,
         stored: daysBack,
         validOptions,
       });
-      return { geoHazard, daysBack: validOptions[0] };
+      return { geoHazard, daysBack: validOptions.at(-1) || 0 };
     });
     return { ...userSettings, observationDaysBack: normalizedDaysBack };
   }
