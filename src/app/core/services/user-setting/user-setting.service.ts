@@ -457,8 +457,28 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
           };
         }
         return userSettings;
-      })
+      }),
+      map((userSettings) => this.normalizeUserSettings(userSettings))
     );
+  }
+
+  private normalizeUserSettings(userSettings: UserSetting): UserSetting {
+    if (!userSettings.observationDaysBack) {
+      return userSettings;
+    }
+    const normalizedDaysBack = userSettings.observationDaysBack.map(({ geoHazard, daysBack }) => {
+      const validOptions: number[] = settings.observations.daysBack[GeoHazard[geoHazard]];
+      if (!validOptions || validOptions.includes(daysBack)) {
+        return { geoHazard, daysBack };
+      }
+      this.loggingService?.debug('Stored daysBack not in valid options, using last option', DEBUG_TAG, {
+        geoHazard,
+        stored: daysBack,
+        validOptions,
+      });
+      return { geoHazard, daysBack: validOptions.at(-1) || 0 };
+    });
+    return { ...userSettings, observationDaysBack: normalizedDaysBack };
   }
 
   protected getUserSettingsFromDb(): Observable<UserSetting> {
