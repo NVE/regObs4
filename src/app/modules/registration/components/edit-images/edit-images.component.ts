@@ -17,11 +17,8 @@ import {
 } from '@ionic/angular/standalone';
 import {
   Camera,
-  CameraResultType,
-  CameraSource,
-  GalleryImageOptions,
-  GalleryPhotos,
-  ImageOptions,
+  ChooseFromGalleryOptions,
+  TakePhotoOptions,
 } from '@capacitor/camera';
 import { settings } from '../../../../../settings';
 import {
@@ -243,11 +240,11 @@ export class EditImagesComponent implements OnInit {
       buttons: [
         {
           text: translations['REGISTRATION.GENERAL_COMMENT.TAKE_NEW_PHOTO'],
-          handler: () => this.getImages(CameraSource.Camera),
+          handler: () => this.takePhoto(),
         },
         {
           text: translations['REGISTRATION.GENERAL_COMMENT.CHOOSE_FROM_LIBRARY'],
-          handler: () => this.getImages(CameraSource.Photos),
+          handler: () => this.chooseFromGallery(),
         },
         {
           text: translations['DIALOGS.CANCEL'],
@@ -258,78 +255,37 @@ export class EditImagesComponent implements OnInit {
     actionSheet.present();
   }
 
-  private getImageOptions(source: CameraSource): ImageOptions {
+  private getTakePhotoOptions(): TakePhotoOptions {
     return {
       quality: settings.images.quality,
-      resultType: CameraResultType.Uri,
-      source: source,
-      height: settings.images.size,
-      width: settings.images.size,
+      targetHeight: settings.images.size,
+      targetWidth: settings.images.size,
       correctOrientation: true,
-
-      // Lagrer appen alltid til bibliotek?
-      // Etter test på iOS: Nei, appen spør faktisk om å få lov til å lagre bilder i biblioteket,
-      // men kun om du ikke tidligere har lagt til bilder fra bibliotek.
-      // Dette er en native dialog og ikke noe vi aktivt spør om.
-      // Man får som sagt kun opp dialogen om man ikke har henta bilder fra biblioteket tidligere.
-      // Dette er ganske komplisert.
-      // Svarer man nei på dialogen lagres ikke bilder man tar via appen på telefonen,
-      // heller ikke neste gang man tar et nytt bilde.
-      // I innstillingene på telefonen kan man senere endre dette via "Tilgang til bildebiblioteket", der kan man velge
-      // enten "Ingen" eller "Kun legge til bilder".
-      // MEN! Hvis man senere velger å legge til bilder fra biblioteket på telefonen kan man velge å gi appen enten
-      // begrenset eller full tilgang. Uansett hva man velger, vil appen likevel lagre
-      // kamerabilder i bilioteket selv om man opprinnelig svarte nei. Dette kan være forvirrende for brukerne.
-      // Bør vi heller ha et valg i innstillingene for dette, kan være irriterende at appen alltid lagrer bilder i
-      // biblioteket?
-      saveToGallery: source === CameraSource.Camera,
+      saveToGallery: true,
     };
   }
 
-  /**
-   * Hent bilder fra bilde-biblioteket på telefonen.
-   *
-   * Sjekker først om appen har tillatelse, og spør evt om tillatelse hvis dette mangler.
-   *
-   * På iOS kan tillatelse-dialogen og plukk-bilder dialogen være forvirrende. Man kan nemlig velge mellom
-   * begrenset eller full tilgang til bildebiblioteket. Velger man begrenset (limited) får man opp en dialog der man
-   * kan velge hvilke bilder appen skal ha tilgang til fra bildebiblioteket. Dette er altså ikke hvilket bilde man vil
-   * legge til i observasjonen, men hvilke bilder appen skal ha tilgang til på et mer overordnet nivå.
-   * Meningen med dette er at appen deretter skal kunne implementere en egen dialog der brukeren kan velge mellom det
-   * begrensa utvalget bilder. Dette har ikke vi implementert. Derfor kan dette virke litt forvirrende, fordi man får
-   * opp to dialoger der man må velge bilder rett etter hverandre. Men dette skal kun skje første gang man spør om lov
-   * til å hente bilder fra bildebiblioteket, så det bør ikke være noe stort problem.
-   */
-  private async getAlbumImageUrls(options: GalleryImageOptions): Promise<string[]> {
-    let imageUrls: string[] = [];
-    let galleryPhotos: GalleryPhotos;
-    let permissionState = await Camera.checkPermissions();
-    this.logger.debug('getAlbumImageUrls Camera.checkPermissions', DEBUG_TAG, { permissionState });
-    if (!['granted', 'limited'].includes(permissionState?.photos)) {
-      permissionState = await Camera.requestPermissions({ permissions: ['photos'] });
-      this.logger.debug('getAlbumImageUrls Camera.requestPermissions', DEBUG_TAG, { permissionState });
-    }
-    if (['granted', 'limited'].includes(permissionState?.photos)) {
-      this.logger.debug('getAlbumImageUrls pickImages', DEBUG_TAG);
-      galleryPhotos = await Camera.pickImages(options);
-      this.logger.debug('getAlbumImageUrls pickImages result', DEBUG_TAG, { galleryPhotos });
-    } else {
-      this.showErrorToast('REGISTRATION.IMAGE_ERROR.ALBUM_READ_PERMISSION_MISSING');
-      this.logger.log('Could not get permissions to read from library', null, LogLevel.Warning, DEBUG_TAG);
-      return [];
-    }
-    if (galleryPhotos.photos.length > 0) {
-      if (this.checkAndNotifyIfUnsupportedImageFormat(galleryPhotos.photos.map((photo) => photo.format))) {
-        // TODO: photo.path kan være undefined, bør vi håndtere dette bedre?
-        imageUrls = galleryPhotos.photos.map((photo) => photo.path).filter((path) => path != null);
-      }
-    }
+  private getChooseFromGalleryOptions(): ChooseFromGalleryOptions {
+    return {
+      quality: settings.images.quality,
+      allowMultipleSelection: true,
+    };
+  }
+
+  private async getAlbumImageUrls(options: ChooseFromGalleryOptions): Promise<string[]> {
+    this.logger.debug('getAlbumImageUrls chooseFromGallery', DEBUG_TAG);
+    const result = await Camera.chooseFromGallery(options);
+    this.logger.debug('getAlbumImageUrls chooseFromGallery result', DEBUG_TAG, { result });
+
+    const imageUrls = result.results
+      .filter((media) => media.uri != null)
+      .map((media) => media.uri as string);
 
     this.logger.debug('getAlbumImageUrls result', DEBUG_TAG, { imageUrls });
     return imageUrls;
   }
 
-  private async takePhotoAndReturnImageUrl(options: ImageOptions): Promise<string[]> {
+  private async takePhotoAndReturnImageUrl(options: TakePhotoOptions): Promise<string[]> {
     let permissionState = await Camera.checkPermissions();
     this.logger.debug('takePhotoAndReturnImageUrl Camera.checkPermissions', DEBUG_TAG, { permissionState });
     if (permissionState?.camera !== 'granted') {
@@ -337,17 +293,14 @@ export class EditImagesComponent implements OnInit {
       this.logger.debug('takePhotoAndReturnImageUrl Camera.requestPermissions', DEBUG_TAG, { permissionState });
     }
     if (permissionState?.camera === 'granted') {
-      const photo = await Camera.getPhoto(options);
-      this.logger.debug('takePhotoAndReturnImageUrl Camera.getPhoto', DEBUG_TAG, {
+      const photo = await Camera.takePhoto(options);
+      this.logger.debug('takePhotoAndReturnImageUrl Camera.takePhoto', DEBUG_TAG, {
         options,
         permissionState,
-        format: photo.format,
         saved: photo.saved,
       });
-      if (photo) {
-        if (photo.path && this.checkAndNotifyIfUnsupportedImageFormat([photo.format])) {
-          return [photo.path];
-        }
+      if (photo?.uri) {
+        return [photo.uri];
       }
     } else {
       this.showErrorToast('REGISTRATION.IMAGE_ERROR.CAMERA_PERMISSION_MISSING');
@@ -355,41 +308,51 @@ export class EditImagesComponent implements OnInit {
     return [];
   }
 
-  private async getImages(source: CameraSource) {
-    this.logger.debug('getImages', DEBUG_TAG, { source });
+  private async takePhoto() {
+    this.logger.debug('takePhoto', DEBUG_TAG);
     if (!this.platform.is('hybrid')) {
       //TODO: Gjøre som vi gjør på web for å hente bilde enten fra kamera eller album
       return true;
     }
     let imageUrls: string[] = [];
     try {
-      const options = this.getImageOptions(source);
-      if (source === CameraSource.Photos) {
-        imageUrls = await this.getAlbumImageUrls(options);
-      } else {
-        imageUrls = await this.takePhotoAndReturnImageUrl(options);
-      }
+      imageUrls = await this.takePhotoAndReturnImageUrl(this.getTakePhotoOptions());
       for (const imageUrl of imageUrls) {
         this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
         await this.attachImageFileToDraft(imageUrl, MIME_TYPE);
       }
     } catch (err) {
       const hasMessage = err instanceof Error && err.message != null;
-      // we ignore errors we get if user cancels taking photo or gallery selection
       if (!hasMessage || !ERRORS_TO_IGNORE.includes(err.message)) {
-        this.logger.log('Unknown error when adding image', err, LogLevel.Warning, DEBUG_TAG, imageUrls);
+        this.logger.log('Unknown error when taking photo', err, LogLevel.Warning, DEBUG_TAG, imageUrls);
         this.showErrorToast('REGISTRATION.IMAGE_ERROR.UNKNOWN');
       }
     }
-    this.logger.debug('getImages return', DEBUG_TAG, { source, nImages: imageUrls.length });
+    this.logger.debug('takePhoto return', DEBUG_TAG, { nImages: imageUrls.length });
     return true;
   }
 
-  private checkAndNotifyIfUnsupportedImageFormat(formats: string[]) {
-    if (formats.some((f) => f !== 'jpeg')) {
-      this.showErrorToast('REGISTRATION.INVALID_IMAGE');
-      return false;
+  private async chooseFromGallery() {
+    this.logger.debug('chooseFromGallery', DEBUG_TAG);
+    if (!this.platform.is('hybrid')) {
+      //TODO: Gjøre som vi gjør på web for å hente bilde enten fra kamera eller album
+      return true;
     }
+    let imageUrls: string[] = [];
+    try {
+      imageUrls = await this.getAlbumImageUrls(this.getChooseFromGalleryOptions());
+      for (const imageUrl of imageUrls) {
+        this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
+        await this.attachImageFileToDraft(imageUrl, MIME_TYPE);
+      }
+    } catch (err) {
+      const hasMessage = err instanceof Error && err.message != null;
+      if (!hasMessage || !ERRORS_TO_IGNORE.includes(err.message)) {
+        this.logger.log('Unknown error when choosing from gallery', err, LogLevel.Warning, DEBUG_TAG, imageUrls);
+        this.showErrorToast('REGISTRATION.IMAGE_ERROR.UNKNOWN');
+      }
+    }
+    this.logger.debug('chooseFromGallery return', DEBUG_TAG, { nImages: imageUrls.length });
     return true;
   }
 
