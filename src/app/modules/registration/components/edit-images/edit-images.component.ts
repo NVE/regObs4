@@ -15,11 +15,7 @@ import {
   Platform,
   ToastController,
 } from '@ionic/angular/standalone';
-import {
-  Camera,
-  ChooseFromGalleryOptions,
-  TakePhotoOptions,
-} from '@capacitor/camera';
+import { Camera, ChooseFromGalleryOptions, EncodingType, TakePhotoOptions } from '@capacitor/camera';
 import { settings } from '../../../../../settings';
 import {
   AttachmentType,
@@ -48,6 +44,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
+import { Encoding } from '@capacitor/filesystem';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -255,12 +252,29 @@ export class EditImagesComponent implements OnInit {
     actionSheet.present();
   }
 
-  private getTakePhotoOptions(): TakePhotoOptions {
+  private getImageOptions(): TakePhotoOptions {
     return {
       quality: settings.images.quality,
       targetHeight: settings.images.size,
       targetWidth: settings.images.size,
       correctOrientation: true,
+      encodingType: EncodingType.JPEG,
+
+      // Lagrer appen alltid til bibliotek?
+      // Etter test på iOS: Nei, appen spør faktisk om å få lov til å lagre bilder i biblioteket,
+      // men kun om du ikke tidligere har lagt til bilder fra bibliotek.
+      // Dette er en native dialog og ikke noe vi aktivt spør om.
+      // Man får som sagt kun opp dialogen om man ikke har henta bilder fra biblioteket tidligere.
+      // Dette er ganske komplisert.
+      // Svarer man nei på dialogen lagres ikke bilder man tar via appen på telefonen,
+      // heller ikke neste gang man tar et nytt bilde.
+      // I innstillingene på telefonen kan man senere endre dette via "Tilgang til bildebiblioteket", der kan man velge
+      // enten "Ingen" eller "Kun legge til bilder".
+      // MEN! Hvis man senere velger å legge til bilder fra biblioteket på telefonen kan man velge å gi appen enten
+      // begrenset eller full tilgang. Uansett hva man velger, vil appen likevel lagre
+      // kamerabilder i bilioteket selv om man opprinnelig svarte nei. Dette kan være forvirrende for brukerne.
+      // Bør vi heller ha et valg i innstillingene for dette, kan være irriterende at appen alltid lagrer bilder i
+      // biblioteket?
       saveToGallery: true,
     };
   }
@@ -277,9 +291,7 @@ export class EditImagesComponent implements OnInit {
     const result = await Camera.chooseFromGallery(options);
     this.logger.debug('getAlbumImageUrls chooseFromGallery result', DEBUG_TAG, { result });
 
-    const imageUrls = result.results
-      .filter((media) => media.uri != null)
-      .map((media) => media.uri as string);
+    const imageUrls = result.results.filter((media) => media.uri != null).map((media) => media.uri as string);
 
     this.logger.debug('getAlbumImageUrls result', DEBUG_TAG, { imageUrls });
     return imageUrls;
@@ -316,7 +328,7 @@ export class EditImagesComponent implements OnInit {
     }
     let imageUrls: string[] = [];
     try {
-      imageUrls = await this.takePhotoAndReturnImageUrl(this.getTakePhotoOptions());
+      imageUrls = await this.takePhotoAndReturnImageUrl(this.getImageOptions());
       for (const imageUrl of imageUrls) {
         this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
         await this.attachImageFileToDraft(imageUrl, MIME_TYPE);
