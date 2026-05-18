@@ -354,6 +354,9 @@ export class EditImagesComponent implements OnInit {
     let imageUrls: string[] = [];
     try {
       imageUrls = await this.getAlbumImageUrls(this.getChooseFromGalleryOptions());
+      if (!this.checkAndNotifyIfUnsupportedImageFormat(imageUrls)) {
+        return false;
+      }
       for (const imageUrl of imageUrls) {
         this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
         await this.attachImageFileToDraft(imageUrl, MIME_TYPE);
@@ -366,6 +369,16 @@ export class EditImagesComponent implements OnInit {
       }
     }
     this.logger.debug('chooseFromGallery return', DEBUG_TAG, { nImages: imageUrls.length });
+    return true;
+  }
+
+  private checkAndNotifyIfUnsupportedImageFormat(imageUrls: string[]) {
+    for (const imageUrl of imageUrls) {
+      if (!imageUrl.toLowerCase().endsWith('.jpg') && !imageUrl.toLowerCase().endsWith('.jpeg')) {
+        this.showErrorToast('REGISTRATION.INVALID_IMAGE');
+        return false;
+      }
+    }
     return true;
   }
 
