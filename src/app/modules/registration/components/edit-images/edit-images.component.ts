@@ -15,7 +15,7 @@ import {
   Platform,
   ToastController,
 } from '@ionic/angular/standalone';
-import { Camera, ChooseFromGalleryOptions, EncodingType, TakePhotoOptions } from '@capacitor/camera';
+import { Camera, ChooseFromGalleryOptions, EncodingType, GalleryPhotos, TakePhotoOptions } from '@capacitor/camera';
 import { settings } from '../../../../../settings';
 import {
   AttachmentType,
@@ -287,16 +287,62 @@ export class EditImagesComponent implements OnInit {
     };
   }
 
-  private async getAlbumImageUrls(options: ChooseFromGalleryOptions): Promise<string[]> {
-    this.logger.debug('getAlbumImageUrls chooseFromGallery', DEBUG_TAG);
-    const result = await Camera.chooseFromGallery(options);
-    this.logger.debug('getAlbumImageUrls chooseFromGallery result', DEBUG_TAG, { result });
-
-    const imageUrls = result.results.filter((media) => media.uri != null).map((media) => media.uri as string);
+  /**
+   * Hent bilder fra bilde-biblioteket på telefonen.
+   *
+   * Sjekker først om appen har tillatelse, og spør evt om tillatelse hvis dette mangler.
+   *
+   * På iOS kan tillatelse-dialogen og plukk-bilder dialogen være forvirrende. Man kan nemlig velge mellom
+   * begrenset eller full tilgang til bildebiblioteket. Velger man begrenset (limited) får man opp en dialog der man
+   * kan velge hvilke bilder appen skal ha tilgang til fra bildebiblioteket. Dette er altså ikke hvilket bilde man vil
+   * legge til i observasjonen, men hvilke bilder appen skal ha tilgang til på et mer overordnet nivå.
+   * Meningen med dette er at appen deretter skal kunne implementere en egen dialog der brukeren kan velge mellom det
+   * begrensa utvalget bilder. Dette har ikke vi implementert. Derfor kan dette virke litt forvirrende, fordi man får
+   * opp to dialoger der man må velge bilder rett etter hverandre. Men dette skal kun skje første gang man spør om lov
+   * til å hente bilder fra bildebiblioteket, så det bør ikke være noe stort problem.
+   */
+  private async getAlbumImageUrls(): Promise<string[]> {
+    let imageUrls: string[] = [];
+    let galleryPhotos: GalleryPhotos;
+    let permissionState = await Camera.checkPermissions();
+    this.logger.debug('getAlbumImageUrls Camera.checkPermissions', DEBUG_TAG, { permissionState });
+    if (!['granted', 'limited'].includes(permissionState?.photos)) {
+      permissionState = await Camera.requestPermissions({ permissions: ['photos'] });
+      this.logger.debug('getAlbumImageUrls Camera.requestPermissions', DEBUG_TAG, { permissionState });
+    }
+    if (['granted', 'limited'].includes(permissionState?.photos)) {
+      this.logger.debug('getAlbumImageUrls pickImages', DEBUG_TAG);
+      const options = this.getChooseFromGalleryOptions();
+      galleryPhotos = await Camera.pickImages(options);
+      this.logger.debug('getAlbumImageUrls pickImages result', DEBUG_TAG, { galleryPhotos });
+    } else {
+      this.showErrorToast('REGISTRATION.IMAGE_ERROR.ALBUM_READ_PERMISSION_MISSING');
+      this.logger.log('Could not get permissions to read from library', null, LogLevel.Warning, DEBUG_TAG);
+      return [];
+    }
+    if (galleryPhotos.photos.length > 0) {
+      if (this.checkAndNotifyIfUnsupportedImageFormat(galleryPhotos.photos.map((photo) => photo.format))) {
+        // TODO: photo.path kan være undefined, bør vi håndtere dette bedre?
+        imageUrls = galleryPhotos.photos.map((photo) => photo.path).filter((path) => path != null);
+      }
+    }
 
     this.logger.debug('getAlbumImageUrls result', DEBUG_TAG, { imageUrls });
     return imageUrls;
   }
+
+  // TODO: Bruker nyere API for å hente bilder fra album. Ikke tatt i bruk ennå fordi den ikke konverterer HEIC-bilder til JPEG
+  // private async getAlbumImageUrlsV2(): Promise<string[]> {
+  //   this.logger.debug('getAlbumImageUrls chooseFromGallery', DEBUG_TAG);
+  //   const options = this.getChooseFromGalleryOptions();
+  //   const result = await Camera.chooseFromGallery(options);
+  //   this.logger.debug('getAlbumImageUrls chooseFromGallery result', DEBUG_TAG, { result });
+
+  //   const imageUrls = result.results.filter((media) => media.uri != null).map((media) => media.uri as string);
+
+  //   this.logger.debug('getAlbumImageUrls result', DEBUG_TAG, { imageUrls });
+  //   return imageUrls;
+  // }
 
   private async takePhotoAndReturnImageUrl(options: TakePhotoOptions): Promise<string[]> {
     let permissionState = await Camera.checkPermissions();
@@ -353,10 +399,7 @@ export class EditImagesComponent implements OnInit {
     }
     let imageUrls: string[] = [];
     try {
-      imageUrls = await this.getAlbumImageUrls(this.getChooseFromGalleryOptions());
-      if (!this.checkAndNotifyIfUnsupportedImageFormat(imageUrls)) {
-        return false;
-      }
+      imageUrls = await this.getAlbumImageUrls();
       for (const imageUrl of imageUrls) {
         this.logger.debug(`Got image url from camera plugin: ${imageUrl}`, DEBUG_TAG);
         await this.attachImageFileToDraft(imageUrl, MIME_TYPE);
@@ -372,15 +415,24 @@ export class EditImagesComponent implements OnInit {
     return true;
   }
 
-  private checkAndNotifyIfUnsupportedImageFormat(imageUrls: string[]) {
-    for (const imageUrl of imageUrls) {
-      if (!imageUrl.toLowerCase().endsWith('.jpg') && !imageUrl.toLowerCase().endsWith('.jpeg')) {
-        this.showErrorToast('REGISTRATION.INVALID_IMAGE');
-        return false;
-      }
+  private checkAndNotifyIfUnsupportedImageFormat(formats: string[]) {
+    if (formats.some((f) => f !== 'jpeg')) {
+      this.showErrorToast('REGISTRATION.INVALID_IMAGE');
+      return false;
     }
     return true;
   }
+
+  // TODO: Nyere og dummere måte å sjekke bildeformatet på, må kanskje bruke denne når vi bytter til å bruke Capacitor.pickImages.
+  // private checkAndNotifyIfUnsupportedImageFormatV2(imageUrls: string[]) {
+  //   for (const imageUrl of imageUrls) {
+  //     if (!imageUrl.toLowerCase().endsWith('jpg') && !imageUrl.toLowerCase().endsWith('jpeg')) {
+  //       this.showErrorToast('REGISTRATION.INVALID_IMAGE');
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // }
 
   private showErrorToast(messageKey: string) {
     this.translateService.get(messageKey).subscribe(async (translation) => {
