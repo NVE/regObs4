@@ -44,7 +44,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.service';
 import { getRoundedDownOrientationValue } from 'src/app/utils/getRoundedDownOrientationValue';
-import { Encoding } from '@capacitor/filesystem';
 
 const DEBUG_TAG = 'AddPictureItemComponent';
 const MIME_TYPE = 'image/jpeg';
@@ -282,6 +281,8 @@ export class EditImagesComponent implements OnInit {
   private getChooseFromGalleryOptions(): ChooseFromGalleryOptions {
     return {
       quality: settings.images.quality,
+      targetWidth: settings.images.size,
+      targetHeight: settings.images.size,
       allowMultipleSelection: true,
     };
   }
