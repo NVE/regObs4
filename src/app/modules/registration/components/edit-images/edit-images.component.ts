@@ -331,19 +331,6 @@ export class EditImagesComponent implements OnInit {
     return imageUrls;
   }
 
-  // TODO: Bruker nyere API for å hente bilder fra album. Ikke tatt i bruk ennå fordi den ikke konverterer HEIC-bilder til JPEG
-  // private async getAlbumImageUrlsV2(): Promise<string[]> {
-  //   this.logger.debug('getAlbumImageUrls chooseFromGallery', DEBUG_TAG);
-  //   const options = this.getChooseFromGalleryOptions();
-  //   const result = await Camera.chooseFromGallery(options);
-  //   this.logger.debug('getAlbumImageUrls chooseFromGallery result', DEBUG_TAG, { result });
-
-  //   const imageUrls = result.results.filter((media) => media.uri != null).map((media) => media.uri as string);
-
-  //   this.logger.debug('getAlbumImageUrls result', DEBUG_TAG, { imageUrls });
-  //   return imageUrls;
-  // }
-
   private async takePhotoAndReturnImageUrl(options: TakePhotoOptions): Promise<string[]> {
     let permissionState = await Camera.checkPermissions();
     this.logger.debug('takePhotoAndReturnImageUrl Camera.checkPermissions', DEBUG_TAG, { permissionState });
@@ -422,17 +409,6 @@ export class EditImagesComponent implements OnInit {
     }
     return true;
   }
-
-  // TODO: Nyere og dummere måte å sjekke bildeformatet på, må kanskje bruke denne når vi bytter til å bruke Capacitor.pickImages.
-  // private checkAndNotifyIfUnsupportedImageFormatV2(imageUrls: string[]) {
-  //   for (const imageUrl of imageUrls) {
-  //     if (!imageUrl.toLowerCase().endsWith('jpg') && !imageUrl.toLowerCase().endsWith('jpeg')) {
-  //       this.showErrorToast('REGISTRATION.INVALID_IMAGE');
-  //       return false;
-  //     }
-  //   }
-  //   return true;
-  // }
 
   private showErrorToast(messageKey: string) {
     this.translateService.get(messageKey).subscribe(async (translation) => {
