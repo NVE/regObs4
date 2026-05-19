@@ -15,7 +15,7 @@ import {
   Platform,
   ToastController,
 } from '@ionic/angular/standalone';
-import { Camera, ChooseFromGalleryOptions, EncodingType, GalleryPhotos, TakePhotoOptions } from '@capacitor/camera';
+import { Camera, EncodingType, GalleryImageOptions, GalleryPhotos, TakePhotoOptions } from '@capacitor/camera';
 import { settings } from '../../../../../settings';
 import {
   AttachmentType,
@@ -278,12 +278,12 @@ export class EditImagesComponent implements OnInit {
     };
   }
 
-  private getChooseFromGalleryOptions(): ChooseFromGalleryOptions {
+  private getChooseFromGalleryOptions(): GalleryImageOptions {
     return {
       quality: settings.images.quality,
-      targetWidth: settings.images.size,
-      targetHeight: settings.images.size,
-      allowMultipleSelection: true,
+      width: settings.images.size,
+      height: settings.images.size,
+      correctOrientation: true,
     };
   }
 
