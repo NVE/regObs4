@@ -68,7 +68,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
   }
 
   /**
-   * Check if data is to old to use (cache time has expired)
+   * Check if data is to old to use
    * @param metaData cached offline data
    */
   protected isValid(metaData: OfflineSyncMeta<T>): boolean {

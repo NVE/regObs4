@@ -121,6 +121,10 @@ describe('KdvService cache invalidation on app version change', () => {
     httpTesting = TestBed.inject(HttpTestingController);
   });
 
+  afterEach(() => {
+    httpTesting.verify();
+  });
+
   it('henter data fra API når cachet data har gammel appVersion', fakeAsync(() => {
     databaseSpy.get.and.returnValue(Promise.resolve(oldCachedData));
     kdvElementsSpy.KdvElementsGetKdvs.and.returnValue(of(freshApiData));
