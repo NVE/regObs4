@@ -45,6 +45,19 @@
             <ion-label>{{ "TABS.WARNINGS" | translate }}</ion-label>
           </ion-tab-button>
         }
+        @if (showAnalysisTab()) {
+          <ion-tab-button
+            class="tab-button--desktop"
+            tab="analysis"
+            [selected]="selectedTab() === 'analysis'"
+            [class.tab-button--active]="selectedTab() === 'analysis'"
+            [layout]="iconLayout()"
+            [disabled]="!isSnowSelected()"
+          >
+            <ion-icon name="analytics-outline" aria-hidden="true"></ion-icon>
+            <ion-label>{{ "TABS.ANALYSIS" | translate }}</ion-label>
+          </ion-tab-button>
+        }
         <!--
           Foreløpig viser vi bare knapp til planer i sidemenyen.
           På sikt kan det bli aktuelt å vise knapp til planer igjen her.

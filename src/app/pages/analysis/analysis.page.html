@@ -1,0 +1,29 @@
+<ion-split-pane contentId="main-content-analysis-page">
+  <ion-menu side="start" menuId="analysis-filter" contentId="main-content-analysis-page" max-edge-start="0">
+    <app-analysis-filter-menu></app-analysis-filter-menu>
+  </ion-menu>
+
+  <div id="main-content-analysis-page" class="ion-page">
+    <app-header>
+      <ion-buttons slot="end">
+        <ion-menu-button color="light"></ion-menu-button>
+      </ion-buttons>
+      <ion-buttons slot="start">
+        <ion-menu-button menu="analysis-filter" color="light">
+          <ion-icon name="options-outline"></ion-icon>
+        </ion-menu-button>
+      </ion-buttons>
+    </app-header>
+    <ion-content>
+      <div class="analysis-map-host" #mapHost>
+        <app-map
+          (mapReady)="onMapReady($event)"
+          [autoActivate]="true"
+          [geoTag]="'AnalysisPage'"
+          [showUserLocation]="false"
+        ></app-map>
+        <app-analysis-time-slider></app-analysis-time-slider>
+      </div>
+    </ion-content>
+  </div>
+</ion-split-pane>

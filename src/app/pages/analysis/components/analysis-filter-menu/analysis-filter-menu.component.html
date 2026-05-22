@@ -1,0 +1,66 @@
+<ion-content>
+  <ion-list lines="full">
+    <ion-list-header>
+      <ion-label>{{ "ANALYSIS_FILTER.TITLE" | translate }}</ion-label>
+    </ion-list-header>
+
+    <ion-accordion-group [multiple]="true" [value]="['types', 'date', 'region']">
+      <!-- Observasjonstyper -->
+      <ion-accordion value="types">
+        <app-header-with-selected-items
+          slot="header"
+          titleKey="ANALYSIS_FILTER.TYPES"
+          [items]="selectedTypesSummary()"
+        ></app-header-with-selected-items>
+        <div slot="content">
+          <ion-list lines="none">
+            <ion-item>
+              <span class="analysis-color-dot analysis-color-dot--danger" aria-hidden="true"></span>
+              <ion-checkbox
+                [checked]="showDangerSigns()"
+                (ionChange)="onDangerSignsChange($event)"
+                labelPlacement="end"
+                justify="start"
+                >{{ "ANALYSIS_FILTER.DANGER_SIGN" | translate }}</ion-checkbox
+              >
+            </ion-item>
+            <ion-item>
+              <span class="analysis-color-dot analysis-color-dot--avalanche" aria-hidden="true"></span>
+              <ion-checkbox
+                [checked]="showAvalanches()"
+                (ionChange)="onAvalanchesChange($event)"
+                labelPlacement="end"
+                justify="start"
+                >{{ "ANALYSIS_FILTER.AVALANCHE" | translate }}</ion-checkbox
+              >
+            </ion-item>
+          </ion-list>
+        </div>
+      </ion-accordion>
+
+      <!-- Referansedato -->
+      <ion-accordion value="date">
+        <app-header-with-selected-items
+          slot="header"
+          titleKey="ANALYSIS_FILTER.REFERENCE_DATE"
+          [items]="[referenceDate()]"
+        ></app-header-with-selected-items>
+        <div slot="content">
+          <ion-datetime
+            presentation="date"
+            [value]="referenceDate()"
+            (ionChange)="onReferenceDateChange($event)"
+          ></ion-datetime>
+          <ion-item lines="none">
+            <ion-label class="ion-text-wrap analysis-date-hint">{{
+              "ANALYSIS_FILTER.REFERENCE_DATE_HINT" | translate
+            }}</ion-label>
+          </ion-item>
+        </div>
+      </ion-accordion>
+
+      <!-- Region -->
+      <app-region-filter value="region"></app-region-filter>
+    </ion-accordion-group>
+  </ion-list>
+</ion-content>

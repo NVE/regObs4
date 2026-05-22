@@ -1,0 +1,21 @@
+<div class="analysis-time-slider">
+  <div class="analysis-time-slider__label">
+    <span>{{ "ANALYSIS.TIME_SLIDER_LABEL" | translate }}</span>
+    <strong>{{ activeDate() }}</strong>
+  </div>
+  <ion-range
+    [min]="0"
+    [max]="max()"
+    [step]="1"
+    [snaps]="true"
+    [ticks]="true"
+    [value]="activeIndex()"
+    (ionInput)="onSliderChange($event)"
+    [pin]="false"
+    aria-label="Analyse: aktiv dag"
+  ></ion-range>
+  <div class="analysis-time-slider__range">
+    <span>{{ windowDates()[0] }}</span>
+    <span>{{ windowDates()[max()] }}</span>
+  </div>
+</div>

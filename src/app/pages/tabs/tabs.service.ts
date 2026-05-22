@@ -8,6 +8,7 @@ export enum TABS {
   OBSERVATION_LIST = 'search',
   WARNING_LIST = 'warning-list',
   PLANS = 'plans',
+  ANALYSIS = 'analysis',
 }
 
 /**
@@ -40,6 +41,8 @@ export class TabsService {
       return TABS.WARNING_LIST;
     } else if (cleanPath.indexOf(TABS.PLANS) > -1) {
       return TABS.PLANS;
+    } else if (cleanPath.indexOf(TABS.ANALYSIS) > -1) {
+      return TABS.ANALYSIS;
     } else if (cleanPath === '') {
       return TABS.HOME;
     }
