@@ -3,9 +3,9 @@ import {
   Component,
   ElementRef,
   OnDestroy,
-  OnInit,
   effect,
   inject,
+  signal,
   viewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -22,6 +22,7 @@ import { RegistrationViewModel, SearchCriteriaRequestDto } from 'src/app/modules
 import { MapComponent } from 'src/app/modules/map/components/map/map.component';
 import { HeaderComponent } from 'src/app/modules/shared/components/header/header.component';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
+import { DataLoadComponent } from 'src/app/modules/data-load/components/data-load/data-load.component';
 import { AnalysisFilterMenuComponent } from './components/analysis-filter-menu/analysis-filter-menu.component';
 import { AnalysisTimeSliderComponent } from './components/analysis-time-slider/analysis-time-slider.component';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -74,6 +75,7 @@ interface AnalysisMarker {
   imports: [
     AnalysisFilterMenuComponent,
     AnalysisTimeSliderComponent,
+    DataLoadComponent,
     HeaderComponent,
     IonButtons,
     IonContent,
@@ -102,9 +104,9 @@ export class AnalysisPage extends RouterPage implements OnDestroy {
 
   // Effect: re-render markers when active date changes
   private activeDate = this.analysisFilterService.activeDate;
-  // Disclaimer / loading state are kept simple here; can be expanded later.
   showDangerSigns = this.analysisFilterService.showDangerSigns;
   showAvalanches = this.analysisFilterService.showAvalanches;
+  isLoading = signal(false);
 
   constructor() {
     const router = inject(Router);
@@ -169,13 +171,16 @@ export class AnalysisPage extends RouterPage implements OnDestroy {
           if (!criteria) {
             // No types selected → clear
             this.clearMarkers();
+            this.isLoading.set(false);
             return of([] as RegistrationViewModel[]);
           }
+          this.isLoading.set(true);
           return this.fetchAllPages(criteria);
         })
       )
       .subscribe((registrations) => {
         this.renderRegistrations(registrations);
+        this.isLoading.set(false);
       });
   }
 

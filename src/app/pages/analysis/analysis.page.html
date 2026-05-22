@@ -23,6 +23,7 @@
           [showUserLocation]="false"
         ></app-map>
         <app-analysis-time-slider></app-analysis-time-slider>
+        <app-data-load [show]="isLoading()" label="DATA_LOAD.SPINNER_FETCH_OBSERVATIONS"></app-data-load>
       </div>
     </ion-content>
   </div>
