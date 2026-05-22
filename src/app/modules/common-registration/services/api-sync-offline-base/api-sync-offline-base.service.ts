@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, combineLatest, from, of, BehaviorSubject } from 'rxjs';
+import { Observable, combineLatest, from, of, BehaviorSubject, Subject } from 'rxjs';
 import { AppMode, LangKey } from 'src/app/modules/common-core/models';
-import { map, switchMap, shareReplay, catchError, concatMap, take, timeout, finalize } from 'rxjs/operators';
+import { map, switchMap, shareReplay, catchError, concatMap, take, timeout, finalize, startWith } from 'rxjs/operators';
 import { OfflineSyncMeta } from '../../models/offline-sync-meta.interface';
 import moment from 'moment';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
@@ -9,6 +9,7 @@ import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.mode
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { getCacheAge } from '../cache-age';
 import { DatabaseService } from 'src/app/core/services/database/database.service';
+import version from 'src/environments/version.json';
 
 export interface ApiSyncOfflineBaseServiceOptions {
   useLangKeyAsDbKey: boolean;
@@ -24,6 +25,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
 
   public readonly data$: Observable<T>;
   private isUpdatingSubject = new BehaviorSubject<boolean>(false);
+  private refreshSubject = new Subject<void>();
 
   get isUpdating$(): Observable<boolean> {
     return this.isUpdatingSubject.asObservable();
@@ -51,9 +53,12 @@ export abstract class ApiSyncOfflineBaseService<T> {
   public update(): Observable<boolean> {
     this.isUpdatingSubject.next(true);
     return combineLatest([this.userSettingService.language$, this.userSettingService.appMode$]).pipe(
-      switchMap(([langKey, appMode]) => this.getUpdatedDataAndSaveResultIfSuccess(appMode, langKey)),
+      switchMap(([langKey, appMode]) => this.getUpdatedDataWithoutTimeout(appMode, langKey)),
       take(1),
-      map(() => true),
+      map(() => {
+        this.refreshSubject.next();
+        return true;
+      }),
       catchError((err) => {
         this.logger.log('Update failed', err, LogLevel.Warning, this.getDebugTag());
         return of(false);
@@ -63,11 +68,12 @@ export abstract class ApiSyncOfflineBaseService<T> {
   }
 
   /**
-   * Check if data is to old to use (cache time has expired)
+   * Check if data is to old to use
    * @param metaData cached offline data
    */
   protected isValid(metaData: OfflineSyncMeta<T>): boolean {
-    const valid = metaData && metaData.lastUpdated > this.getInvalidTime().unix();
+    const valid =
+      metaData && metaData.appVersion === version.version && metaData.lastUpdated > this.getInvalidTime().unix();
     this.logger.debug(
       `Offline data is ${valid ? 'valid -> returning offline data' : 'not valid -> Fetch new data'}`,
       this.getDebugTag(),
@@ -87,7 +93,11 @@ export abstract class ApiSyncOfflineBaseService<T> {
    * Get data observable
    */
   private getDataObservable(): Observable<T> {
-    return combineLatest([this.userSettingService.language$, this.userSettingService.appMode$]).pipe(
+    return combineLatest([
+      this.userSettingService.language$,
+      this.userSettingService.appMode$,
+      this.refreshSubject.pipe(startWith(undefined)),
+    ]).pipe(
       switchMap(([langKey, appMode]) => {
         try {
           return from(this.getOfflineDataAndReturnIfDataIsUpToDate(appMode, langKey)).pipe(
@@ -151,11 +161,28 @@ export abstract class ApiSyncOfflineBaseService<T> {
   }
 
   /**
-   * Get updated data and save result to offline storage if successful
+   * Get updated data and save result to offline storage if successful (with timeout for automatic fetches)
    */
   private getUpdatedDataAndSaveResultIfSuccess(appMode: AppMode, langKey: LangKey) {
     return this.getUpdatedData(appMode, langKey).pipe(
       timeout(this.FETCH_NEW_DATA_TIMEOUT),
+      switchMap((data) =>
+        from(this.saveDataToOfflineDb(appMode, langKey, data)).pipe(
+          catchError((err) => {
+            this.logger.error(err, this.getDebugTag(), 'Could not save data to offline storage');
+            return of(data);
+          }),
+          map(() => data)
+        )
+      )
+    );
+  }
+
+  /**
+   * Get updated data and save result to offline storage if successful (no timeout, for manual updates)
+   */
+  private getUpdatedDataWithoutTimeout(appMode: AppMode, langKey: LangKey) {
+    return this.getUpdatedData(appMode, langKey).pipe(
       switchMap((data) =>
         from(this.saveDataToOfflineDb(appMode, langKey, data)).pipe(
           catchError((err) => {
@@ -179,6 +206,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
     const meta: OfflineSyncMeta<T> = {
       id: this.getOfflineStorageDbKey(langKey),
       lastUpdated: moment().unix(),
+      appVersion: version.version,
       data,
     };
     const key = this.getOfflineDatabaseKey(appMode, langKey);
@@ -224,9 +252,9 @@ export abstract class ApiSyncOfflineBaseService<T> {
   private getOfflineDataOrFallbackToAssets(appMode: AppMode, langKey: LangKey): Observable<T> {
     return from(this.getOfflineData(appMode, langKey)).pipe(
       concatMap((offlineDataWithMetaData) => {
-        if (!offlineDataWithMetaData) {
+        if (!offlineDataWithMetaData || !this.isValid(offlineDataWithMetaData)) {
           this.logger.log(
-            'No data found in offline storage. Get fallback data',
+            'No valid data found in offline storage. Get fallback data',
             null,
             LogLevel.Warning,
             this.getDebugTag()
