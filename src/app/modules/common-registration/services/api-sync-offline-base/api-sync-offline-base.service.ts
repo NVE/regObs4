@@ -9,7 +9,7 @@ import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.mode
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { getCacheAge } from '../cache-age';
 import { DatabaseService } from 'src/app/core/services/database/database.service';
-import * as version from 'src/environments/version.json';
+import version from 'src/environments/version.json';
 
 export interface ApiSyncOfflineBaseServiceOptions {
   useLangKeyAsDbKey: boolean;
