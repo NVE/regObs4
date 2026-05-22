@@ -9,6 +9,7 @@ import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.mode
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { getCacheAge } from '../cache-age';
 import { DatabaseService } from 'src/app/core/services/database/database.service';
+import * as version from 'src/environments/version.json';
 
 export interface ApiSyncOfflineBaseServiceOptions {
   useLangKeyAsDbKey: boolean;
@@ -71,7 +72,8 @@ export abstract class ApiSyncOfflineBaseService<T> {
    * @param metaData cached offline data
    */
   protected isValid(metaData: OfflineSyncMeta<T>): boolean {
-    const valid = metaData && metaData.lastUpdated > this.getInvalidTime().unix();
+    const valid =
+      metaData && metaData.appVersion === version.version && metaData.lastUpdated > this.getInvalidTime().unix();
     this.logger.debug(
       `Offline data is ${valid ? 'valid -> returning offline data' : 'not valid -> Fetch new data'}`,
       this.getDebugTag(),
@@ -204,6 +206,7 @@ export abstract class ApiSyncOfflineBaseService<T> {
     const meta: OfflineSyncMeta<T> = {
       id: this.getOfflineStorageDbKey(langKey),
       lastUpdated: moment().unix(),
+      appVersion: version.version,
       data,
     };
     const key = this.getOfflineDatabaseKey(appMode, langKey);
@@ -249,9 +252,9 @@ export abstract class ApiSyncOfflineBaseService<T> {
   private getOfflineDataOrFallbackToAssets(appMode: AppMode, langKey: LangKey): Observable<T> {
     return from(this.getOfflineData(appMode, langKey)).pipe(
       concatMap((offlineDataWithMetaData) => {
-        if (!offlineDataWithMetaData) {
+        if (!offlineDataWithMetaData || !this.isValid(offlineDataWithMetaData)) {
           this.logger.log(
-            'No data found in offline storage. Get fallback data',
+            'No valid data found in offline storage. Get fallback data',
             null,
             LogLevel.Warning,
             this.getDebugTag()
