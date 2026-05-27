@@ -521,13 +521,6 @@ ion-toolbar {
   min-height: 55px;
 }
 
-// /* https://ionicframework.com/docs/intro/upgrading-to-ionic-6#modal */
-ion-modal.numeric-input-modal::part(content) {
-  --height: 470px;
-  position: fixed;
-  bottom: 0;
-}
-
 .leaflet-bottom {
   bottom: var(--leaflet-bottom, 0) !important;
   z-index: 800 !important;
