@@ -378,6 +378,10 @@ export const readParamsFromDoc = (doc: Document) => {
   };
 
   return {
+    geoHazard: () => {
+      const value = readValue(URL_PARAM_GEOHAZARD);
+      return value ? separatedStringToNumberArray(value) : undefined;
+    },
     nick: () => readValue(URL_PARAM_NICKNAME),
     fromTime: () => readDate(URL_PARAM_FROMDATE),
     toTime: () => readDate(URL_PARAM_TODATE, 'end'),

@@ -19,6 +19,7 @@ import { CRITERIA_SLUSH_FLOW } from './slush-flow';
 import { QueryParamsService } from '../query-params/query-params.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
+import { isGeoHazardValid } from './url-params';
 
 export type SearchCriteriaOrderBy = keyof Pick<RegistrationViewModel, 'DtObsTime' | 'DtChangeTime'>;
 
@@ -51,10 +52,31 @@ export class SearchCriteriaService {
   private daysBackUserSettings = toSignal(this.userSettingService.daysBackForCurrentGeoHazard$, { initialValue: 2 });
   daysBack = linkedSignal(() => this.daysBackUserSettings());
   private langKey = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
-  private geoHazards = toSignal(
-    // Vis alltid vær-observasjoner sammen med andre naturfarer
-    this.userSettingService.currentGeoHazard$.pipe(map((geohazards) => [...geohazards, GeoHazard.Weather]))
-  ); // TODO: Move to usersettings
+
+  // Konverter observable til signal (uten map-logikk)
+  private geoHazardsFromSettings = toSignal(this.userSettingService.currentGeoHazard$);
+
+  // Gjeldende naturfare. Bruker evt. filter satt i URL første gang, deretter leses valgt naturfare fra innstillinger
+  // Viser alltid vær-observasjoner sammen med andre naturfarer
+  // TODO: Move to usersettings
+  private geoHazards = linkedSignal<GeoHazard[] | undefined, GeoHazard[] | undefined>({
+    source: this.geoHazardsFromSettings,
+    computation: (fromSettings, previous) => {
+      // Observable har ikke sendt noe ennå
+      if (fromSettings === undefined) {
+        return previous?.value;
+      }
+      // Første reelle emisjon: URL-parameter vinner om den er gyldig
+      if (previous?.value === undefined) {
+        const fromUrl = this.queryParams.startup.geoHazard();
+        if (fromUrl && isGeoHazardValid(fromUrl)) {
+          return [...fromUrl, GeoHazard.Weather];
+        }
+      }
+      // Etterfølgende emisjoner (bruker bytter naturfare): bruk innstillinger
+      return [...fromSettings, GeoHazard.Weather];
+    },
+  });
 
   /**
    * Om dager tilbake, eller fra og til-dato skal ligge til grunn for
