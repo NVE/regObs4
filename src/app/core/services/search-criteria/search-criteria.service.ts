@@ -1,7 +1,7 @@
 import { Injectable, computed, effect, inject, linkedSignal, signal, untracked } from '@angular/core';
 import L from 'leaflet';
 import moment from 'moment';
-import { debounceTime, map } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import {
   PositionDto,
   RegistrationTypeCriteriaDto,
@@ -19,7 +19,6 @@ import { CRITERIA_SLUSH_FLOW } from './slush-flow';
 import { QueryParamsService } from '../query-params/query-params.service';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
-import { isGeoHazardValid } from './url-params';
 
 export type SearchCriteriaOrderBy = keyof Pick<RegistrationViewModel, 'DtObsTime' | 'DtChangeTime'>;
 
@@ -69,7 +68,7 @@ export class SearchCriteriaService {
       // Første reelle emisjon: URL-parameter vinner om den er gyldig
       if (previous?.value === undefined) {
         const fromUrl = this.queryParams.startup.geoHazard();
-        if (fromUrl && isGeoHazardValid(fromUrl)) {
+        if (fromUrl) {
           return [...fromUrl, GeoHazard.Weather];
         }
       }

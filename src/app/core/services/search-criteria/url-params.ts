@@ -5,6 +5,7 @@ import {
   WithinExtentCriteriaDto,
 } from 'src/app/modules/common-regobs-api';
 import { isSlushFlow } from './slush-flow';
+import { GeoHazard } from 'src/app/modules/common-core/models';
 
 export const URL_PARAM_NW_LAT = 'nwLat';
 export const URL_PARAM_NW_LON = 'nwLon';
@@ -300,7 +301,11 @@ function setDateParams(params: UrlParams, criteria: SearchCriteriaRequestDto, da
 
 export function toUrlParams(criteria: SearchCriteriaRequestDto, daysBack?: number): UrlParams {
   const params = new UrlParams();
-  params.set(URL_PARAM_GEOHAZARD, arrayToSeparatedString(criteria.SelectedGeoHazards));
+
+  // På grunn av hacket med at vær automatisk legges til i geoHazards uansett, må vi fjerne vær fra urlen, så det ikke blir dobbelt opp
+  const geoHazardsFilter = criteria.SelectedGeoHazards?.filter((h) => h !== GeoHazard.Weather);
+  params.set(URL_PARAM_GEOHAZARD, arrayToSeparatedString(geoHazardsFilter));
+
   params.set(URL_PARAM_NICKNAME, criteria.ObserverNickName);
   params.set(URL_PARAM_COMPETENCE, competenceFromDtoToUrl(criteria.ObserverCompetence));
   params.set(URL_PARAM_REGISTRATION_TYPE, convertRegTypeDtoToUrl(criteria.SelectedRegistrationTypes));
