@@ -223,9 +223,7 @@ export class UserSettingService extends NgDestoryBase implements OnReset {
         // NB: Hvis vi legger til filter for å skjule observasjoner fra naturfare vær, kanskje vi må revurdere/fjerne
         // dette filteret.
         .filter((x) => x !== GeoHazard.Weather);
-      if (isGeoHazardValid(geoHazards)) {
-        return geoHazards;
-      }
+      return geoHazards;
     }
     return null;
   }
