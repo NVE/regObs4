@@ -1,6 +1,5 @@
 :host {
-  display: block;
-  height: 100%;
+  display: contents;
 }
 
 ion-content {

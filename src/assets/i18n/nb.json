@@ -1100,7 +1100,8 @@
   "TABS": {
     "LIST": "Liste",
     "MAP": "Kart",
-    "WARNINGS": "Varsler"
+    "WARNINGS": "Varsler",
+    "IMAGES": "Bilder"
   },
   "TRIP": {
     "COMMENT_CAPTION": "Beskrivelse (obligatorisk)",
