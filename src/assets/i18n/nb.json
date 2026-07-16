@@ -1098,9 +1098,21 @@
     "WEAKENED_ICE_MAP_DESCRIPTION": "Svekket iskart"
   },
   "TABS": {
+    "ANALYSIS": "Analyse",
     "LIST": "Liste",
     "MAP": "Kart",
     "WARNINGS": "Varsler"
+  },
+  "ANALYSIS": {
+    "TIME_SLIDER_LABEL": "Aktiv dag:"
+  },
+  "ANALYSIS_FILTER": {
+    "TITLE": "Filter",
+    "TYPES": "Vis på kart",
+    "DANGER_SIGN": "Faretegn",
+    "AVALANCHE": "Skredhendelse",
+    "REFERENCE_DATE": "Referansedato",
+    "REFERENCE_DATE_HINT": "Viser observasjoner 14 dager tilbake fra denne datoen."
   },
   "TRIP": {
     "COMMENT_CAPTION": "Beskrivelse (obligatorisk)",

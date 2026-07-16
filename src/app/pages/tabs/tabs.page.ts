@@ -103,8 +103,11 @@ export class TabsPage {
 
   iconLayout = computed(() => (this.isDesktop() ? 'icon-start' : 'icon-top'));
 
+  isSnowSelected = computed(() => this.currentGeoHazardSubscription().includes(GeoHazard.Snow));
+  showAnalysisTab = computed(() => this.isDesktop() && !this.isNative);
+
   private async applyCurrentQueryParams(path: TABS | null) {
-    if (path == TABS.HOME || path == TABS.WARNING_LIST) {
+    if (path == TABS.HOME || path == TABS.WARNING_LIST || path == TABS.ANALYSIS) {
       await this.searchCriteriaService.applyQueryParams();
     } else if (path == TABS.OBSERVATION_LIST) {
       await this.searchCriteriaService.applyQueryParams(false);

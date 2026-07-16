@@ -1100,10 +1100,22 @@
     "WEAKENED_ICE_MAP_DESCRIPTION": "Weakened ice"
   },
   "TABS": {
+    "ANALYSIS": "Analyse",
     "LIST": "List",
     "MAP": "Map",
     "TRIPS": "Trips",
     "WARNINGS": "Warnings"
+  },
+  "ANALYSIS": {
+    "TIME_SLIDER_LABEL": "Active day:"
+  },
+  "ANALYSIS_FILTER": {
+    "TITLE": "Filter",
+    "TYPES": "Show on map",
+    "DANGER_SIGN": "Danger sign",
+    "AVALANCHE": "Avalanche",
+    "REFERENCE_DATE": "Reference date",
+    "REFERENCE_DATE_HINT": "Shows observations from the 14 days up to this date."
   },
   "TRIP": {
     "COMMENT_CAPTION": "Description (required)",
