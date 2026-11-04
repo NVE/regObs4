@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { KdvKey, RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';
 import {
@@ -42,6 +42,7 @@ import { addCircleOutline } from 'ionicons/icons';
   selector: 'app-danger-obs',
   templateUrl: './danger-obs.page.html',
   styleUrls: ['./danger-obs.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     EditImagesComponent,
     HeaderColorDirective,

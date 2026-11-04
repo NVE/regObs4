@@ -1,7 +1,7 @@
 /** @type { import('karma').ConfigOptions } */
 const configOptions = {
   basePath: '',
-  frameworks: ['jasmine', '@angular-devkit/build-angular'],
+  frameworks: ['jasmine'],
   port: 9876,
   browsers: ['ChromeHeadless'],
 };
@@ -16,7 +16,6 @@ module.exports = function (config) {
         require('karma-chrome-launcher'),
         require('karma-junit-reporter'),
         require('karma-coverage'),
-        require('@angular-devkit/build-angular/plugins/karma'),
       ],
       autoWatch: false,
       singleRun: true,
@@ -55,7 +54,6 @@ module.exports = function (config) {
         require('karma-chrome-launcher'),
         require('karma-jasmine-html-reporter'),
         require('karma-coverage'),
-        require('@angular-devkit/build-angular/plugins/karma'),
       ],
       client: {
         jasmine: {

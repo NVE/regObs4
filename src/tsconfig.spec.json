@@ -8,4 +8,12 @@
   },
   "files": ["test.ts", "nanosql.ts"],
   "include": ["**/*.spec.ts", "**/*.d.ts"]
+  // "angularCompilerOptions": {
+  //   "extendedDiagnostics": {
+  //     "checks": {
+  //       "nullishCoalescingNotNullable": "suppress",
+  //       "optionalChainNotNullable": "suppress"
+  //     }
+  //   }
+  // }
 }

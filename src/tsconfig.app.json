@@ -6,4 +6,12 @@
   },
   "include": ["**/*.d.ts", "**/*.ts", "environments/version.json"],
   "exclude": ["**/*.spec.ts", "test.ts", "**/*.worker.ts", "app/core/helpers/spied.ts", "global-polyfill.ts"]
+  // "angularCompilerOptions": {
+  //   "extendedDiagnostics": {
+  //     "checks": {
+  //       "nullishCoalescingNotNullable": "suppress",
+  //       "optionalChainNotNullable": "suppress"
+  //     }
+  //   }
+  // }
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../../base.page';
 import {
@@ -35,6 +35,7 @@ import { addCircleOutline } from 'ionicons/icons';
   selector: 'app-avalanche-activity',
   templateUrl: './avalanche-activity.page.html',
   styleUrls: ['./avalanche-activity.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     EditImagesComponent,
     HeaderColorDirective,

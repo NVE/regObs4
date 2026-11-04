@@ -1,5 +1,5 @@
 import { HttpClient, HttpResponse, HttpStatusCode } from '@angular/common/http';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject, map, switchMap, tap, withLatestFrom, finalize, take } from 'rxjs';
 import { UserSettingService } from '../../core/services/user-setting/user-setting.service';
 import { RegobsAuthService } from '../../modules/auth/services/regobs-auth.service';
@@ -41,6 +41,7 @@ const toDateInputValue = (date: Date) => {
   selector: 'app-obskorps',
   templateUrl: './obskorps.page.html',
   styleUrls: ['./obskorps.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AsyncPipe,
     HeaderComponent,

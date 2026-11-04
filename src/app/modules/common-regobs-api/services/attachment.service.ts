@@ -107,7 +107,7 @@ class AttachmentService extends __BaseService {
   }
 }
 
-module AttachmentService {
+namespace AttachmentService {
 
   /**
    * Parameters for AttachmentGet

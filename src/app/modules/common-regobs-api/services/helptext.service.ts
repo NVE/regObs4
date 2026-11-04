@@ -64,7 +64,7 @@ class HelptextService extends __BaseService {
   }
 }
 
-module HelptextService {
+namespace HelptextService {
 }
 
 export { HelptextService }

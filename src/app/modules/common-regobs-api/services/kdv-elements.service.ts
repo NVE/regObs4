@@ -78,7 +78,7 @@ class KdvElementsService extends __BaseService {
   }
 }
 
-module KdvElementsService {
+namespace KdvElementsService {
 
   /**
    * Parameters for KdvElementsGetKdvs

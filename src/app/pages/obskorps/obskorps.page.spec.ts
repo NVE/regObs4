@@ -6,8 +6,8 @@ import { RegobsAuthService } from 'src/app/modules/auth/services/regobs-auth.ser
 import { LoggedInUser } from 'src/app/modules/login/models/logged-in-user.model';
 import { MyPageData } from 'src/app/modules/common-regobs-api';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
-import { Component, NO_ERRORS_SCHEMA, input } from '@angular/core';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { Component, NO_ERRORS_SCHEMA, input, ChangeDetectionStrategy } from '@angular/core';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { provideTranslateService } from '@ngx-translate/core';
 import { AppMode } from 'src/app/modules/common-core/models';
@@ -17,6 +17,7 @@ import { provideRouter } from '@angular/router';
 @Component({
   selector: 'app-header',
   template: '',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [],
 })
 class AppHeaderStubComponent {
@@ -41,7 +42,7 @@ describe('ObskorpsPage', () => {
           useClass: AuthServiceStub,
         },
         { provide: UserSettingService, useValue: { appMode$: of(AppMode.Test) } },
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
         provideHttpClientTesting(),
         { provide: LoggingService, useClass: TestLoggingService },
         provideTranslateService(),

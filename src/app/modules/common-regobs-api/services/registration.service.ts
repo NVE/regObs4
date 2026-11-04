@@ -442,7 +442,7 @@ class RegistrationService extends __BaseService {
   }
 }
 
-module RegistrationService {
+namespace RegistrationService {
 
   /**
    * Parameters for RegistrationGet

@@ -142,7 +142,7 @@ class LocationService extends __BaseService {
   }
 }
 
-module LocationService {
+namespace LocationService {
 
   /**
    * Parameters for LocationWithinRadius

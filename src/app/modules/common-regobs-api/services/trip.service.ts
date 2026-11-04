@@ -128,7 +128,7 @@ class TripService extends __BaseService {
   }
 }
 
-module TripService {
+namespace TripService {
 }
 
 export { TripService }

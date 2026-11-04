@@ -167,7 +167,7 @@ class GeoCodeService extends __BaseService {
   }
 }
 
-module GeoCodeService {
+namespace GeoCodeService {
 
   /**
    * Parameters for GeoCodeLocationInfo

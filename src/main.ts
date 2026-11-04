@@ -3,7 +3,7 @@ import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { environment } from './environments/environment';
 import { NanoSql } from './nanosql';
 import '@angular/compiler';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { APP_PROVIDERS } from './app/app.providers';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -113,7 +113,7 @@ function startApp() {
       // TODO: Prøv igjen etter vi har rydda opp, fjerna alle moduler.
       provideRouter(routes, withComponentInputBinding()),
 
-      provideHttpClient(withInterceptorsFromDi()),
+      provideHttpClient(withXhr(), withInterceptorsFromDi()),
       ...APP_PROVIDERS,
       provideAnimations(),
     ],
