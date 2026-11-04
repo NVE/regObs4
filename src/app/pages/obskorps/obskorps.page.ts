@@ -22,7 +22,7 @@ import {
   IonButtons,
   IonMenuButton,
   IonRouterLink,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';

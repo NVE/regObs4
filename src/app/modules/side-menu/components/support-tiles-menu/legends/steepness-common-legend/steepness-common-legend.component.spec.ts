@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { SteepnessCommonLegendComponent } from './steepness-common-legend.component';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { provideIonicAngular } from '@ionic/angular';
 import { provideTranslateService } from '@ngx-translate/core';
 
 describe('SteepnessCommonLegendComponent', () => {

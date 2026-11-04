@@ -8,7 +8,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { IonGrid, IonIcon, IonRow, IonSpinner, ToastController } from '@ionic/angular/standalone';
+import { IonGrid, IonIcon, IonRow, IonSpinner, ToastController } from '@ionic/angular';
 import { Clipboard } from '@capacitor/clipboard';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { combineLatest, firstValueFrom, iif, Observable, of } from 'rxjs';

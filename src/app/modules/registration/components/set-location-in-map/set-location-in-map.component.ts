@@ -26,7 +26,7 @@ import {
   IonSpinner,
   IonToggle,
   Platform,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import L from 'leaflet';
 import 'leaflet-draw';

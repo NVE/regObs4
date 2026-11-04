@@ -47,7 +47,7 @@ import { settings } from '../../../settings';
 import { RegobsGeoHazardMarker } from '../map/core/classes/regobs-geohazard-marker';
 import { ITopoMapLayerOptions } from 'src/settings.model';
 import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
-import { isPlatform } from '@ionic/angular/standalone';
+import { isPlatform } from '@ionic/angular';
 import SphericalMercator from '@mapbox/sphericalmercator';
 import { MapLayersService, OfflineCapableMapLayersService } from './static-tiles.service';
 import { NgDestoryBase } from 'src/app/core/helpers/observable-helper';

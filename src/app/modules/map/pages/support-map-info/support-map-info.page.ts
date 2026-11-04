@@ -1,13 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  ModalController,
-} from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, ModalController } from '@ionic/angular';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { TranslatePipe } from '@ngx-translate/core';
 

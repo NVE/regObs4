@@ -8,15 +8,7 @@ import {
   signal,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import {
-  IonToolbar,
-  IonContent,
-  IonBackButton,
-  IonTitle,
-  IonHeader,
-  IonButtons,
-  isPlatform,
-} from '@ionic/angular/standalone';
+import { IonToolbar, IonContent, IonBackButton, IonTitle, IonHeader, IonButtons, isPlatform } from '@ionic/angular';
 import { GeoJSONService } from 'src/app/core/services/geojson/geojson.service';
 import { DatePipe } from '@angular/common';
 import 'nve-designsystem/components/nve-icon/nve-icon.component.js';

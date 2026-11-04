@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { IonGrid, IonRow, Platform } from '@ionic/angular/standalone';
+import { IonGrid, IonRow, Platform } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SvgIconComponent } from 'angular-svg-icon';
 

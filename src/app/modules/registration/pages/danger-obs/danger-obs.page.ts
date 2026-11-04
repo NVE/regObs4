@@ -14,7 +14,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { AddOrEditDangerObsModalPage } from './add-or-edit-danger-obs-modal/add-or-edit-danger-obs-modal.page';
 import { DangerObsEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription } from 'rxjs';

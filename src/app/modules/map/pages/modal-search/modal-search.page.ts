@@ -12,7 +12,7 @@ import {
   IonToolbar,
   ModalController,
   ViewDidEnter,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { MapSearchService } from '../../services/map-search/map-search.service';
 import { MapSearchResponse } from '../../services/map-search/map-search-response.model';
 import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';

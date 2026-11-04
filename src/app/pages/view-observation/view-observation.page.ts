@@ -13,7 +13,7 @@ import {
   IonButtons,
   IonChip,
   IonLabel,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import {
   Component,
   OnInit,

@@ -1,4 +1,4 @@
-import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular/standalone';
+import { IonGrid, IonRow, IonCol, IonLabel } from '@ionic/angular';
 import {
   Component,
   inject,

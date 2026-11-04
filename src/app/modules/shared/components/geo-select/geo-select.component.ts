@@ -1,4 +1,4 @@
-import { IonItem, IonFab, IonFabButton, IonList, IonLabel } from '@ionic/angular/standalone';
+import { IonItem, IonFab, IonFabButton, IonList, IonLabel } from '@ionic/angular';
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import { GeoHazard } from 'src/app/modules/common-core/models';

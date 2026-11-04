@@ -16,7 +16,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import L from 'leaflet';

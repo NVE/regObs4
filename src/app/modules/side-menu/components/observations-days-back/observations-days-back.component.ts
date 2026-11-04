@@ -4,7 +4,7 @@ import { GeoHazard } from 'src/app/modules/common-core/models';
 import { settings } from '../../../../../settings';
 import { SelectInterface } from '@ionic/core';
 import { Capacitor } from '@capacitor/core';
-import { IonSelect, IonSelectOption, SelectCustomEvent } from '@ionic/angular/standalone';
+import { IonSelect, IonSelectOption, SelectCustomEvent } from '@ionic/angular';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
 import { TranslatePipe } from '@ngx-translate/core';
 import { toSignal } from '@angular/core/rxjs-interop';

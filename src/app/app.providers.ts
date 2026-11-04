@@ -7,7 +7,7 @@ import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
-import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular/standalone';
+import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AuthService } from 'ionic-appauth';

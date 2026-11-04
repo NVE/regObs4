@@ -1,4 +1,4 @@
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import { Platforms } from '@ionic/core';
 import { ReplaySubject, of } from 'rxjs';
 import { provideTestLogger } from '../../../modules/shared/services/logging/test-logging.service';

@@ -1,4 +1,4 @@
-import { IonItem, IonIcon, IonList, IonLabel, IonFab, IonFabButton } from '@ionic/angular/standalone';
+import { IonItem, IonIcon, IonList, IonLabel, IonFab, IonFabButton } from '@ionic/angular';
 import { Component, inject, input, model, computed, ChangeDetectionStrategy } from '@angular/core';
 import { state, trigger, style, transition, animate, stagger, query } from '@angular/animations';
 import { GeoHazard } from 'src/app/modules/common-core/models';

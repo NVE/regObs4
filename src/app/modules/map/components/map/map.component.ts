@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import L from 'leaflet';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, fromEventPattern, Subject, timer } from 'rxjs';
 import { concatMap, distinctUntilChanged, filter, take, takeUntil, withLatestFrom } from 'rxjs/operators';

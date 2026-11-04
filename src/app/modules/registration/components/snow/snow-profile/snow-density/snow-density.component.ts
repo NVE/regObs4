@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular';
 import { SnowDensityModalPage } from './snow-density-modal/snow-density-modal.page';
 import { isEmpty } from 'src/app/modules/common-core/helpers';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';

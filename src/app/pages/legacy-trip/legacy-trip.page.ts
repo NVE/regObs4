@@ -20,7 +20,7 @@ import {
   IonToolbar,
   ModalController,
   NavController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { GeoHazard } from '../../modules/common-core/models';
 import { HelpModalPage } from '../../modules/registration/pages/modal-pages/help-modal/help-modal.page';

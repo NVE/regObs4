@@ -1,4 +1,4 @@
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import { StorageBackend, Requestor } from '@openid/appauth';
 import { AuthService, Browser } from 'ionic-appauth';
 import { inject } from '@angular/core';

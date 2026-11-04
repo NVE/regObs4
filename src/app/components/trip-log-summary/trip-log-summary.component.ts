@@ -1,4 +1,4 @@
-import { IonGrid, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
+import { IonGrid, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import moment from 'moment';

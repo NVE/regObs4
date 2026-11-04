@@ -10,7 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { map, Subject, switchMap, takeWhile, tap, timer } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MapLayersService, OfflineCapableMapLayersService } from '../static-map-image/static-tiles.service';
-import { isPlatform } from '@ionic/angular/standalone';
+import { isPlatform } from '@ionic/angular';
 
 export const START_ICON = '/assets/icon/map/GPS_start.svg';
 export const END_ICON = '/assets/icon/map/GPS_stop.svg';

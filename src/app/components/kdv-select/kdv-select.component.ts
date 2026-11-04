@@ -6,7 +6,7 @@ import { KdvKey } from 'src/app/modules/common-registration/registration.models'
 
 import { SelectComponent } from '../../modules/shared/components/input/select/select.component';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { IonItemOption, IonList } from '@ionic/angular/standalone';
+import { IonItemOption, IonList } from '@ionic/angular';
 
 type FilterFunc = (value: number) => boolean;
 

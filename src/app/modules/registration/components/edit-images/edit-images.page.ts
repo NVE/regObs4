@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input, model } from '@angular/core';
-import { IonButton, IonButtons, IonHeader, IonTitle, IonToolbar, ModalController } from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonHeader, IonTitle, IonToolbar, ModalController } from '@ionic/angular';
 import { RemoteOrLocalAttachmentEditModel } from 'src/app/core/services/draft/draft-model';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';

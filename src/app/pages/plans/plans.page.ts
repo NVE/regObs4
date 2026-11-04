@@ -1,5 +1,5 @@
-import { Platform } from '@ionic/angular';
-import { ToastController } from '@ionic/angular';
+import { Platform } from '@ionic/angular/lazy';
+import { ToastController } from '@ionic/angular/lazy';
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, signal } from '@angular/core';
 import {
   IonBackButton,
@@ -10,7 +10,7 @@ import {
   IonRouterLinkWithHref,
   IonTitle,
   IonToolbar,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import 'nve-designsystem/components/nve-button/nve-button.component.js';
 import 'nve-designsystem/components/nve-menu/nve-menu.component.js';

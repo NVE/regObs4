@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, ChangeDetectionStrategy } from '@angular/core';
-import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, IonText, ModalController } from '@ionic/angular';
 import { StratProfileModalPage } from './strat-profile-modal/strat-profile-modal.page';
 
 import { TranslatePipe } from '@ngx-translate/core';

@@ -15,7 +15,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { AvalancheEvalProblem2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';

@@ -9,7 +9,7 @@ import {
   IonRow,
   IonToolbar,
   NavController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { RegobsAuthService } from '../../../auth/services/regobs-auth.service';

@@ -1,4 +1,4 @@
-import { IonList } from '@ionic/angular/standalone';
+import { IonList } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';

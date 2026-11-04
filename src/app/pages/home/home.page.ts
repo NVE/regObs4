@@ -24,7 +24,7 @@ import {
   IonItem,
   IonToggle,
   ToggleCustomEvent,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Feature, Point } from 'geojson';
 import L from 'leaflet';

@@ -9,11 +9,11 @@ import {
   IonItem,
   IonItemOption,
   IonList,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { ActionSheetButton, PopoverOptions, SelectCustomEvent } from '@ionic/core';
 import { SelectOption } from './select-option.model';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import { UpperCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';

@@ -1,4 +1,4 @@
-import { IonGrid, IonItemDivider, IonRow, IonList, IonLabel } from '@ionic/angular/standalone';
+import { IonGrid, IonItemDivider, IonRow, IonList, IonLabel } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, map, takeUntil } from 'rxjs/operators';

@@ -1,4 +1,4 @@
-import { IonLabel } from '@ionic/angular/standalone';
+import { IonLabel } from '@ionic/angular';
 import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 
 import { SvgIconComponent } from 'angular-svg-icon';

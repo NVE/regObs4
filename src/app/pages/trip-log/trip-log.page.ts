@@ -10,7 +10,7 @@ import {
   IonFabButton,
   IonHeader,
   IonButtons,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';

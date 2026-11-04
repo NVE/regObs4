@@ -1,14 +1,6 @@
 import { Component, inject, viewChild, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { firstValueFrom, Subject } from 'rxjs';
-import {
-  IonButton,
-  IonCol,
-  IonGrid,
-  IonRefresher,
-  IonRefresherContent,
-  IonRow,
-  Platform,
-} from '@ionic/angular/standalone';
+import { IonButton, IonCol, IonGrid, IonRefresher, IonRefresherContent, IonRow, Platform } from '@ionic/angular';
 
 import { TranslatePipe } from '@ngx-translate/core';
 

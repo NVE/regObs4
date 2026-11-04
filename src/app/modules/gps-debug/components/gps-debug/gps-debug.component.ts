@@ -3,7 +3,7 @@ import { Observable, Subject, of } from 'rxjs';
 import { map, distinctUntilChanged, scan, filter, throttleTime, takeUntil, switchMap } from 'rxjs/operators';
 import { GeoPositionService } from '../../../../core/services/geo-position/geo-position.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
-import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular/standalone';
+import { IonContent, IonFab, IonFabButton, IonIcon } from '@ionic/angular';
 import { GeoPositionLog, PositionError } from '../../../../core/services/geo-position/geo-position-log.interface';
 import { GeoPositionErrorCode } from '../../../../core/services/geo-position/geo-position-error.enum';
 import { NgClass, AsyncPipe, DecimalPipe } from '@angular/common';

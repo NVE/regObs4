@@ -13,7 +13,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { TranslateService, TranslatePipe, TranslationObject } from '@ngx-translate/core';
 import { SelectOption } from '../../../../shared/components/input/select/select-option.model';

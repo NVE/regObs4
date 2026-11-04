@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserSettingService } from '../user-setting/user-setting.service';
 import { MapService } from '../../../modules/map/services/map/map.service';
 import { DataLoadService } from '../../../modules/data-load/services/data-load.service';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { DbHelperService } from '../db-helper/db-helper.service';
 import { LangKey, GeoHazard } from 'src/app/modules/common-core/models';

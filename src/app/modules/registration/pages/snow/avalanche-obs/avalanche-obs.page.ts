@@ -16,7 +16,7 @@ import {
   IonToggle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import L from 'leaflet';
 import moment from 'moment';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';

@@ -14,7 +14,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import moment from 'moment';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
 import { UpperCasePipe } from '@angular/common';

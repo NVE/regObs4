@@ -1,6 +1,6 @@
 import { Component, OnChanges, ChangeDetectionStrategy, OnInit, inject, input } from '@angular/core';
 import { ISummaryItem } from './summary-item.model';
-import { IonIcon, IonItem, IonLabel, NavController } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, NavController } from '@ionic/angular';
 import { map, distinctUntilChanged, Observable, ReplaySubject } from 'rxjs';
 import {
   AttachmentUploadEditModel,

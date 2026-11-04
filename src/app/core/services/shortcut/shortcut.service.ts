@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';
 import { TranslateService } from '@ngx-translate/core';
 import { LogLevel } from '../../../modules/shared/services/logging/log-level.model';

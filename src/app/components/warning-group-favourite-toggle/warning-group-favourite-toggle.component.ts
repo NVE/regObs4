@@ -14,7 +14,7 @@ import { WarningService } from '../../core/services/warning/warning.service';
 import { Subscription } from 'rxjs';
 import { WarningGroupKey } from '../../core/services/warning/warning-group-key.interface';
 import { TranslateService } from '@ngx-translate/core';
-import { DomController, IonIcon, ToastController } from '@ionic/angular/standalone';
+import { DomController, IonIcon, ToastController } from '@ionic/angular';
 import { NgClass } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { star } from 'ionicons/icons';

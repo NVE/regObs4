@@ -5,7 +5,7 @@ import { provideTestLogger } from 'src/app/modules/shared/services/logging/test-
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { NewAttachmentService } from 'src/app/modules/common-registration/registration.services';
 import { provideTranslateService } from '@ngx-translate/core';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { provideIonicAngular } from '@ionic/angular';
 import { provideRouter } from '@angular/router';
 import { SyncStatus } from 'src/app/modules/common-registration/registration.models';
 import { IceThicknessEditModel } from 'src/app/modules/common-regobs-api';

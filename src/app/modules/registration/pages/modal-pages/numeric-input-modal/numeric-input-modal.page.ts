@@ -11,7 +11,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { NumberHelper } from '../../../../../core/helpers/number-helper';
 
 import { TranslatePipe } from '@ngx-translate/core';

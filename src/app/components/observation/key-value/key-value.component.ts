@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { IonText } from '@ionic/angular/standalone';
+import { IonText } from '@ionic/angular';
 
 /**
  * Brukes i observasjonskort for å vise registreringsverdier som "tittel / nøkkel": "verdi"

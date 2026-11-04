@@ -11,7 +11,7 @@ import { HelperService } from 'src/app/core/services/helpers/helper.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { HttpClient } from '@angular/common/http';
-import { ToastController } from '@ionic/angular/standalone';
+import { ToastController } from '@ionic/angular';
 
 describe('MapCenterInfoComponent – visning av høyde og bratthet', () => {
   let component: MapCenterInfoComponent;

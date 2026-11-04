@@ -1,4 +1,4 @@
-import { IonSelect, IonItem, IonSelectOption, IonIcon, IonToggle, IonLabel } from '@ionic/angular/standalone';
+import { IonSelect, IonItem, IonSelectOption, IonIcon, IonToggle, IonLabel } from '@ionic/angular';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { SubTile, SupportTile, SupportTileStore } from '../../../../core/models/support-tile.model';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';

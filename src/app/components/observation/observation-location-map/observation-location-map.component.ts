@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { ModalController } from '@ionic/angular/standalone';
+import { ModalController } from '@ionic/angular';
 import L from 'leaflet';
 import { ImageLocation, ImageLocationStartStop } from 'src/app/core/models/image-location.model';
 import { AvalancheObsViewModel, LandslideViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';

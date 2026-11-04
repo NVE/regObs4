@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/angular/standalone';
+import { IonButton, IonCol, IonGrid, IonIcon, IonRow } from '@ionic/angular';
 import {
   ConfirmationModalService,
   PopupResponse,

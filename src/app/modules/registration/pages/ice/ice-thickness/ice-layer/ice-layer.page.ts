@@ -10,7 +10,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';
 import { KdvSelectComponent } from '../../../../../../components/kdv-select/kdv-select.component';

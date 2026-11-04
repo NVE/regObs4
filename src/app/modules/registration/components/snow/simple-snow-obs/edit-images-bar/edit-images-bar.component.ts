@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
-import { IonIcon, IonItem, IonLabel, ModalController } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, ModalController } from '@ionic/angular';
 import deepEqual from 'fast-deep-equal';
 import { map, Observable, distinctUntilChanged, combineLatest } from 'rxjs';
 import { attachmentsComparator } from 'src/app/core/helpers/attachment-comparator';

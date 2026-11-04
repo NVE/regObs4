@@ -30,7 +30,7 @@ import {
   IonTitle,
   IonToggle,
   IonToolbar,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import {
   ConfirmationModalService,
   PopupResponse,

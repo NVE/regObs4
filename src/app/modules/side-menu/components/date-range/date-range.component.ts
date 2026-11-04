@@ -2,7 +2,7 @@ import { Component, computed, inject, ChangeDetectionStrategy } from '@angular/c
 import { SearchCriteriaService } from '../../../../core/services/search-criteria/search-criteria.service';
 import { UserSettingService } from '../../../../core/services/user-setting/user-setting.service';
 import moment from 'moment';
-import { IonAccordion, IonItem, IonLabel, IonList } from '@ionic/angular/standalone';
+import { IonAccordion, IonItem, IonLabel, IonList } from '@ionic/angular';
 import { CheckDaysOrWeeksBackComponent } from '../check-days-or-weeks-back/check-days-or-weeks-back.component';
 import { ObservationsDaysBackComponent } from '../observations-days-back/observations-days-back.component';
 import { DatetimePickerComponent } from '../../../../components/datetime-picker/datetime-picker.component';

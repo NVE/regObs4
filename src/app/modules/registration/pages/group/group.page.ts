@@ -16,7 +16,7 @@ import {
   IonRadioGroup,
   IonTitle,
   IonToolbar,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 
 import { RegistrationContentWrapperComponent } from '../../components/registration-content-wrapper/registration-content-wrapper.component';

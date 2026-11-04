@@ -1,4 +1,4 @@
-import { IonIcon, IonSpinner, IonItem, IonLabel, IonRouterLink } from '@ionic/angular/standalone';
+import { IonIcon, IonSpinner, IonItem, IonLabel, IonRouterLink } from '@ionic/angular';
 import { Component, ChangeDetectionStrategy, input, computed } from '@angular/core';
 import { SyncStatus } from '../../../../modules/common-registration/registration.models';
 import {

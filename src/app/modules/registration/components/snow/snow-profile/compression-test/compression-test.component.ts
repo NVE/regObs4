@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { CompressionTestListModalPage } from './compression-test-list-modal/compression-test-list-modal.page';
-import { IonIcon, IonItem, IonLabel, ModalController } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, ModalController } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle } from 'ionicons/icons';

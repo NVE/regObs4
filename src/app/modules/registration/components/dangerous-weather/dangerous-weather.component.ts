@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, input } from '@angular/core';
-import { IonList, IonListHeader, IonLabel, IonItemDivider } from '@ionic/angular/standalone';
+import { IonList, IonListHeader, IonLabel, IonItemDivider } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { TextCommentComponent } from '../../components/text-comment/text-comment.component';
 import { EditImagesComponent } from '../../components/edit-images/edit-images.component';

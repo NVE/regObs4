@@ -18,7 +18,7 @@ import {
   IonSegmentButton,
   SegmentCustomEvent,
   IonTitle,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { HeaderComponent } from '../../modules/shared/components/header/header.component';
 import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';
 import { NgTemplateOutlet } from '@angular/common';

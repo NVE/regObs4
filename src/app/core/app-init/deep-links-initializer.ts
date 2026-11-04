@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { NavController, Platform } from '@ionic/angular/standalone';
+import { NavController, Platform } from '@ionic/angular';
 import { AuthService } from 'ionic-appauth';
 import { App } from '@capacitor/app';
 

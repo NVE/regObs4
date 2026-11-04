@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NumericInputComponent } from './numeric-input.component';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { provideIonicAngular } from '@ionic/angular';
 import { provideTranslateService } from '@ngx-translate/core';
 
 describe('NumericInputComponent', () => {

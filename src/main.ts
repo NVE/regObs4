@@ -8,7 +8,7 @@ import { APP_PROVIDERS } from './app/app.providers';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { provideIonicAngular, IonicRouteStrategy, isPlatform } from '@ionic/angular/standalone';
+import { provideIonicAngular, IonicRouteStrategy, isPlatform } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage-angular';
 import { Drivers } from '@ionic/storage';
 import { settings } from './settings';

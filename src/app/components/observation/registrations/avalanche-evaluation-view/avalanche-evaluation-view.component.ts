@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { injectKdv } from 'src/app/modules/common-registration/services/kdv/inject-kdv';
 import { AvalancheEvaluation3ViewModel } from 'src/app/modules/common-regobs-api';
 import { KeyValueComponent } from '../../key-value/key-value.component';
-import { IonText } from '@ionic/angular/standalone';
+import { IonText } from '@ionic/angular';
 
 const IconConfig: Record<number, string> = {
   0: 'assets/images/danger-scale/Icon-Avalanche-Danger-Level-No-Rating-EAWS.svg',

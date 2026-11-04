@@ -25,7 +25,7 @@ import {
   IonToolbar,
   LoadingController,
   NavController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { KdvService } from '../../modules/common-registration/registration.services';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import * as version from '../../../environments/version.json';

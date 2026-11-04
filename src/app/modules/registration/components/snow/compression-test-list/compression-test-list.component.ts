@@ -1,14 +1,6 @@
 import { Component, inject, input, model, ChangeDetectionStrategy, computed } from '@angular/core';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
-import {
-  IonIcon,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonNote,
-  ModalController,
-} from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonNote, ModalController } from '@ionic/angular';
 import { CompressionTestModalPage } from './compression-test-modal/compression-test-modal.page';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';

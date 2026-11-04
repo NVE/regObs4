@@ -12,7 +12,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { catchError, map, tap } from 'rxjs/operators';
 import {
   RegistrationViewModel,

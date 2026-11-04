@@ -1,14 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import L from 'leaflet';
-import {
-  IonBackButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  NavController,
-} from '@ionic/angular/standalone';
+import { IonBackButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, NavController } from '@ionic/angular';
 import {
   ObsLocationEditModel,
   ObsLocationsResponseDtoV2,

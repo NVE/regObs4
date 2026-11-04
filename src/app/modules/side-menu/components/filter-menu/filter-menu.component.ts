@@ -14,7 +14,7 @@ import {
   SearchbarCustomEvent,
   IonContent,
   IonListHeader,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';

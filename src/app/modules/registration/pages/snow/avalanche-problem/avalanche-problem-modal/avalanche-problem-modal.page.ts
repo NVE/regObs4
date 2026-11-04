@@ -13,7 +13,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { KdvService } from 'src/app/modules/common-registration/registration.services';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';

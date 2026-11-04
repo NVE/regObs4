@@ -1,4 +1,4 @@
-import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
+import { IonIcon, IonFabButton, IonFab } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FullscreenService } from '../../../../../core/services/fullscreen/fullscreen.service';
 import { toSignal } from '@angular/core/rxjs-interop';

@@ -9,7 +9,7 @@ import {
   IonIcon,
   IonCard,
   IonButton,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';

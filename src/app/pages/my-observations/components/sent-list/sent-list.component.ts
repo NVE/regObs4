@@ -18,7 +18,7 @@ import {
   IonLabel,
   IonList,
   IonRow,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { BehaviorSubject, combineLatest, Observable, Subject, Subscription } from 'rxjs';
 import { distinctUntilChanged, map, scan, startWith, takeUntil, tap } from 'rxjs/operators';
 import { AddUpdateDeleteRegistrationService } from '../../../../core/services/add-update-delete-registration/add-update-delete-registration.service';

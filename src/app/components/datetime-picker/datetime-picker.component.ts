@@ -9,7 +9,7 @@ import {
   computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { IonDatetime, IonDatetimeButton, IonModal, Platform } from '@ionic/angular/standalone';
+import { IonDatetime, IonDatetimeButton, IonModal, Platform } from '@ionic/angular';
 import { DatetimePresentation } from '@ionic/core/components';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';

@@ -1,4 +1,4 @@
-import { CheckboxCustomEvent, IonAccordion, IonCheckbox, IonItem, IonList, IonLabel } from '@ionic/angular/standalone';
+import { CheckboxCustomEvent, IonAccordion, IonCheckbox, IonItem, IonList, IonLabel } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, Signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { distinctUntilChanged, map, Observable, switchMap, tap } from 'rxjs';

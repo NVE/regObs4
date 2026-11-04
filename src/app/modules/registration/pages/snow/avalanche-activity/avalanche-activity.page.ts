@@ -14,7 +14,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { AvalancheActivityModalPage } from './avalanche-activity-modal/avalanche-activity-modal.page';
 import { AvalancheActivityObs2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { Subscription, combineLatest } from 'rxjs';

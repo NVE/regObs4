@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input } from '@angular/core';
-import { IonIcon, ModalController, ToastController } from '@ionic/angular/standalone';
+import { IonIcon, ModalController, ToastController } from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Capacitor } from '@capacitor/core';
 import { Share } from '@capacitor/share';

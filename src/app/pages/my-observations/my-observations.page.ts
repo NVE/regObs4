@@ -10,7 +10,7 @@ import {
   IonRow,
   IonTitle,
   IonToolbar,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { SentListComponent } from './components/sent-list/sent-list.component';
 import { HeaderColorDirective } from '../../modules/shared/directives/header-color/header-color.directive';
 import { RefreshWithCancelComponent } from '../../modules/shared/components/refresh-with-cancel/refresh-with-cancel.component';

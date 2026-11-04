@@ -1,4 +1,4 @@
-import { IonItem, IonButton, IonLabel } from '@ionic/angular/standalone';
+import { IonItem, IonButton, IonLabel } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, inject, input, model, effect } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';

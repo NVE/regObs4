@@ -1,4 +1,4 @@
-import { IonIcon } from '@ionic/angular/standalone';
+import { IonIcon } from '@ionic/angular';
 import { Component, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
 import { getGeohazardsId, getIconForGeohazards } from './get-geo-icon';

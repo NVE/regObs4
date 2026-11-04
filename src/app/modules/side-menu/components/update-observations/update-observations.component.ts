@@ -1,4 +1,4 @@
-import { IonItem, IonSpinner, IonText, IonLabel, IonIcon } from '@ionic/angular/standalone';
+import { IonItem, IonSpinner, IonText, IonLabel, IonIcon } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { settings } from '../../../../../settings';
 import { UpdateObservationsService } from './update-observations.service';

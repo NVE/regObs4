@@ -16,7 +16,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { SetAvalanchePositionPage } from '../../set-avalanche-position/set-avalanche-position.page';
 import L from 'leaflet';
 import moment from 'moment';

@@ -25,7 +25,7 @@ import {
   IonToggle,
   NavController,
   IonRouterLink,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import version from '../../../../environments/version.json';

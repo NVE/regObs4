@@ -39,7 +39,7 @@ import {
   createCriticalLayers,
   groupTestsByY,
 } from './plot';
-import { Platform } from '@ionic/angular';
+import { Platform } from '@ionic/angular/lazy';
 import { createSnowProfileLayerFormatter } from './formatters';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { injectSnowProfileKdvs } from './kdvs';

@@ -17,7 +17,7 @@ import {
   IonRefresherContent,
   LoadingController,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { tap, combineLatest, map, firstValueFrom } from 'rxjs';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 import { SearchRegistrationService } from 'src/app/core/services/search-registration/search-registration.service';

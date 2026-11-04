@@ -1,4 +1,4 @@
-import { IonItem, IonIcon, IonSpinner, IonText, IonLabel, IonRouterLink } from '@ionic/angular/standalone';
+import { IonItem, IonIcon, IonSpinner, IonText, IonLabel, IonRouterLink } from '@ionic/angular';
 import { Component, OnInit, OnDestroy, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

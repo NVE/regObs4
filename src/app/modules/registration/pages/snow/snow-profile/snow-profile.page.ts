@@ -13,7 +13,7 @@ import {
   IonToolbar,
   IonModal,
   IonButton,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SelectOption } from 'src/app/modules/shared/components/input/select/select-option.model';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';

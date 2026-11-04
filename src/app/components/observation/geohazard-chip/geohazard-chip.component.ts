@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input } from '@angular/core';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { getIconForGeohazards } from 'src/app/modules/shared/components/geo-icon/get-geo-icon';
-import { IonChip, IonIcon, IonLabel } from '@ionic/angular/standalone';
+import { IonChip, IonIcon, IonLabel } from '@ionic/angular';
 import { GeoHelperService } from 'src/app/modules/shared/services/geo-helper/geo-helper.service';
 
 @Component({

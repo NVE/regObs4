@@ -14,7 +14,7 @@ import {
   IonProgressBar,
   Platform,
   ToastController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import {
   Camera,
   CameraResultType,

@@ -10,7 +10,7 @@ import {
   IonList,
   IonHeader,
   IonButtons,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
