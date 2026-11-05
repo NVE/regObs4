@@ -111,7 +111,7 @@ export class SentListComponent implements OnInit, OnDestroy {
     this.error$.next(false);
 
     if (this.registrationsSubscription != null) {
-      this.registrationsSubscription.unsubscribe;
+      this.registrationsSubscription.unsubscribe();
     }
 
     this.userSettingService.language$.pipe(takeUntil(this.ngDestroy$)).subscribe((langKey) => {

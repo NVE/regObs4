@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { TestBed, inject } from '@angular/core/testing';
 import { WarningService } from './warning.service';
 import { HttpClient } from '@angular/common/http';
@@ -23,13 +23,13 @@ describe('WarningService', () => {
   let service: WarningService;
 
   beforeEach(() => {
-    httpClient = <HttpClient>{};
-    userSettingService = <UserSettingService>{};
-    mapService = <MapService>{};
-    dataLoadService = <DataLoadService>{};
-    platform = <Platform>{};
-    loggingService = <LoggingService>{};
-    dbHelperService = <DbHelperService>{};
+    httpClient = {} as HttpClient;
+    userSettingService = {} as UserSettingService;
+    mapService = {} as MapService;
+    dataLoadService = {} as DataLoadService;
+    platform = {} as Platform;
+    loggingService = {} as LoggingService;
+    dbHelperService = {} as DbHelperService;
     // httpClient = jasmine.createSpyObj('HttpClient', { _: true });
     // userSettingService = jasmine.createSpyObj('UserSettingService', { _: true });
     // mapService = jasmine.createSpyObj('MapService', { _: true });

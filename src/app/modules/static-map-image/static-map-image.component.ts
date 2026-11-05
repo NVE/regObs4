@@ -309,14 +309,12 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
     let w = 0;
     let diffWidth = 0;
     let diffHeight = 0;
-    let boundsWidth = 0;
-    let boundsHeight = 0;
     while (zoom) {
       [w, n] = this.mercator.px([minLng, maxLat], zoom);
       [e, s] = this.mercator.px([maxLng, minLat], zoom);
 
-      boundsHeight = s - n + PADDING * 2;
-      boundsWidth = e - w + PADDING * 2;
+      const boundsHeight = s - n + PADDING * 2;
+      const boundsWidth = e - w + PADDING * 2;
       diffWidth = width - boundsWidth;
       diffHeight = height - boundsHeight;
 
@@ -461,8 +459,8 @@ export class StaticMapImageComponent extends NgDestoryBase implements AfterViewI
 
   private getMercatorPointsFromPolygonsLatLng(polygons: LatLng[], zoom: number): LatLng[] {
     const points: LatLng[] = [];
-    for (let i = 0; i < polygons.length; i++) {
-      const [xA, yA] = this.mercator.px([polygons[i].lng, polygons[i].lat], zoom);
+    for (const polygon of polygons) {
+      const [xA, yA] = this.mercator.px([polygon.lng, polygon.lat], zoom);
       points.push(new LatLng(xA, yA));
     }
     // adding first point one more time to close the path

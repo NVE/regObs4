@@ -9,6 +9,7 @@ import {
   model,
   viewChild,
   ChangeDetectionStrategy,
+  AfterViewInit,
 } from '@angular/core';
 import { IonFabButton, IonIcon, ModalController, IonChip } from '@ionic/angular';
 import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
@@ -45,7 +46,7 @@ const DEBUG_TAG = 'ImageCarousel';
     SnowProfileComponent,
   ],
 })
-export class ObservationImageCarouselComponent {
+export class ObservationImageCarouselComponent implements AfterViewInit {
   readonly swiper = viewChild<ElementRef<SwiperContainer>>('swiper');
   private modalController = inject(ModalController);
   private router = inject(Router);

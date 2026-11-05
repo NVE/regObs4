@@ -133,7 +133,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   private translateService = inject(TranslateService);
   private logger = inject(LoggingService);
 
-  readonly regId = input.required({ transform: numberAttribute, alias: 'id' });
+  readonly regId = input.required({ transform: numberAttribute });
 
   readonly langKey = toSignal(this.userSettingService.language$, { initialValue: LangKey.nb });
   userCompetenceUrl = toSignal(this.userSettingService.userCompetenceUrl$, { initialValue: '' });
@@ -320,7 +320,7 @@ export class ViewObservationPage extends NgDestoryBase implements OnInit {
   getRegistrationTypeName(geoHazardId: number | undefined, typeId: number): string {
     const unknownRegistrationType = 'Ukjent skjema';
     if (!geoHazardId || !typeId) return unknownRegistrationType;
-    if (!this.registrationTypesV() == undefined) return unknownRegistrationType;
+    if (!this.registrationTypesV()) return unknownRegistrationType;
     const typesForHazard = this.registrationTypesV()?.[geoHazardId];
     if (!typesForHazard) return unknownRegistrationType;
 

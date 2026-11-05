@@ -48,7 +48,7 @@
             <app-key-value [key]="'REGISTRATION.CARD.TIME.REGISTERED' | translate">
               <time [dateTime]="reg.DtRegTime">{{ reg.DtRegTime | date: "short" }}</time>
             </app-key-value>
-            @if (reg.DtChangeTime != reg.DtRegTime) {
+            @if (reg.DtChangeTime !== reg.DtRegTime) {
               <app-key-value [key]="'REGISTRATION.CARD.TIME.UPDATED' | translate">
                 <time [dateTime]="reg.DtChangeTime">{{ reg.DtChangeTime | date: "short" }}</time>
               </app-key-value>

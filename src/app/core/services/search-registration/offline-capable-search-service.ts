@@ -125,7 +125,6 @@ export class OfflineCapableSearchService extends SearchService {
     combineLatest([this.userSettings.appMode$, this.userSettings.language$, this.updateObsService.refreshRequested$])
       .pipe(takeUntil(this.sqlite.hasCrashed$))
       .subscribe(() => {
-        this.lastSyncTime$;
         const syncRequest = this.triggerSync();
         this.importantSync$ = syncRequest;
       });

@@ -42,7 +42,7 @@ import { KdvService } from 'src/app/modules/common-registration/registration.ser
 import { SLUSH_FLOW_ID } from 'src/app/core/services/search-criteria/slush-flow';
 
 // Return true if not changed
-export function arrayHasNotChanged<T>(prev: Immutable<Array<T>>, curr: Immutable<Array<T>>) {
+export function arrayHasNotChanged<T>(prev: Immutable<T[]>, curr: Immutable<T[]>) {
   if (prev.length !== curr.length) {
     return false;
   }
