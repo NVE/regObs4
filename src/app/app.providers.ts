@@ -3,9 +3,7 @@ import { EnvironmentProviders, ErrorHandler, LOCALE_ID, Provider, inject, provid
 import { Router, RouteReuseStrategy } from '@angular/router';
 import { DeviceOrientation } from '@awesome-cordova-plugins/device-orientation/ngx';
 import { EmailComposer } from '@awesome-cordova-plugins/email-composer/ngx';
-import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
-import { SafariViewController } from '@awesome-cordova-plugins/safari-view-controller/ngx';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { IonicRouteStrategy, isPlatform, NavController, Platform } from '@ionic/angular';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
@@ -89,8 +87,6 @@ export const APP_PROVIDERS: (Provider | EnvironmentProviders)[] = [
     deps: [TranslateService],
   },
   DeviceOrientation,
-  InAppBrowser,
-  SafariViewController,
   WebView,
   EmailComposer,
   SQLite,

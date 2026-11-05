@@ -25,7 +25,6 @@ import { ViewInfo } from '../../services/map-search/view-info.model';
 import { Capacitor } from '@capacitor/core';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
-import { HttpClient } from '@angular/common/http';
 import { booleanPointInPolygon } from '@turf/turf';
 import { NORWAY_BOUNDS } from 'src/app/core/helpers/leaflet/norway-bounds';
 import { DecimalPipe } from '@angular/common';
@@ -38,6 +37,24 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 const DEBUG_TAG = 'MapCenterInfoComponent';
 const LOCATION_INFO_REQUEST_TIMEOUT = 10_000;
+const YR_URLS = {
+  nb: {
+    home: 'https://www.yr.no/',
+    forecast: 'https://www.yr.no/nb/værvarsel/daglig-tabell',
+  },
+  nn: {
+    home: 'https://www.yr.no/nn',
+    forecast: 'https://www.yr.no/nn/vêrvarsel/dagleg-tabell',
+  },
+  en: {
+    home: 'https://www.yr.no/en',
+    forecast: 'https://www.yr.no/en/forecast/daily-table',
+  },
+} as const;
+
+function formatCoordinate(coordinate: number): string {
+  return coordinate.toFixed(3);
+}
 
 @Component({
   selector: 'app-map-center-info',
@@ -55,7 +72,6 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private helperService = inject(HelperService);
   private loggingService = inject(LoggingService);
   private externalLinkService = inject(ExternalLinkService);
-  private http = inject(HttpClient);
   private userSettingService = inject(UserSettingService);
 
   private lastUserPos?: L.LatLng; //Remember last gps position to avoid adjusting altitude when device dont' move
@@ -77,6 +93,23 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
   private readonly serverAltitude = signal<number | undefined>(undefined); // korrigert høyde fra API
 
   readonly userAltitude = computed(() => this.serverAltitude() ?? this.userPos()?.coords?.altitude ?? undefined);
+
+  /**
+   * Url til yr for dette kartsenteret.
+   *
+   * Se https://hjelp.yr.no/hc/no/articles/4407688081426-Slik-bruker-du-koordinatsøket-for-hav-og-kyst
+   */
+  readonly yrUrl = computed(() => {
+    const lang = this.translateService.currentLang;
+    const latLng = this.mapCenter();
+    const urls = YR_URLS[lang as keyof typeof YR_URLS] ?? YR_URLS.en;
+
+    if (!latLng) return urls.home;
+
+    const latitude = formatCoordinate(latLng.lat);
+    const longitude = formatCoordinate(latLng.lng);
+    return `${urls.forecast}/${latitude},${longitude}`;
+  });
 
   readonly distance = computed(() => {
     const pos = this.userPos();
@@ -216,57 +249,11 @@ export class MapCenterInfoComponent extends NgDestoryBase implements OnInit {
     toast.present();
   }
 
-  async loadYrClick(event: MouseEvent) {
+  loadYr(event: MouseEvent) {
     // siden vi bruker aux for å støtte midtklikk på mus, må vi sikre at auxclick ikke blir kalt for høyreklikk
     if (event.button == 2) return;
     event.stopPropagation();
     event.preventDefault();
-    const center = this.mapCenter();
-    if (center != null) {
-      await this.loadYr(center.lat, center.lng);
-    }
-  }
-
-  async loadYr(lat: number, lon: number) {
-    interface YrSearch {
-      totalResults: number;
-      _embedded: {
-        location: {
-          id: string;
-        }[];
-      };
-    }
-
-    const yrApiUrl = `https://www.yr.no/api/v0/locations/search?language=nb&lat=${lat}&lon=${lon}&accuracy=100000`;
-
-    try {
-      const response = await firstValueFrom(this.http.get<YrSearch>(yrApiUrl, { observe: 'response' }));
-      const apiResponse = response.body;
-
-      if (!apiResponse || !apiResponse.totalResults) {
-        throw new Error('loadYr: No results found');
-      }
-
-      const id = apiResponse._embedded.location[0].id;
-      const url =
-        {
-          nb: `https://www.yr.no/nb/v%C3%A6rvarsel/daglig-tabell/${id}`,
-          nn: `https://www.yr.no/nn/v%C3%AArvarsel/dagleg-tabell/${id}`,
-        }[this.translateService.currentLang] || `https://www.yr.no/en/forecast/daily-table/${id}`;
-
-      this.externalLinkService.openExternalLink(url);
-    } catch {
-      await this.toastOnYrError();
-    }
-  }
-
-  private async toastOnYrError() {
-    const toastText = await firstValueFrom(this.translateService.get('MAP_CENTER_INFO.WEATHER_ERROR'));
-    const toast = await this.toastController.create({
-      message: toastText,
-      mode: 'md',
-      duration: 2000,
-    });
-    toast.present();
+    this.externalLinkService.openExternalLink(this.yrUrl());
   }
 }

@@ -23,14 +23,12 @@ import {
   IonSelect,
   IonSelectOption,
   IonToggle,
-  NavController,
   IonRouterLink,
 } from '@ionic/angular';
 import { TopoMap } from '../../../core/models/topo-map.enum';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import version from '../../../../environments/version.json';
 import { LangKey } from 'src/app/modules/common-core/models';
-import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
 import { PopoverOptions, SelectInterface } from '@ionic/core';
 import { FileLoggingService } from 'src/app/modules/shared/services/logging/file-logging.service';
 import { Capacitor } from '@capacitor/core';
@@ -82,8 +80,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class SideMenuComponent implements OnInit, OnDestroy {
   private userSettingService = inject(UserSettingService);
   private translateService = inject(TranslateService);
-  private navController = inject(NavController);
-  private externalLinkService = inject(ExternalLinkService);
   private fileLoggingService = inject(FileLoggingService);
   private cdr = inject(ChangeDetectorRef);
   legalUrl = toSignal(this.userSettingService.legalUrl$, { initialValue: '' });

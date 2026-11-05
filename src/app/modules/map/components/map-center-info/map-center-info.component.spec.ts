@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { NEVER, of } from 'rxjs';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { firstValueFrom, NEVER, of } from 'rxjs';
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
+import L from 'leaflet';
 import { MapCenterInfoComponent } from './map-center-info.component';
 import { MapService } from '../../services/map/map.service';
 import { MapSearchService } from '../../services/map-search/map-search.service';
@@ -10,7 +11,6 @@ import { UserSettingService } from 'src/app/core/services/user-setting/user-sett
 import { HelperService } from 'src/app/core/services/helpers/helper.service';
 import { LoggingService } from 'src/app/modules/shared/services/logging/logging.service';
 import { ExternalLinkService } from 'src/app/core/services/external-link/external-link.service';
-import { HttpClient } from '@angular/common/http';
 import { ToastController } from '@ionic/angular';
 
 describe('MapCenterInfoComponent – visning av høyde og bratthet', () => {
@@ -36,7 +36,6 @@ describe('MapCenterInfoComponent – visning av høyde og bratthet', () => {
         { provide: HelperService, useValue: { getDistanceText: () => '' } },
         { provide: LoggingService, useValue: { debug: (_msg: unknown) => undefined } },
         { provide: ExternalLinkService, useValue: {} },
-        { provide: HttpClient, useValue: {} },
         { provide: ToastController, useValue: {} },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -103,5 +102,12 @@ describe('MapCenterInfoComponent – visning av høyde og bratthet', () => {
   it('viser ingenting når verken høyde eller bratthet er satt', () => {
     setValues(undefined, undefined);
     expect(getElevationSteepnessRow()).toBeNull();
+  });
+
+  it('formaterer koordinatene i Yr-lenken med tre desimaler', async () => {
+    await firstValueFrom(TestBed.inject(TranslateService).use('nb'));
+    component.mapCenter.set(new L.LatLng(59.1239, -4.5679));
+
+    expect(component.yrUrl()).toBe('https://www.yr.no/nb/værvarsel/daglig-tabell/59.124,-4.568');
   });
 });
