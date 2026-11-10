@@ -1,66 +1,66 @@
 {
-  "appId": "no.nve.regobs4",
-  "appName": "Varsom",
-  "webDir": "www/browser",
-  "server": {
-    "iosScheme": "ionic"
-  },
-  "plugins": {
-    "StatusBar": {
-      "backgroundColor": "#00425f",
-      "style": "DARK",
-      "overlaysWebView": false
-    },
-    "SystemBars": {
-      "insetsHandling": "css",
-      "style": "DEFAULT",
-      "hidden": false,
-      "animation": "NONE"
-    },
-    "SplashScreen": {
-      "launchAutoHide": false
-    },
-    "Keyboard": {
-      "resize": "ionic",
-      "resizeOnFullScreen": true,
-      "style": "DEFAULT"
-    }
-  },
-  "cordova": {
-    "preferences": {
-      "ScrollEnabled": "false",
-      "android-minSdkVersion": "24",
-      "android-compileSdkVersion": "36",
-      "android-build-tool": "30.0.3",
-      "android-targetSdkVersion": "36",
-      "BackupWebStorage": "none",
-      "SplashMaintainAspectRatio": "true",
-      "AutoHideSplashScreen": "true",
-      "SplashShowOnlyFirstTime": "false",
-      "SplashScreen": "screen",
-      "SplashScreenDelay": "3000",
-      "FadeSplashScreenDuration": "300",
-      "AndroidLaunchMode": "singleTask",
-      "AndroidPersistentFileLocation": "Compatibility",
-      "WKWebViewOnly": "true",
-      "ResolveServiceWorkerRequests": "true",
-      "AndroidXEnabled": "true"
-    }
-  },
-  "packageClassList": [
-    "CapacitorSQLitePlugin",
-    "AppPlugin",
-    "CAPBrowserPlugin",
-    "CAPCameraPlugin",
-    "ClipboardPlugin",
-    "DevicePlugin",
-    "FilesystemPlugin",
-    "GeolocationPlugin",
-    "KeyboardPlugin",
-    "CAPNetworkPlugin",
-    "SharePlugin",
-    "SplashScreenPlugin",
-    "StatusBarPlugin",
-    "CDVPlugin"
-  ]
+	"appId": "no.nve.regobs4",
+	"appName": "Varsom",
+	"webDir": "www/browser",
+	"server": {
+		"iosScheme": "ionic"
+	},
+	"plugins": {
+		"StatusBar": {
+			"backgroundColor": "#00425f",
+			"style": "DARK",
+			"overlaysWebView": false
+		},
+		"SystemBars": {
+			"insetsHandling": "css",
+			"style": "DEFAULT",
+			"hidden": false,
+			"animation": "NONE"
+		},
+		"SplashScreen": {
+			"launchAutoHide": false
+		},
+		"Keyboard": {
+			"resize": "ionic",
+			"resizeOnFullScreen": true,
+			"style": "DEFAULT"
+		}
+	},
+	"cordova": {
+		"preferences": {
+			"ScrollEnabled": "false",
+			"android-minSdkVersion": "24",
+			"android-compileSdkVersion": "36",
+			"android-build-tool": "30.0.3",
+			"android-targetSdkVersion": "36",
+			"BackupWebStorage": "none",
+			"SplashMaintainAspectRatio": "true",
+			"AutoHideSplashScreen": "true",
+			"SplashShowOnlyFirstTime": "false",
+			"SplashScreen": "screen",
+			"SplashScreenDelay": "3000",
+			"FadeSplashScreenDuration": "300",
+			"AndroidLaunchMode": "singleTask",
+			"AndroidPersistentFileLocation": "Compatibility",
+			"WKWebViewOnly": "true",
+			"ResolveServiceWorkerRequests": "true",
+			"AndroidXEnabled": "true"
+		}
+	},
+	"packageClassList": [
+		"CapacitorSQLitePlugin",
+		"AppPlugin",
+		"CAPBrowserPlugin",
+		"CAPCameraPlugin",
+		"ClipboardPlugin",
+		"DevicePlugin",
+		"FilesystemPlugin",
+		"GeolocationPlugin",
+		"KeyboardPlugin",
+		"CAPNetworkPlugin",
+		"SharePlugin",
+		"SplashScreenPlugin",
+		"StatusBarPlugin",
+		"CDVPlugin"
+	]
 }
