@@ -23,7 +23,7 @@ export class ExternalLinkService {
     }
   }
 
-  private ensureCorrectUrl(url: string) {
+  ensureCorrectUrl(url: string) {
     if (url !== null) {
       if (VALID_URL_PROTOCOLS.some((validProtocol) => url.toLowerCase().startsWith(validProtocol))) {
         return url;
