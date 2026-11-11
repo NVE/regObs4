@@ -19,8 +19,8 @@ export async function writeTranslationFile(path: string, translations: string) {
 // created by "Jor" and edited by "Michael Geary".
 // License: https://creativecommons.org/licenses/by-sa/4.0/.
 export function JSONstringifyOrder(obj: Translations) {
-  const allKeys = [];
-  const seen = {};
+  const allKeys: string[] = [];
+  const seen: Record<string, null> = {};
   JSON.stringify(obj, (key, value) => {
     if (!(key in seen)) {
       allKeys.push(key);
