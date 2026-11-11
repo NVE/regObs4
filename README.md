@@ -108,16 +108,8 @@ Kjør appen fra XCode.
 
 Pipelinen `pipelines/regobs-mobile-app-build-release.yml` håndterer bygging og pushing av appen til [App Store Connect](https://appstoreconnect.apple.com/) for iOS og
 [Google Play Console](https://play.google.com/console) for android.
-For at pipelinen skal trigges må det pushes en ny release-branch med navn `release/vx.x.x`.
-For eksempel `release/v4.0.0`.
 
-```bash
-git switch develop
-git pull
-git switch -c release/v4.0.0
-git push release/v4.0.0
-```
-
+Pipelinen trigges fra develop hver natt, eller kan settes i gang manuelt fra Azure Devops.
 Nytt bygg vil publiseres til interne testere via Testflight-appen på iOS og via Google Play automatisk.
 
 **Du må selv legge til release-notes og beskrive hva som skal testes manuelt i App Store Connect / Google Play Console
