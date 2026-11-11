@@ -68,12 +68,3 @@ steps:
     condition: succeededOrFailed()
     inputs:
       testResultsFiles: '**/TESTS-*.xml'
-
-  - task: PublishCodeCoverageResults@1
-    displayName: 'Publish code coverage from **/cobertura-coverage.xml'
-    condition: succeededOrFailed()
-    inputs:
-      codeCoverageTool: Cobertura
-      summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
-      reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
-      failIfCoverageEmpty: true

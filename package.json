@@ -17,7 +17,7 @@
     "cap:sync": "jetify && cap sync",
     "test": "ng test --watch false --reporters progress",
     "test-watch": "ng test --watch=true --browsers Chrome --reporters kjhtml",
-    "test-ci": "cross-env-shell CI_TEST=1 ng test --code-coverage",
+    "test-ci": "cross-env-shell CI_TEST=1 ng test --browsers ChromeHeadless --watch false",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "update-packages": "ncu -u & npm install",
