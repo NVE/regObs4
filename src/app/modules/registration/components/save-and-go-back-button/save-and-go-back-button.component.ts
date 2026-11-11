@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, ChangeDetectionStrategy, inject, input } from '@angular/core';
-import { IonButton, IonCol, IonGrid, IonRow, NavController } from '@ionic/angular/standalone';
+import { IonButton, IonCol, IonGrid, IonRow, NavController } from '@ionic/angular';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { SvgIconComponent } from 'angular-svg-icon';
 import { TranslatePipe } from '@ngx-translate/core';

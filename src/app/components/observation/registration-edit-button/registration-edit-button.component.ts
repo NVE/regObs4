@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, inject, input, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IonButton, IonIcon, IonSpinner } from '@ionic/angular/standalone';
+import { IonButton, IonIcon, IonSpinner } from '@ionic/angular';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { RegistrationService, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,7 +10,7 @@ import { LoggingService } from 'src/app/modules/shared/services/logging/logging.
 import { HttpErrorResponse } from '@angular/common/http';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular/standalone';
+import { AlertController } from '@ionic/angular';
 import {
   ConfirmationModalService,
   PopupResponse,

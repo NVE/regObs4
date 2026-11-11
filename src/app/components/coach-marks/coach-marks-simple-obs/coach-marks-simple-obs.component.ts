@@ -1,4 +1,4 @@
-import { IonToggle, IonText, IonLabel } from '@ionic/angular/standalone';
+import { IonToggle, IonText, IonLabel } from '@ionic/angular';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { distinctUntilChanged, map, merge, Observable, Subject } from 'rxjs';

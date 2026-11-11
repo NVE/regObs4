@@ -55,11 +55,17 @@ steps:
       provProfileSecureFile: 'appledistribution20251211.mobileprovision'
 
   - task: NodeTool@0
-    displayName: 'Use Node 25.x'
+    displayName: 'Use Node 22.x'
     inputs:
       versionSource: 'spec'
-      versionSpec: 24.x
+      versionSpec: 22.23.2
       checkLatest: false
+
+  - task: Npm@1
+    displayName: 'Update npm'
+    inputs:
+      command: custom
+      customCommand: 'install npm@^12.2.2 -g'
 
   # Needed to sign Android apk/aab
   - task: DownloadSecureFile@1

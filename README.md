@@ -4,15 +4,8 @@ This is the Varsom RegObs app version 4. It is based on code from version 3 but 
 
 ## Installation
 
-1. Installer node v20.19.x (.msi-fil for
-   Windows) **
-   Ikke nyere eller
-   eldre versjon**
-2. Sjekk at `npm --version` viser v10 **Ikke nyere eller eldre versjon**
-3. [Installer git](https://git-scm.com/download/win)
-4. Clone repo (`git clone https://github.com/NVE/regObs4.git`)
-5. Install packages (`npm install`)
-6. Lag versjonsfil (`npm run create-version-file`)
+1. Install packages (`npm install`)
+2. Lag versjonsfil (`npm run create-version-file`)
 
 ## Debug and test on device
 
@@ -115,16 +108,8 @@ Kjør appen fra XCode.
 
 Pipelinen `pipelines/regobs-mobile-app-build-release.yml` håndterer bygging og pushing av appen til [App Store Connect](https://appstoreconnect.apple.com/) for iOS og
 [Google Play Console](https://play.google.com/console) for android.
-For at pipelinen skal trigges må det pushes en ny release-branch med navn `release/vx.x.x`.
-For eksempel `release/v4.0.0`.
 
-```bash
-git switch develop
-git pull
-git switch -c release/v4.0.0
-git push release/v4.0.0
-```
-
+Pipelinen trigges fra develop hver natt, eller kan settes i gang manuelt fra Azure Devops.
 Nytt bygg vil publiseres til interne testere via Testflight-appen på iOS og via Google Play automatisk.
 
 **Du må selv legge til release-notes og beskrive hva som skal testes manuelt i App Store Connect / Google Play Console

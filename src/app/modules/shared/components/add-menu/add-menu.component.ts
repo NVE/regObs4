@@ -11,7 +11,7 @@ import {
   IonList,
   NavController,
   Platform,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { add, create } from 'ionicons/icons';

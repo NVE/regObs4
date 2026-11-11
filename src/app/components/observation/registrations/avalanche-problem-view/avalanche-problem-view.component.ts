@@ -5,7 +5,7 @@ import { AvalancheEvalProblem2ViewModel } from 'src/app/modules/common-regobs-ap
 import { KeyValueComponent } from '../../key-value/key-value.component';
 import { ExposedHeightComponent } from '../../graphics/exposed-height/exposed-height.component';
 import { ExpositionComponent } from '../../graphics/exposition/exposition.component';
-import { IonText } from '@ionic/angular/standalone';
+import { IonText } from '@ionic/angular';
 
 @Component({
   selector: 'app-avalanche-problem-view',

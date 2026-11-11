@@ -12,6 +12,12 @@
       }
     },
     {
+      "files": ["src/index.html"],
+      "options": {
+        "parser": "html"
+      }
+    },
+    {
       "files": ["*.page.html"],
       "options": {
         "parser": "angular"

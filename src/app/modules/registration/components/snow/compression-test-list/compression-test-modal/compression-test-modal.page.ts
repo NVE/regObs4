@@ -11,7 +11,7 @@ import {
   IonToolbar,
   ModalController,
   IonFooter,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { CompressionTestEditModel } from 'src/app/modules/common-regobs-api/models';
 import { SelectOption } from '../../../../../shared/components/input/select/select-option.model';
 import { HeaderColorDirective } from '../../../../../shared/directives/header-color/header-color.directive';

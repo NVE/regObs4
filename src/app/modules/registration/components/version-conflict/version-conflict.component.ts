@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, input } from '@angular/core';
-import { IonIcon, IonItem, IonLabel, IonList, NavController } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, IonList, NavController } from '@ionic/angular';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { DraftToRegistrationService } from 'src/app/core/services/draft/draft-to-registration.service';

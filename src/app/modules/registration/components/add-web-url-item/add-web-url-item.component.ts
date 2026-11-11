@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, input, model } from '@angular/core';
-import { IonIcon, IonItem, ModalController } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, ModalController } from '@ionic/angular';
 import { AddWebUrlModalPage } from '../../pages/add-web-url-modal/add-web-url-modal.page';
 import { UrlViewModel } from 'src/app/modules/common-regobs-api/models';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { addCircleOutline } from 'ionicons/icons';
-import { IonButton } from '@ionic/angular/standalone';
+import { IonButton } from '@ionic/angular';
 
 @Component({
   selector: 'app-add-web-url-item',

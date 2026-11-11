@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { IonApp, IonMenu, IonRouterOutlet, Platform } from '@ionic/angular/standalone';
+import { IonApp, IonMenu, IonRouterOutlet, Platform } from '@ionic/angular';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { UserSettingService } from './core/services/user-setting/user-setting.service';
 import { DataMarshallService } from './core/services/data-marshall/data-marshall.service';

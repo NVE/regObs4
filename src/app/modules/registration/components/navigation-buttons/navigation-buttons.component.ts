@@ -1,4 +1,4 @@
-import { IonGrid, IonRow, IonCol, IonIcon, IonText, IonButton } from '@ionic/angular/standalone';
+import { IonGrid, IonRow, IonCol, IonIcon, IonText, IonButton } from '@ionic/angular';
 import { Component, OnInit, inject, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { SummaryItemService } from '../../services/summary-item.service';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';

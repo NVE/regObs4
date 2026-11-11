@@ -1,14 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, inject, viewChild, input, ChangeDetectionStrategy } from '@angular/core';
 import '@geoman-io/leaflet-geoman-free';
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  ModalController,
-} from '@ionic/angular/standalone';
+import { IonButton, IonButtons, IonContent, IonHeader, IonTitle, IonToolbar, ModalController } from '@ionic/angular';
 import { TranslateService, TranslatePipe, TranslationObject } from '@ngx-translate/core';
 import L from 'leaflet';
 import { Observable, Subject } from 'rxjs';

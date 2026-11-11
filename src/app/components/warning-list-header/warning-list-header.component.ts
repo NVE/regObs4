@@ -1,6 +1,6 @@
 import { Component, inject, input, ChangeDetectionStrategy } from '@angular/core';
 import moment from 'moment';
-import { IonCol, IonGrid, IonLabel, IonRow, Platform } from '@ionic/angular/standalone';
+import { IonCol, IonGrid, IonLabel, IonRow, Platform } from '@ionic/angular';
 import { NgTemplateOutlet } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 

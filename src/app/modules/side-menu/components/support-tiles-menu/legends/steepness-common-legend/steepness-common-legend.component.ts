@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, input } from '@angular/core';
-import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular/standalone';
+import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular';
 import { SupportMapInfoPage } from '../../../../../map/pages/support-map-info/support-map-info.page';
 
 import { TranslatePipe } from '@ngx-translate/core';

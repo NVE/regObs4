@@ -1,7 +1,15 @@
 {
   "compilerOptions": {
+    "types": [
+      "node",
+      "manifest-android"
+    ],
     "module": "commonjs",
-    "typeRoots": ["./node_modules/@types", "./typings"],
+    "esModuleInterop": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./typings"
+    ],
     "resolveJsonModule": true
   }
 }

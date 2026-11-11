@@ -1,7 +1,7 @@
 /** @type { import('karma').ConfigOptions } */
 const configOptions = {
   basePath: '',
-  frameworks: ['jasmine', '@angular-devkit/build-angular'],
+  frameworks: ['jasmine'],
   port: 9876,
   browsers: ['ChromeHeadless'],
 };
@@ -15,31 +15,30 @@ module.exports = function (config) {
         require('karma-jasmine'),
         require('karma-chrome-launcher'),
         require('karma-junit-reporter'),
-        require('karma-coverage'),
-        require('@angular-devkit/build-angular/plugins/karma'),
+        // require('karma-coverage'),
       ],
       autoWatch: false,
       singleRun: true,
       client: {
         captureConsole: false,
       },
-      reporters: ['junit', 'coverage'],
-      coverageReporter: {
-        dir: '../coverage',
-        subdir: '.',
-        reporters: [{ type: 'html' }, { type: 'lcovonly' }, { type: 'cobertura' }],
-        includeAllSources: true,
-        fixWebpackSourcePaths: true,
-        exclude: ['**/app/modules/common-regobs-api/**'],
-        // check: {
-        //   global: {
-        //     statements: 50,
-        //     branches: 50,
-        //     functions: 50,
-        //     lines: 50
-        //   }
-        // }
-      },
+      reporters: ['junit'],
+      // coverageReporter: {
+      //   dir: '../coverage',
+      //   subdir: '.',
+      //   reporters: [{ type: 'html' }, { type: 'lcovonly' }, { type: 'cobertura' }],
+      //   includeAllSources: true,
+      //   fixWebpackSourcePaths: true,
+      //   exclude: ['**/app/modules/common-regobs-api/**'],
+      //   // check: {
+      //   //   global: {
+      //   //     statements: 50,
+      //   //     branches: 50,
+      //   //     functions: 50,
+      //   //     lines: 50
+      //   //   }
+      //   // }
+      // },
       junitReporter: {
         outputDir: 'test-reports',
         suite: '',
@@ -54,8 +53,7 @@ module.exports = function (config) {
         require('karma-jasmine'),
         require('karma-chrome-launcher'),
         require('karma-jasmine-html-reporter'),
-        require('karma-coverage'),
-        require('@angular-devkit/build-angular/plugins/karma'),
+        // require('karma-coverage'),
       ],
       client: {
         jasmine: {
@@ -66,11 +64,11 @@ module.exports = function (config) {
       jasmineHtmlReporter: {
         suppressAll: true, // removes the duplicated traces
       },
-      coverageReporter: {
-        dir: '../coverage',
-        subdir: '.',
-        reporters: [{ type: 'html' }],
-      },
+      // coverageReporter: {
+      //   dir: '../coverage',
+      //   subdir: '.',
+      //   reporters: [{ type: 'html' }],
+      // },
       reporters: ['progress', 'kjhtml'],
       colors: true,
       logLevel: config.LOG_INFO,

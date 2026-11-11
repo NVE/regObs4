@@ -6,7 +6,7 @@ import {
   IonInfiniteScrollContent,
   IonRefresher,
   IonRefresherContent,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { combineLatest, map, tap } from 'rxjs';
 import { ObservationComponent } from 'src/app/components/observation/observation/observation.component';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';

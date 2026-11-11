@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import {
   combineLatest,
   exhaustMap,

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, NavController } from '@ionic/angular/standalone';
+import { AlertController, NavController } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import { AuthActions, AuthService } from 'ionic-appauth';
 import { BehaviorSubject, firstValueFrom, lastValueFrom, merge, Observable, of, Subject } from 'rxjs';

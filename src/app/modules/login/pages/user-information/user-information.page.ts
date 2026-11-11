@@ -26,7 +26,7 @@ import {
   IonToolbar,
   ModalController,
   ToastController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { EditPictureInfoModalComponent } from '../../../edit-picture-info-modal/edit-picture-info-modal.component';
 import { Router } from '@angular/router';
 import { AsyncPipe } from '@angular/common';

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import { firstValueFrom, Subject, Subscription } from 'rxjs';
 import { settings } from '../../../../settings';
 import { RegobsAuthService } from '../../../modules/auth/services/regobs-auth.service';

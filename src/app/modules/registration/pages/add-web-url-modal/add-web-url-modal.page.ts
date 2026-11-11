@@ -12,7 +12,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { UrlEditModel } from 'src/app/modules/common-regobs-api/models';
 import { HeaderColorDirective } from '../../../shared/directives/header-color/header-color.directive';
 import { TextCommentComponent } from '../../components/text-comment/text-comment.component';

@@ -15,7 +15,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { SnowTempLayerModalPage } from '../snow-temp-layer-modal/snow-temp-layer-modal.page';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { HeaderColorDirective } from '../../../../../../shared/directives/header-color/header-color.directive';

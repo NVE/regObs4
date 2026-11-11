@@ -20,7 +20,7 @@ import {
   IonItemSliding,
   IonLabel,
   IonRow,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { WarningGroup } from '../../core/services/warning/warning-group.model';
 import { GeoHazard, LangKey } from 'src/app/modules/common-core/models';
 import { settings } from '../../../settings';

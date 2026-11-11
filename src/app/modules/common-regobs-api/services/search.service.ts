@@ -477,7 +477,7 @@ class SearchService extends __BaseService {
   }
 }
 
-module SearchService {
+namespace SearchService {
 
   /**
    * Parameters for SearchGetSearchCriteria

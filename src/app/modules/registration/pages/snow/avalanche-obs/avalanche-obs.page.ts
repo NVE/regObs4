@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   IonBackButton,
   IonButton,
@@ -16,7 +16,7 @@ import {
   IonToggle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import L from 'leaflet';
 import moment from 'moment';
 import { IncidentValidation } from 'src/app/core/helpers/incident-validation';
@@ -52,6 +52,7 @@ import { time, location, chevronForward } from 'ionicons/icons';
   selector: 'app-avalanche-obs',
   templateUrl: './avalanche-obs.page.html',
   styleUrls: ['./avalanche-obs.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     AddWebUrlItemComponent,
     DatetimePickerComponent,

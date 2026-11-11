@@ -1,4 +1,4 @@
-import { IonIcon, IonFabButton, IonFab } from '@ionic/angular/standalone';
+import { IonIcon, IonFabButton, IonFab } from '@ionic/angular';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { MapService } from '../../../services/map/map.service';
 import { addIcons } from 'ionicons';

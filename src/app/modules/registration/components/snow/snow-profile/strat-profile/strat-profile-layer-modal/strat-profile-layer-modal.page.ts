@@ -24,7 +24,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { StratProfileLayerEditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { SelectOption } from '../../../../../../shared/components/input/select/select-option.model';

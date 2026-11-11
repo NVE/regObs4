@@ -1,4 +1,4 @@
-import { IonItem, IonCheckbox } from '@ionic/angular/standalone';
+import { IonItem, IonCheckbox } from '@ionic/angular';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { SearchCriteriaService } from 'src/app/core/services/search-criteria/search-criteria.service';
 

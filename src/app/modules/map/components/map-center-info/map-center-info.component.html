@@ -76,7 +76,13 @@ NB! Root elements in this view has positon: absolute..
     }
 
     <ion-row name="weather-link-row">
-      <a class="weather-link" href="#" (auxclick)="loadYrClick($event)" (click)="loadYrClick($event)">
+      <a
+        class="weather-link"
+        [attr.href]="yrUrl()"
+        target="_blank"
+        (auxclick)="loadYr($event)"
+        (click)="loadYr($event)"
+      >
         {{ "MAP_CENTER_INFO.WEATHER_FROM" | translate }}
         <ion-icon src="/assets/icon/yry.svg" class="yr-icon yr-y"></ion-icon>
         <ion-icon src="/assets/icon/yrr.svg" class="yr-icon yr-r"></ion-icon>

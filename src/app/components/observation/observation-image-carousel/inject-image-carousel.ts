@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { ModalController } from '@ionic/angular/standalone';
+import { ModalController } from '@ionic/angular';
 import { RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { ObservationImageCarouselComponent } from './observation-image-carousel.component';
 import { CarouselItems } from './models';

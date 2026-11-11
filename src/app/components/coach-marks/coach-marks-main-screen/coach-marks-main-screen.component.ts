@@ -1,4 +1,4 @@
-import { IonTabBar, IonLabel, IonTabButton, IonIcon, IonFabButton, IonText, IonFab } from '@ionic/angular/standalone';
+import { IonTabBar, IonLabel, IonTabButton, IonIcon, IonFabButton, IonText, IonFab } from '@ionic/angular';
 import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { UserSettingService } from '../../../core/services/user-setting/user-setting.service';
 import { Observable, Subject, merge } from 'rxjs';

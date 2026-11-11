@@ -7,7 +7,7 @@ import stringify from 'json-stringify-safe';
 import { RegistrationDraft, RegistrationDraftErrorCode } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { firstValueFrom } from 'rxjs';
-import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, Platform } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, IonList, IonListHeader, Platform } from '@ionic/angular';
 import { isAndroidOrIos } from '../../../../core/helpers/ionic/platform-helper';
 
 import { VersionConflictComponent } from '../version-conflict/version-conflict.component';

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, input } from '@angular/core';
-import { IonChip, IonIcon, IonLabel, ModalController } from '@ionic/angular/standalone';
+import { IonChip, IonIcon, IonLabel, ModalController } from '@ionic/angular';
 import { AttachmentViewModel, RegistrationViewModel } from 'src/app/modules/common-regobs-api';
 import { addIcons } from 'ionicons';
 import {

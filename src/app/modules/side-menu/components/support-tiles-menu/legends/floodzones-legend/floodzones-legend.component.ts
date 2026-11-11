@@ -1,4 +1,4 @@
-import { IonGrid, IonRow, IonCol } from '@ionic/angular/standalone';
+import { IonGrid, IonRow, IonCol } from '@ionic/angular';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 

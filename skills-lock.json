@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "angular-developer": {
+      "source": "angular/skills",
+      "sourceType": "github",
+      "skillPath": "angular-developer/SKILL.md",
+      "computedHash": "06f89c855e544fe306e8e08cae83a667e54fbb81509e8a1e631bff308f268cbd"
+    }
+  }
+}

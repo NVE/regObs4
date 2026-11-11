@@ -1,4 +1,4 @@
-import { IonSpinner } from '@ionic/angular/standalone';
+import { IonSpinner } from '@ionic/angular';
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';

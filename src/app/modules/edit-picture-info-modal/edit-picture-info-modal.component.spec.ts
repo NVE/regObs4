@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditPictureInfoModalComponent } from './edit-picture-info-modal.component';
 import { provideTranslateService } from '@ngx-translate/core';
-import { provideIonicAngular } from '@ionic/angular/standalone';
+import { provideIonicAngular } from '@ionic/angular';
 
 describe('EditPictureInfoModalComponent', () => {
   let component: EditPictureInfoModalComponent;

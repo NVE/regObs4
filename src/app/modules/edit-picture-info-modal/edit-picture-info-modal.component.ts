@@ -10,7 +10,7 @@ import {
   IonHeader,
   IonContent,
   IonButtons,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';

@@ -8,7 +8,7 @@ import {
   IonList,
   IonHeader,
   IonButtons,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../base.page';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';

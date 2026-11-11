@@ -19,7 +19,7 @@ import {
   IonToggle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { SnowDensityLayerModalPage } from '../snow-density-layer-modal/snow-density-layer-modal.page';
 import { ItemReorderEventDetail } from '@ionic/core';

@@ -1,4 +1,4 @@
-import { IonToolbar, IonBackButton, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular/standalone';
+import { IonToolbar, IonBackButton, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular';
 import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
 import { FullscreenService } from '../../../../core/services/fullscreen/fullscreen.service';
 import { TripLoggerService } from '../../../../core/services/trip-logger/trip-logger.service';

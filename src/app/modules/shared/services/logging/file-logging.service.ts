@@ -29,7 +29,7 @@
 
 import { formatDate } from '@angular/common';
 import { Injectable, inject } from '@angular/core';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import _ from 'lodash';
 import { ILogProviderConfig } from './file-logging.config';
 import { EmailComposer, EmailComposerOptions } from '@awesome-cordova-plugins/email-composer/ngx';

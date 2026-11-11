@@ -44,7 +44,7 @@ import { AddUpdateDeleteRegistrationService } from '../add-update-delete-registr
 import { NetworkStatusService } from '../network-status/network-status.service';
 import { SqliteService } from '../sqlite/sqlite.service';
 import { UserSettingService } from '../user-setting/user-setting.service';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 
 type SyncRequest = Subject<void>;
 type CurrentSyncInfo = { appMode: AppMode; langKey: LangKey };
@@ -125,7 +125,6 @@ export class OfflineCapableSearchService extends SearchService {
     combineLatest([this.userSettings.appMode$, this.userSettings.language$, this.updateObsService.refreshRequested$])
       .pipe(takeUntil(this.sqlite.hasCrashed$))
       .subscribe(() => {
-        this.lastSyncTime$;
         const syncRequest = this.triggerSync();
         this.importantSync$ = syncRequest;
       });

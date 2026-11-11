@@ -7,7 +7,7 @@ import {
   IonButtons,
   AlertController,
   NavController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { BasePage } from '../base.page';

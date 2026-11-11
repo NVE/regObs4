@@ -98,7 +98,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/water/set-flood-area/set-flood-area.page').then((m) => m.SetFloodAreaPage),
   },
   {
-    path: ':id',
+    path: ':regId',
     loadComponent: () =>
       import('src/app/pages/view-observation/view-observation.page').then((m) => m.ViewObservationPage),
   },

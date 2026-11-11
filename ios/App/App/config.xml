@@ -18,21 +18,12 @@
     <param name="ios-package" value="APPEmailComposer"/>
   </feature>
 
-  <feature name="InAppBrowser">
-    <param name="ios-package" value="CDVWKInAppBrowser"/>
-    <param name="onload" value="true"/>
-  </feature>
-
-  <feature name="SafariViewController">
-    <param name="ios-package" value="SafariViewController"/>
-  </feature>
-
   
   <preference name="ScrollEnabled" value="false" />
   <preference name="android-minSdkVersion" value="24" />
-  <preference name="android-compileSdkVersion" value="35" />
+  <preference name="android-compileSdkVersion" value="36" />
   <preference name="android-build-tool" value="30.0.3" />
-  <preference name="android-targetSdkVersion" value="35" />
+  <preference name="android-targetSdkVersion" value="36" />
   <preference name="BackupWebStorage" value="none" />
   <preference name="SplashMaintainAspectRatio" value="true" />
   <preference name="AutoHideSplashScreen" value="true" />

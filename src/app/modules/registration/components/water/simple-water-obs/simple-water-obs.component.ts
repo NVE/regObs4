@@ -10,7 +10,7 @@ import {
   untracked,
   ValueEqualityFn,
 } from '@angular/core';
-import { IonIcon, IonItem, IonLabel, IonList, IonText, NavController } from '@ionic/angular/standalone';
+import { IonIcon, IonItem, IonLabel, IonList, IonText, NavController } from '@ionic/angular';
 import { RegistrationDraft } from 'src/app/core/services/draft/draft-model';
 import { DraftRepositoryService } from 'src/app/core/services/draft/draft-repository.service';
 import { isObservationModelEmptyForRegistrationTid } from 'src/app/modules/common-registration/registration.helpers';

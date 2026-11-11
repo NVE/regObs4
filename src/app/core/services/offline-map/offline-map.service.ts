@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
 import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
-import { AlertController, Platform } from '@ionic/angular/standalone';
+import { AlertController, Platform } from '@ionic/angular';
 import { TranslateService } from '@ngx-translate/core';
 import JSZip from 'jszip';
 import moment from 'moment';

@@ -1,4 +1,4 @@
-import { IonItem, IonTextarea } from '@ionic/angular/standalone';
+import { IonItem, IonTextarea } from '@ionic/angular';
 import { Component, input, model, output, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';

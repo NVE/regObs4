@@ -11,6 +11,7 @@ import {
   computed,
   signal,
   linkedSignal,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Capacitor } from '@capacitor/core';
 import { Position } from '@capacitor/geolocation';
@@ -25,7 +26,7 @@ import {
   IonSpinner,
   IonToggle,
   Platform,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import L from 'leaflet';
 import 'leaflet-draw';
@@ -113,6 +114,7 @@ const DEBUG_TAG = 'SetLocationInMap';
   selector: 'app-set-location-in-map',
   templateUrl: './set-location-in-map.component.html',
   styleUrls: ['./set-location-in-map.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     DecimalPipe,
     FormsModule,

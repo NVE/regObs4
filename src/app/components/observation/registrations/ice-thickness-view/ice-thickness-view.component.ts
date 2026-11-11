@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { IceThicknessViewModel, Summary } from 'src/app/modules/common-regobs-api';
 import { SummaryComponent } from '../../summary/summary.component';
 import moment from 'moment';
-import { IonIcon } from '@ionic/angular/standalone';
+import { IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { openOutline } from 'ionicons/icons';
 import { TranslatePipe } from '@ngx-translate/core';

@@ -63,7 +63,7 @@ export type Label<T> = { y: number; value: T };
 export enum Hardness {
   ' - ' = 0,
   'F-' = 1,
-  'F' = 2,
+  F = 2,
   'F+' = 3,
   'F-4F' = 4,
   '4F-' = 5,
@@ -75,14 +75,14 @@ export enum Hardness {
   '1F+' = 11,
   '1F-P' = 12,
   'P-' = 13,
-  'P' = 14,
+  P = 14,
   'P+' = 15,
   'P-K' = 16,
   'K-' = 17,
-  'K' = 18,
+  K = 18,
   'K+' = 19,
   'K-I' = 20,
-  'I' = 21,
+  I = 21,
 }
 
 export enum CriticalLayer {

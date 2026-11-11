@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, linkedSignal, signal } from '@angular/core';
 import { AttachmentViewModel } from 'src/app/modules/common-regobs-api';
-import { IonChip, IonIcon } from '@ionic/angular/standalone';
+import { IonChip, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { warningOutline } from 'ionicons/icons';
 import { TranslatePipe } from '@ngx-translate/core';

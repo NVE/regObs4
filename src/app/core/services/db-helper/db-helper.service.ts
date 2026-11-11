@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { SQLite, SQLiteObject, SQLiteDatabaseConfig } from '@awesome-cordova-plugins/sqlite/ngx';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 import { settings } from '../../../../settings';
 import '../../helpers/ionic/platform-helper';
 import { LoggingService } from '../../../modules/shared/services/logging/logging.service';

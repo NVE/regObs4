@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { BasePage } from '../../base.page';
 import {
   IonBackButton,
@@ -15,7 +15,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { RegistrationTid } from 'src/app/modules/common-registration/registration.models';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { AvalancheEvalProblem2EditModel, KdvElement } from 'src/app/modules/common-regobs-api/models';
@@ -43,6 +43,7 @@ import { addCircleOutline } from 'ionicons/icons';
   selector: 'app-avalanche-problem',
   templateUrl: './avalanche-problem.page.html',
   styleUrls: ['./avalanche-problem.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     EditImagesComponent,
     HeaderColorDirective,

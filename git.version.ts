@@ -2,7 +2,7 @@
 
 import { writeFileSync, readFileSync } from 'fs';
 import { AppVersion } from './src/app/core/models/app-version.model';
-import * as AndroidManifest from 'manifest-android';
+import AndroidManifest from 'manifest-android';
 import * as plist from 'plist';
 import { execSync } from 'child_process';
 
@@ -21,7 +21,7 @@ async function getVersion(): Promise<AppVersion> {
   const buildNumber = parseInt(y + mm + dd + time, 10);
 
   return {
-    version: process.env.npm_package_version,
+    version: process.env.npm_package_version as string,
     revision,
     buildNumber,
     branch,

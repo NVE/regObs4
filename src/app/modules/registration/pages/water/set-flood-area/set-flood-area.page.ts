@@ -1,4 +1,4 @@
-import { IonToolbar, IonContent, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular/standalone';
+import { IonToolbar, IonContent, IonTitle, IonHeader, IonButton, IonButtons } from '@ionic/angular';
 import { ChangeDetectorRef, Component, OnInit, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import L from 'leaflet';
 import { Observable, Subject } from 'rxjs';

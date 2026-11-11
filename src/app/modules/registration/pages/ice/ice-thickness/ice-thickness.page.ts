@@ -17,7 +17,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { IceLayerPage } from './ice-layer/ice-layer.page';
 import { IceThicknessEditModel, IceThicknessLayerEditModel } from 'src/app/modules/common-regobs-api/models';
 import { HeaderColorDirective } from '../../../../shared/directives/header-color/header-color.directive';

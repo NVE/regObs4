@@ -3,7 +3,7 @@ import { HeaderComponent } from '../../modules/shared/components/header/header.c
 import { AddMenuComponent } from '../../modules/shared/components/add-menu/add-menu.component';
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { IonButtons, IonIcon, IonMenu, IonMenuButton, IonSplitPane, IonTitle } from '@ionic/angular/standalone';
+import { IonButtons, IonIcon, IonMenu, IonMenuButton, IonSplitPane, IonTitle } from '@ionic/angular';
 import { FilterMenuComponent } from 'src/app/modules/side-menu/components/filter-menu/filter-menu.component';
 
 /**

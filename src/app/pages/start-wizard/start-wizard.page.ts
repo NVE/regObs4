@@ -17,7 +17,7 @@ import {
   IonSelectOption,
   NavController,
   IonContent,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { LangKey, GeoHazard } from '../../modules/common-core/models';
 import { settings } from '../../../settings';
 import { TranslatePipe } from '@ngx-translate/core';

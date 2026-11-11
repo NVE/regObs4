@@ -1,5 +1,5 @@
-import { IonGrid, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { IonGrid, IonRow, IonCol, IonText, IonLabel } from '@ionic/angular';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import moment from 'moment';
 import { HelperService } from '../../core/services/helpers/helper.service';
@@ -16,6 +16,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-trip-log-summary',
   templateUrl: './trip-log-summary.component.html',
   styleUrls: ['./trip-log-summary.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [IonCol, IonGrid, IonLabel, IonRow, IonText],
 })
 export class TripLogSummaryComponent implements OnInit, OnDestroy {

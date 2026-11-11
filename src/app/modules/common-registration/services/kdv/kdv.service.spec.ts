@@ -1,5 +1,5 @@
 import { TestBed, fakeAsync, flushMicrotasks, tick } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { NEVER, Observable, of } from 'rxjs';
 import { KdvService } from './kdv.service';
@@ -27,7 +27,7 @@ describe('KdvService.update()', () => {
     TestBed.configureTestingModule({
       providers: [
         KdvService,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideTestLogger(),
         { provide: KdvElementsService, useValue: kdvElementsSpy },
         { provide: DatabaseService, useValue: databaseSpy },
@@ -106,7 +106,7 @@ describe('KdvService cache invalidation on app version change', () => {
     TestBed.configureTestingModule({
       providers: [
         KdvService,
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideTestLogger(),
         { provide: KdvElementsService, useValue: kdvElementsSpy },

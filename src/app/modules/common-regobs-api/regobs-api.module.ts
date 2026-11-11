@@ -1,6 +1,6 @@
 /* tslint:disable */
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { RegobsApiConfiguration, RegobsApiConfigurationInterface } from './regobs-api-configuration';
 
 import { AccountService } from './services/account.service';
@@ -28,7 +28,7 @@ import { TripService } from './services/trip.service';
         RegistrationService,
         SearchService,
         TripService,
-        provideHttpClient(withInterceptorsFromDi())
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
     ] })
 export class RegobsApiModule {
   static forRoot(customParams: RegobsApiConfigurationInterface): ModuleWithProviders<RegobsApiModule> {

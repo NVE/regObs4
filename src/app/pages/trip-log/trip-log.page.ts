@@ -10,8 +10,8 @@ import {
   IonFabButton,
   IonHeader,
   IonButtons,
-} from '@ionic/angular/standalone';
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+} from '@ionic/angular';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectionStrategy } from '@angular/core';
 import { BackgroundGeolocationService } from '../../core/services/background-geolocation/background-geolocation.service';
 import { TripLoggerService } from '../../core/services/trip-logger/trip-logger.service';
 import { TripLogState } from '../../core/services/trip-logger/trip-log-state.enum';
@@ -28,6 +28,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   selector: 'app-trip-log',
   templateUrl: './trip-log.page.html',
   styleUrls: ['./trip-log.page.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     IonBackButton,
     IonButtons,

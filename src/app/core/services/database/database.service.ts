@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 import { firstValueFrom, Observable, ReplaySubject } from 'rxjs';
 import * as CordovaSQLiteDriver from 'localforage-cordovasqlitedriver';
-import { Platform } from '@ionic/angular/standalone';
+import { Platform } from '@ionic/angular';
 
 /**
  * Common interface to our key-value database.

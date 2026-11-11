@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { IonLabel, IonNote } from '@ionic/angular/standalone';
+import { IonLabel, IonNote } from '@ionic/angular';
 
 /** Accordion-tittel for lister med flervalg. Viser hva som er valgt */
 @Component({

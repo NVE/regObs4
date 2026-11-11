@@ -16,7 +16,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { SnowDensityLayerModel } from 'src/app/modules/common-regobs-api/models';
 import { HydrologyHelper } from '../../../../../../../core/helpers/hydrology-helper';
 import cloneDeep from 'clone-deep';

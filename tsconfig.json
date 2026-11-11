@@ -18,7 +18,9 @@
     // Nye angular-prosjekter bruker "preserve"
     "module": "esnext",
     "paths": {
-      "src/*": ["./src/*"]
+      "src/*": [
+        "./src/*"
+      ]
     },
     "useDefineForClassFields": false
   },
@@ -31,8 +33,17 @@
   },
   "files": [],
   "references": [
-    { "path": "./src/tsconfig.app.json" },
-    { "path": "./src/tsconfig.spec.json" },
-    { "path": "./tsconfig.worker.json" }
+    {
+      "path": "./src/tsconfig.app.json"
+    },
+    {
+      "path": "./src/tsconfig.spec.json"
+    },
+    {
+      "path": "./tsconfig.worker.json"
+    },
+    {
+      "path": "./tsconfig.npm-script.json"
+    },
   ]
 }

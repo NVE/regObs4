@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { provideTranslateService } from '@ngx-translate/core';
 import { AuthorizationServiceConfiguration, Requestor, StorageBackend, TokenResponseJson } from '@openid/appauth';
@@ -63,7 +63,7 @@ describe('RegobsAuthService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        provideHttpClient(),
+        provideHttpClient(withXhr()),
         provideHttpClientTesting(),
         provideTranslateService(),
         provideTestLogger(),

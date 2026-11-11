@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IonChip, IonIcon, IonLabel } from '@ionic/angular/standalone';
+import { IonChip, IonIcon, IonLabel } from '@ionic/angular';
 import { UserSettingService } from 'src/app/core/services/user-setting/user-setting.service';
 import { ObserverViewModel } from 'src/app/modules/common-regobs-api';
 import { TranslatePipe } from '@ngx-translate/core';

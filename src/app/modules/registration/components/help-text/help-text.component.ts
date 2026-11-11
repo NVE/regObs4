@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy, inject, input } from '@angular/core';
 import { GeoHazard } from 'src/app/modules/common-core/models';
-import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular/standalone';
+import { IonButton, IonCol, IonGrid, IonRow, ModalController } from '@ionic/angular';
 import { HelpModalPage } from '../../pages/modal-pages/help-modal/help-modal.page';
 import { HelpTextService } from 'src/app/modules/common-registration/registration.services';
 import { firstValueFrom, Observable } from 'rxjs';

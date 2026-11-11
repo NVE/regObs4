@@ -1,4 +1,4 @@
-import { IonContent, IonSpinner } from '@ionic/angular/standalone';
+import { IonContent, IonSpinner } from '@ionic/angular';
 import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegobsAuthService } from '../../services/regobs-auth.service';

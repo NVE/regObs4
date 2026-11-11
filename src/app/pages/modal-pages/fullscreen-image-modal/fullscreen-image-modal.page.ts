@@ -7,7 +7,7 @@ import {
   linkedSignal,
   computed,
 } from '@angular/core';
-import { IonFabButton, IonIcon, IonItem, ModalController, Platform } from '@ionic/angular/standalone';
+import { IonFabButton, IonIcon, IonItem, ModalController, Platform } from '@ionic/angular';
 import { AttachmentViewModel } from '../../../modules/common-regobs-api';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';

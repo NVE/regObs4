@@ -16,7 +16,7 @@ import {
   IonTitle,
   IonToolbar,
   ModalController,
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { BehaviorSubject, combineLatest, firstValueFrom, from, Observable, Subject } from 'rxjs';
 import { debounceTime, filter, map, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import L from 'leaflet';
@@ -91,12 +91,12 @@ export class OfflineMapPage extends NgDestoryBase {
   private logger = inject(LoggingService);
 
   private readonly installedPackages$: Observable<Map<string, OfflineMapPackage>>;
-  private installedPackages: Map<string, OfflineMapPackage> = new Map();
+  private installedPackages = new Map<string, OfflineMapPackage>();
   private failedPackageIds: string[] = []; //remember failed packages until features are ready for styling
   private downloadAndUnzipProgress$: Observable<OfflineMapPackage[]>;
   packageTotals$: Observable<PackageTotals>;
   readonly allPackages$: Observable<OfflineMapPackage[]>;
-  private packagesOnServer: Map<string, CompoundPackage> = new Map();
+  private packagesOnServer = new Map<string, CompoundPackage>();
   showTileCard = true;
   tilesLayer?: L.GeoJSON;
   // Could not get the click handler to only emit once per click, so wrapped this in a subject
