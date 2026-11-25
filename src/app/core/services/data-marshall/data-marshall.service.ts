@@ -102,8 +102,9 @@ export class DataMarshallService implements OnReset {
     clearTimeout(this.foregroundUpdateInterval);
   }
 
-  backgroundFetchUpdate(useTimeout = false): Promise<void> {
-    return (async () => {
+  // Kalles uten await fra intervallet og ved resume, så feil må fanges her og ikke avvise løftet
+  async backgroundFetchUpdate(useTimeout = false): Promise<void> {
+    try {
       const cancelTimer = useTimeout
         ? CancelPromiseTimer.createCancelPromiseTimer(settings.backgroundFetchTimeout)
         : undefined;
@@ -112,6 +113,8 @@ export class DataMarshallService implements OnReset {
       await this.warningService.updateWarnings(cancelTimer);
       await this.tripLoggerService.cleanupOldLegacyTrip();
       this.loggingService.debug('Background update completed', DEBUG_TAG);
-    })();
+    } catch (error) {
+      this.loggingService.error(error, DEBUG_TAG, 'Background update failed');
+    }
   }
 }
