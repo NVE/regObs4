@@ -1,6 +1,6 @@
 // Hjelpefunksjoner for filbehandling på telefon, bruker Capacitor Filesystem-plugin
 
-import { Directory, Filesystem } from '@capacitor/filesystem';
+import { Directory, Filesystem, FilesystemPlugin } from '@capacitor/filesystem';
 import { LoggingService } from '../modules/shared/services/logging/logging.service';
 import { LogLevel } from '../modules/shared/services/logging/log-level.model';
 
@@ -11,15 +11,17 @@ const DEBUG_TAG = 'FileUtils';
  * @param path sti til fila, relativ til angitt rot-mappe
  * @param directory hvilken rot-mappe fila ligger i
  * @param logger send inn logger hvis du vil logge evt. feil
+ * @param filesystem Filesystem-pluginen som skal brukes, f.eks. en injisert plugin i tester
  * @returns URI som kan brukes i nettleser eller '' hvis det oppstod feil
  */
 export const getUri = async (
   path: string,
   directory: Directory = Directory.Data,
-  logger?: LoggingService
+  logger?: LoggingService,
+  filesystem: FilesystemPlugin = Filesystem
 ): Promise<string> => {
   try {
-    const uriResult = await Filesystem.getUri({
+    const uriResult = await filesystem.getUri({
       path: path,
       directory,
     });
@@ -38,13 +40,18 @@ export const getUri = async (
  * Sjekker om angitt fil eller mappe finnes
  * @param path - full sti til fil eller mappe
  * @param logger send inn logger hvis du vil logge evt. feil
+ * @param filesystem Filesystem-pluginen som skal brukes, f.eks. en injisert plugin i tester
  * @returns true hvis angitt fil eller mappe finnes.
  */
-export const doesFileOrDirectoryExist = async (path: string, logger?: LoggingService): Promise<boolean> => {
+export const doesFileOrDirectoryExist = async (
+  path: string,
+  logger?: LoggingService,
+  filesystem: FilesystemPlugin = Filesystem
+): Promise<boolean> => {
   const name = path.split('/').pop();
   const directory = path.split('/').slice(0, -1).join('/');
   try {
-    const readDirResult = await Filesystem.readdir({
+    const readDirResult = await filesystem.readdir({
       path: directory,
     });
     if (readDirResult.files.filter((fileInfo) => fileInfo.name === name).length > 0) {
@@ -60,11 +67,16 @@ export const doesFileOrDirectoryExist = async (path: string, logger?: LoggingSer
  * Slett angitt fil
  * @param path - full sti til fil som skal slettes
  * @param logger send inn logger hvis du vil logge evt. feil
+ * @param filesystem Filesystem-pluginen som skal brukes, f.eks. en injisert plugin i tester
  */
-export const deleteFile = async (path: string, logger?: LoggingService): Promise<void> => {
-  if (await doesFileOrDirectoryExist(path, logger)) {
+export const deleteFile = async (
+  path: string,
+  logger?: LoggingService,
+  filesystem: FilesystemPlugin = Filesystem
+): Promise<void> => {
+  if (await doesFileOrDirectoryExist(path, logger, filesystem)) {
     try {
-      await Filesystem.deleteFile({ path });
+      await filesystem.deleteFile({ path });
       logger?.debug(`Deleted file ${path}`, DEBUG_TAG);
     } catch (err) {
       logger?.log(`Error deleting file ${path}`, err, LogLevel.Debug, DEBUG_TAG);

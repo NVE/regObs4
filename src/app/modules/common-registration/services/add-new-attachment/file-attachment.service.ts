@@ -8,7 +8,7 @@ import { inject, Injectable, InjectionToken } from '@angular/core';
 import { Directory, Encoding, FileInfo, Filesystem, FilesystemPlugin, MkdirOptions } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
-import { deleteFile, getUri } from 'src/app/utils/file-utils';
+import { deleteFile } from 'src/app/utils/file-utils';
 
 const ROOT_DIR = 'attachments';
 
@@ -291,14 +291,21 @@ export default class FileAttachmentService extends NewAttachmentService {
   }
 
   private async removeAttachmentInternal(registrationId: string, attachmentId: string): Promise<boolean> {
-    const path = await getUri(ROOT_DIR + '/' + registrationId, Directory.Data, this.logger);
+    // samme sti og samme filsystem som vi lagret vedleggene med
+    let rootFileUrl: string;
+    try {
+      rootFileUrl = await this.getRootFileUrl();
+    } catch {
+      return false; // getRootFileUrl har allerede logget feilen, og removeAttachment() abonnerer uten feilhåndtering
+    }
+    const path = `${rootFileUrl}/${registrationId}`;
     const metadataFileName = this.getMetadataFileName(attachmentId);
     const imageFilePath = await this.getImageFilePath(registrationId, attachmentId);
 
     if (imageFilePath) {
-      await deleteFile(imageFilePath, this.logger);
+      await deleteFile(imageFilePath, this.logger, this.filesystem);
     }
-    await deleteFile(`${path}/${metadataFileName}`, this.logger);
+    await deleteFile(`${path}/${metadataFileName}`, this.logger, this.filesystem);
 
     // slett vedlegg-mappa for denne observasjonen hvis det ikke er flere vedlegg igjen
     try {
