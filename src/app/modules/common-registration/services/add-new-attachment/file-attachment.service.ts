@@ -4,13 +4,30 @@ import { BehaviorSubject, firstValueFrom, from, Observable, switchMap, tap } fro
 import { AttachmentType, AttachmentUploadEditModel } from '../../models/attachment-upload-edit.interface';
 import { RegistrationTid } from '../../registration.models';
 import { NewAttachmentService } from './new-attachment.service';
-import { Injectable } from '@angular/core';
-import { Directory, Encoding, FileInfo, Filesystem } from '@capacitor/filesystem';
+import { inject, Injectable, InjectionToken } from '@angular/core';
+import { Directory, Encoding, FileInfo, Filesystem, FilesystemPlugin, MkdirOptions } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { LogLevel } from 'src/app/modules/shared/services/logging/log-level.model';
-import { deleteFile, getUri } from 'src/app/utils/file-utils';
+import { deleteFile } from 'src/app/utils/file-utils';
 
 const ROOT_DIR = 'attachments';
+
+/** Capacitor Filesystem-pluginen, som egen token slik at den kan byttes ut i tester */
+export const FILESYSTEM = new InjectionToken<FilesystemPlugin>('Capacitor Filesystem', {
+  providedIn: 'root',
+  factory: () => Filesystem,
+});
+
+/** Feilkoden Capacitor Filesystem gir på iOS og Android når mappa vi prøver å opprette allerede finnes */
+const DIRECTORY_ALREADY_EXISTS_CODE = 'OS-PLUG-FILE-0010';
+
+const isDirectoryAlreadyExistsError = (err: unknown): boolean => {
+  if (typeof err !== 'object' || err === null) {
+    return false;
+  }
+  const { code, message } = err as { code?: unknown; message?: unknown };
+  return code === DIRECTORY_ALREADY_EXISTS_CODE || (typeof message === 'string' && message.includes('already exists'));
+};
 
 /**
  * Tilbyr mellomlagring av bilder til en observasjon på lokal disk. Bruker native funksjoner via Capacitor Filesystem API.
@@ -21,7 +38,9 @@ const ROOT_DIR = 'attachments';
 export default class FileAttachmentService extends NewAttachmentService {
   protected override DEBUG_TAG = 'FileAttachmentService';
   private attachmentsChanged = new BehaviorSubject<void>(undefined); //get a tick each time an attachment changes
-  private rootFileUrl = '';
+  private rootFileUrl?: Promise<string>;
+  private filesystem = inject(FILESYSTEM);
+  private folderCreations = new Map<string, Promise<void>>();
 
   constructor() {
     super();
@@ -31,28 +50,33 @@ export default class FileAttachmentService extends NewAttachmentService {
   /**
    * @returns sti til mappa vi lagrer vedleggene i for alle registreringer, uten / på slutten
    */
-  private async getRootFileUrl(): Promise<string> {
-    if (this.rootFileUrl === '') {
-      const dataDirectory = Directory.Data;
-      try {
-        const readDirResult = await Filesystem.readdir({
-          path: '',
-          directory: dataDirectory,
-        });
-        if (readDirResult.files.filter((fileInfo) => fileInfo.name === ROOT_DIR).length === 0) {
-          //no root folder yet, so create it
-          await Filesystem.mkdir({
-            path: ROOT_DIR,
-            directory: dataDirectory,
-          });
-        }
-        this.rootFileUrl = await getUri(ROOT_DIR, Directory.Data, this.logger);
-      } catch (err) {
+  private getRootFileUrl(): Promise<string> {
+    // Del samme promise mellom samtidige kall, så vi ikke prøver å opprette mappa flere ganger
+    if (!this.rootFileUrl) {
+      this.rootFileUrl = this.createRootFolder().catch((err) => {
+        this.rootFileUrl = undefined; // prøv på nytt neste gang
         this.logger.error(err, this.DEBUG_TAG, `Error getting root directory url ${ROOT_DIR}`);
         throw err;
-      }
+      });
     }
     return this.rootFileUrl;
+  }
+
+  private async createRootFolder(): Promise<string> {
+    const dataDirectory = Directory.Data;
+    const readDirResult = await this.filesystem.readdir({
+      path: '',
+      directory: dataDirectory,
+    });
+    if (readDirResult.files.filter((fileInfo) => fileInfo.name === ROOT_DIR).length === 0) {
+      //no root folder yet, so create it
+      await this.mkdirIfMissing({
+        path: ROOT_DIR,
+        directory: dataDirectory,
+      });
+    }
+    const { uri } = await this.filesystem.getUri({ path: ROOT_DIR, directory: dataDirectory });
+    return uri.endsWith('/') ? uri.slice(0, -1) : uri;
   }
 
   /**
@@ -62,21 +86,52 @@ export default class FileAttachmentService extends NewAttachmentService {
     const rootFileUrl = await this.getRootFileUrl();
     const folderPath = `${rootFileUrl}/${registrationId}`;
     try {
-      const readDirResult = await Filesystem.readdir({
-        path: rootFileUrl,
-      });
-
-      // sjekk om mappa for registrering allerede finnes
-      if (readDirResult.files.filter((fileInfo) => fileInfo.name === registrationId).length === 0) {
-        //opprett mappa for registreringa hvis den ikke finnes
-        await Filesystem.mkdir({
-          path: folderPath,
-        });
-      }
+      await this.ensureRegistrationFolder(rootFileUrl, registrationId, folderPath);
     } catch (err) {
       this.logger.error(err, this.DEBUG_TAG, `Error reading or creating directory ${folderPath}`);
     }
     return folderPath;
+  }
+
+  /**
+   * Samtidige kall for samme mappe deler samme promise, så mappa bare opprettes én gang.
+   * Vi husker ikke mappa etter at den er opprettet, fordi den kan slettes igjen (f.eks. i removeAttachments).
+   */
+  private ensureRegistrationFolder(rootFileUrl: string, registrationId: string, folderPath: string): Promise<void> {
+    let creation = this.folderCreations.get(folderPath);
+    if (!creation) {
+      creation = this.createRegistrationFolder(rootFileUrl, registrationId, folderPath).finally(() =>
+        this.folderCreations.delete(folderPath)
+      );
+      this.folderCreations.set(folderPath, creation);
+    }
+    return creation;
+  }
+
+  private async createRegistrationFolder(rootFileUrl: string, registrationId: string, folderPath: string) {
+    const readDirResult = await this.filesystem.readdir({
+      path: rootFileUrl,
+    });
+
+    // sjekk om mappa for registrering allerede finnes
+    if (readDirResult.files.filter((fileInfo) => fileInfo.name === registrationId).length === 0) {
+      //opprett mappa for registreringa hvis den ikke finnes
+      await this.mkdirIfMissing({
+        path: folderPath,
+      });
+    }
+  }
+
+  /** Oppretter mappa. Hvis den allerede finnes, regner vi det som vellykket. */
+  private async mkdirIfMissing(options: MkdirOptions): Promise<void> {
+    try {
+      await this.filesystem.mkdir(options);
+    } catch (err) {
+      if (!isDirectoryAlreadyExistsError(err)) {
+        throw err;
+      }
+      this.logger.debug(`Directory ${options.path} already exists`, this.DEBUG_TAG);
+    }
   }
 
   async addAttachmentAsUrl(
@@ -93,11 +148,11 @@ export default class FileAttachmentService extends NewAttachmentService {
     const destinationPath = await this.getFolderPath(registrationId);
     try {
       // TODO: Kunne vi la være å kopiere fila og heller laste den opp fra der OS'et legger den?
-      const result = await Filesystem.copy({
+      const result = await this.filesystem.copy({
         from: `${fileNameWithFullPath}`,
         to: `${destinationPath}/${attachmentFileName}`,
       });
-      const statResult = await Filesystem.stat({ path: `${result.uri}` });
+      const statResult = await this.filesystem.stat({ path: `${result.uri}` });
       const metadata: AttachmentUploadEditModel = {
         GeoHazardTID: geoHazard,
         RegistrationTID: registrationTid,
@@ -139,7 +194,7 @@ export default class FileAttachmentService extends NewAttachmentService {
   private async saveAttachmentMeta(registrationId: string, meta: AttachmentUploadEditModel) {
     const folderPath = await this.getFolderPath(registrationId);
     const filePath = `${folderPath}/${this.getMetadataFileName(meta.id)}`;
-    await Filesystem.writeFile({
+    await this.filesystem.writeFile({
       path: filePath,
       data: JSON.stringify(meta),
       encoding: Encoding.UTF8,
@@ -166,7 +221,7 @@ export default class FileAttachmentService extends NewAttachmentService {
 
   async removeAttachments(registrationId: string): Promise<void> {
     const path = await this.getFolderPath(registrationId);
-    await Filesystem.rmdir({ path: path, recursive: true });
+    await this.filesystem.rmdir({ path: path, recursive: true });
     this.attachmentsChanged.next();
   }
 
@@ -178,7 +233,7 @@ export default class FileAttachmentService extends NewAttachmentService {
   private async getAttachmentsFromFile(registrationId: string): Promise<AttachmentUploadEditModel[]> {
     const path = await this.getFolderPath(registrationId);
     try {
-      const readDirResult = await Filesystem.readdir({ path });
+      const readDirResult = await this.filesystem.readdir({ path });
       const fileEntries: FileInfo[] = readDirResult.files;
       const metadatas = await Promise.all(
         fileEntries
@@ -196,7 +251,7 @@ export default class FileAttachmentService extends NewAttachmentService {
     const registrationFolder = await this.getFolderPath(registrationId);
     const path = `${registrationFolder}/${filename}`;
     try {
-      const fileResult = await Filesystem.readFile({
+      const fileResult = await this.filesystem.readFile({
         path,
         encoding: Encoding.UTF8,
       });
@@ -236,20 +291,27 @@ export default class FileAttachmentService extends NewAttachmentService {
   }
 
   private async removeAttachmentInternal(registrationId: string, attachmentId: string): Promise<boolean> {
-    const path = await getUri(ROOT_DIR + '/' + registrationId, Directory.Data, this.logger);
+    // samme sti og samme filsystem som vi lagret vedleggene med
+    let rootFileUrl: string;
+    try {
+      rootFileUrl = await this.getRootFileUrl();
+    } catch {
+      return false; // getRootFileUrl har allerede logget feilen, og removeAttachment() abonnerer uten feilhåndtering
+    }
+    const path = `${rootFileUrl}/${registrationId}`;
     const metadataFileName = this.getMetadataFileName(attachmentId);
     const imageFilePath = await this.getImageFilePath(registrationId, attachmentId);
 
     if (imageFilePath) {
-      await deleteFile(imageFilePath, this.logger);
+      await deleteFile(imageFilePath, this.logger, this.filesystem);
     }
-    await deleteFile(`${path}/${metadataFileName}`, this.logger);
+    await deleteFile(`${path}/${metadataFileName}`, this.logger, this.filesystem);
 
     // slett vedlegg-mappa for denne observasjonen hvis det ikke er flere vedlegg igjen
     try {
-      const remainingEntries = await Filesystem.readdir({ path, directory: Directory.Data });
+      const remainingEntries = await this.filesystem.readdir({ path, directory: Directory.Data });
       if (remainingEntries.files.length === 0) {
-        await Filesystem.rmdir({ path: path, directory: Directory.Data });
+        await this.filesystem.rmdir({ path: path, directory: Directory.Data });
         this.logger.debug(`Removed empty directory ${path}`, this.DEBUG_TAG);
       }
     } catch (err) {
