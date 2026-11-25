@@ -1,4 +1,4 @@
-import { provideHttpClient, withXhr } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient, withXhr } from '@angular/common/http';
 import { fakeAsync, flush, TestBed } from '@angular/core/testing';
 import { provideTranslateService } from '@ngx-translate/core';
 import { AuthorizationServiceConfiguration, Requestor, StorageBackend, TokenResponseJson } from '@openid/appauth';
@@ -8,9 +8,12 @@ import { AuthService, Browser, DefaultBrowser } from 'ionic-appauth';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { httpFactory } from '../factories/http-factory';
 import { TokenResponseFullJson } from './token-response-full';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subject } from 'rxjs';
 import { RegobsAuthServiceOverride } from './regobs-auth-service-override';
 import { inject } from '@angular/core';
+import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
+import { LoggingService } from '../../shared/services/logging/logging.service';
+import { LogLevel } from '../../shared/services/logging/log-level.model';
 
 const TOKEN_INFO = { email: 'test@test.no' };
 const TOKEN = `test.${btoa(JSON.stringify(TOKEN_INFO))}`;
@@ -54,6 +57,54 @@ class InMemoryStorageBackend extends StorageBackend {
   }
 }
 
+const authTestProviders = (tokenResponse: Partial<TokenResponseJson>) => [
+  provideHttpClient(withXhr()),
+  provideHttpClientTesting(),
+  provideTranslateService(),
+  provideTestLogger(),
+  {
+    provide: StorageBackend,
+    useFactory: () => {
+      const storage = new InMemoryStorageBackend();
+      storage.db[TOKEN_RESPONSE_KEY] = JSON.stringify(tokenResponse);
+      storage.db[TOKEN_RESPONSE_FULL_KEY] = JSON.stringify(TOKEN_RESPONSE_FULL);
+      return storage;
+    },
+  },
+  {
+    provide: Browser,
+    useClass: DefaultBrowser,
+  },
+  {
+    // Requestor håndterer http kall på vegne av openId app auth
+    provide: Requestor,
+    useFactory: httpFactory,
+  },
+  {
+    // authFactory initialiserer RegobsAuthServiceOverride over Ionic App Auth sin Auth Service
+    provide: AuthService,
+    useFactory: () => {
+      const browser = inject(Browser);
+      const storage = inject(StorageBackend);
+      const requestor = inject(Requestor);
+      const service = new RegobsAuthServiceOverride(browser, storage, requestor);
+      service.authConfig = {
+        server_host: '/test',
+        client_id: 'test-client-id',
+        redirect_url: '',
+        end_session_redirect_url: '',
+        scopes: '',
+        pkce: true,
+      };
+      return service;
+    },
+  },
+  // NB! ApiInterceptor kjøres ikke i testene nå, prøver å ikke involvere mer enn nødvendig i testene
+  // { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
+  // For å få interceptoren til å brukes i testene må denne også oppdateres:
+  // provideHttpClient(withInterceptorsFromDi())
+];
+
 describe('RegobsAuthService', () => {
   let service: RegobsAuthService;
   let authService: AuthService;
@@ -62,53 +113,7 @@ describe('RegobsAuthService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(withXhr()),
-        provideHttpClientTesting(),
-        provideTranslateService(),
-        provideTestLogger(),
-        {
-          provide: StorageBackend,
-          useFactory: () => {
-            const storage = new InMemoryStorageBackend();
-            storage.db[TOKEN_RESPONSE_KEY] = JSON.stringify(TOKEN_RESPONSE);
-            storage.db[TOKEN_RESPONSE_FULL_KEY] = JSON.stringify(TOKEN_RESPONSE_FULL);
-            return storage;
-          },
-        },
-        {
-          provide: Browser,
-          useClass: DefaultBrowser,
-        },
-        {
-          // Requestor håndterer http kall på vegne av openId app auth
-          provide: Requestor,
-          useFactory: httpFactory,
-        },
-        {
-          // authFactory initialiserer RegobsAuthServiceOverride over Ionic App Auth sin Auth Service
-          provide: AuthService,
-          useFactory: () => {
-            const browser = inject(Browser);
-            const storage = inject(StorageBackend);
-            const requestor = inject(Requestor);
-            const service = new RegobsAuthServiceOverride(browser, storage, requestor);
-            service.authConfig = {
-              server_host: '/test',
-              client_id: 'test-client-id',
-              redirect_url: '',
-              end_session_redirect_url: '',
-              scopes: '',
-              pkce: true,
-            };
-            return service;
-          },
-        },
-        // NB! ApiInterceptor kjøres ikke i testene nå, prøver å ikke involvere mer enn nødvendig i testene
-        // { provide: HTTP_INTERCEPTORS, useClass: ApiInterceptor, multi: true },
-        // For å få interceptoren til å brukes i testene må denne også oppdateres:
-        // provideHttpClient(withInterceptorsFromDi())
-      ],
+      providers: authTestProviders(TOKEN_RESPONSE),
     });
     service = TestBed.inject(RegobsAuthService);
     authService = TestBed.inject(AuthService);
@@ -190,4 +195,70 @@ describe('RegobsAuthService', () => {
     const user = await firstValueFrom(service.loggedInUser$);
     expect(user.isLoggedIn).toBe(true);
   });
+});
+
+describe('RegobsAuthService token refresh on startup', () => {
+  let service: RegobsAuthService;
+  let authService: AuthService;
+  let httpTesting: HttpTestingController;
+  let storage: StorageBackend;
+  let logger: LoggingService;
+  let connected$: Subject<boolean>;
+
+  beforeEach(async () => {
+    connected$ = new Subject<boolean>();
+    TestBed.configureTestingModule({
+      providers: [
+        // Token utstedt for mer enn 5 minutter siden, så appen vil fornye det når vi er på nett
+        authTestProviders({ ...TOKEN_RESPONSE, issued_at: Math.floor(Date.now() / 1000) - 3600 }),
+        { provide: NetworkStatusService, useValue: { connected$ } },
+      ],
+    });
+    service = TestBed.inject(RegobsAuthService);
+    authService = TestBed.inject(AuthService);
+    httpTesting = TestBed.inject(HttpTestingController);
+    storage = TestBed.inject(StorageBackend);
+    logger = TestBed.inject(LoggingService);
+
+    // Dette skjer i AppComponent i appen
+    await authService.init();
+  });
+
+  it('logs out and logs a warning when refresh fails with HTTP 400 (expired grant)', fakeAsync(async () => {
+    spyOnProperty(authService, 'configuration', 'get').and.callFake(
+      async () =>
+        new AuthorizationServiceConfiguration({
+          authorization_endpoint: '',
+          token_endpoint: `/token`,
+          revocation_endpoint: '',
+        })
+    );
+    const logSpy = spyOn(logger, 'log');
+    const errorSpy = spyOn(logger, 'error');
+
+    // Vi kommer på nett, og appen prøver å fornye det gamle tokenet
+    connected$.next(true);
+    flush();
+
+    // B2C svarer at refresh token er utløpt
+    httpTesting
+      .expectOne('/token')
+      .flush(
+        { error: 'invalid_grant', error_description: 'AADB2C90080: The provided grant has expired.' },
+        { status: 400, statusText: 'Bad Request' }
+      );
+    flush();
+
+    expect(logSpy).toHaveBeenCalledWith(
+      jasmine.any(String),
+      jasmine.any(HttpErrorResponse),
+      LogLevel.Warning,
+      jasmine.any(String)
+    );
+    expect(errorSpy).not.toHaveBeenCalled();
+
+    expect(await storage.getItem(TOKEN_RESPONSE_KEY)).toBe(undefined);
+    const user = await firstValueFrom(service.loggedInUser$);
+    expect(user.isLoggedIn).toBe(false);
+  }));
 });
