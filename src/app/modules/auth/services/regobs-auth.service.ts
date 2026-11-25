@@ -11,6 +11,7 @@ import { LoggedInUser } from '../../login/models/logged-in-user.model';
 import { MyPageData, ObserverResponseDto } from 'src/app/modules/common-regobs-api/models';
 import { AccountService } from 'src/app/modules/common-regobs-api/services';
 import { LoggingService } from '../../shared/services/logging/logging.service';
+import { LogLevel } from '../../shared/services/logging/log-level.model';
 import { Location } from '@angular/common';
 import { nowInSeconds, StorageBackend } from '@openid/appauth';
 import { NetworkStatusService } from 'src/app/core/services/network-status/network-status.service';
@@ -150,7 +151,11 @@ export class RegobsAuthService {
         if (user.token && user.tokenIssuedAt && this.isTokenOlderThan(user.tokenIssuedAt, 300)) {
           //token is older than 5 minutes and we have network, so refresh
           this.logger.debug('We are online. Refresh token...', DEBUG_TAG);
-          this.refreshToken();
+          this.refreshToken().catch((err) => {
+            // Feks. utløpt refresh token (400 invalid_grant). RegobsAuthServiceOverride har da allerede
+            // fjernet tokenet, så brukeren er logget ut. Dette er forventet, så vi logger som warning.
+            this.logger.log('Could not refresh token on startup', err, LogLevel.Warning, DEBUG_TAG);
+          });
         }
       });
   }
