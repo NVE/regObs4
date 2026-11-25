@@ -58,6 +58,9 @@ export class NumericInputComponent {
       this.isOpen = true;
       const modal = await this.modalController.create({
         component: NumericInputModalPage,
+        breakpoints: [0, 0.6],
+        initialBreakpoint: 0.6,
+        expandToScroll: false,
         componentProps: {
           value: convert('from', this.convertRatio(), this.value()),
           decimalPlaces: this.decimalPlaces(),

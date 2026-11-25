@@ -1,6 +1,6 @@
 ion-content {
   --background: #d4e4ef;
-  --overflow: hidden;
+  --padding-bottom: var(--ion-safe-area-bottom, 0px);
   .number-pad {
     font-size: 20px;
     ion-button {
@@ -28,7 +28,6 @@ ion-content {
 }
 
 ion-toolbar {
-  --ion-safe-area-top: 0;
   ion-button {
     min-height: 44px;
     min-width: 44px;
