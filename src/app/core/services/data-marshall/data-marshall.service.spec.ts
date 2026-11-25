@@ -19,7 +19,7 @@ describe('DataMarshallService.backgroundFetchUpdate', () => {
     warningService = jasmine.createSpyObj<WarningService>('WarningService', ['updateWarnings']);
     warningService.updateWarnings.and.resolveTo();
     tripLoggerService = jasmine.createSpyObj<TripLoggerService>('TripLoggerService', ['cleanupOldLegacyTrip']);
-    tripLoggerService.cleanupOldLegacyTrip.and.resolveTo();
+    tripLoggerService.cleanupOldLegacyTrip.and.resolveTo(undefined);
 
     TestBed.configureTestingModule({
       providers: [
