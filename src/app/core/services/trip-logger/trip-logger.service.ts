@@ -247,7 +247,9 @@ export class TripLoggerService {
         take(1),
         map((trip) => trip && !isTripFromToday(trip)),
         concatMap((hasOldTrip) => (hasOldTrip ? this.deleteLegacyTripsFromDb() : EMPTY))
-      )
+      ),
+      // Uten gammel tur fullfører strømmen uten verdi, det er normaltilfellet og ingen feil
+      { defaultValue: undefined }
     );
   }
 
