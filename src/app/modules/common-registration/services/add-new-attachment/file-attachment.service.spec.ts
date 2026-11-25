@@ -217,6 +217,19 @@ describe('FileAttachmentService', () => {
     expect(fakeFolders.folders.has(ROOT_URI)).toBeTrue();
   });
 
+  it('creates the registration folder again when saving after its last attachment was removed', async () => {
+    await firstValueFrom(service.saveAttachmentMeta$('reg-1', createMeta('a')));
+    await firstValueFrom(service.removeAttachment$('reg-1', 'a'));
+    expect(fakeFolders.folders.has(`${ROOT_URI}/reg-1`)).toBeFalse();
+
+    await firstValueFrom(service.saveAttachmentMeta$('reg-1', createMeta('b')));
+
+    const registrationMkdirCalls = mkdirSpy.calls.allArgs().filter(([options]) => options.path === `${ROOT_URI}/reg-1`);
+    expect(registrationMkdirCalls.length).toBe(2);
+    expect(fakeFolders.folders.has(`${ROOT_URI}/reg-1`)).toBeTrue();
+    expect(fakeFolders.files.has(`${ROOT_URI}/reg-1/b.json`)).toBeTrue();
+  });
+
   it('returns false instead of throwing when the root folder cannot be read during removal', async () => {
     const ioError = new Error("'mkdir' failed: unknown error");
     mkdirSpy.and.rejectWith(ioError);
